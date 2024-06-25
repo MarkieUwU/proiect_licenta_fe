@@ -3,36 +3,50 @@ import React, { useState } from "react";
 import { createComment } from "../api/comment.api";
 import { User } from "../type/user";
 import { CommentRequest } from "../type/comment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const useCreateComment = ({ postId }: { postId: string }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({
+      postId,
+      commentRequest,
+    }: {
+      postId: string;
+      commentRequest: CommentRequest;
+    }) => createComment(postId, commentRequest),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+    onError: (error) => {
+      console.error("Error adding comment:", error);
+    },
+  });
+
+  return mutation;
+};
 
 interface AddCommentProps {
   postId: string;
   user: User;
-  onCommentAdded: () => void;
 }
 
-const AddComment: React.FC<AddCommentProps> = ({
-  postId,
-  user,
-  onCommentAdded,
-}) => {
+const AddComment: React.FC<AddCommentProps> = ({ postId, user }) => {
   const [content, setContent] = useState<string>("");
+  const { mutate: createComment } = useCreateComment({ postId });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const commentRequest: CommentRequest = {
-        author: user.fullName,
-        text: content,
-        userId: user.id,
-      };
+    const commentRequest: CommentRequest = {
+      author: user.fullName,
+      text: content,
+      userId: user.id,
+    };
 
-      await createComment(postId, commentRequest);
-      setContent("");
-      onCommentAdded();
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
+    createComment({ commentRequest, postId });
+    setContent("");
   };
 
   return (

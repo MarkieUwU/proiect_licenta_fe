@@ -2,25 +2,28 @@
 import React from "react";
 import { CommentComponent } from "./Comment";
 import { UserComment } from "../type/comment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteComment } from "../api/comment.api";
+
+const useDeleteComment = ({ postId }: { postId: string }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+  });
+  return mutation;
+};
 
 interface CommentListProps {
-  postComments: UserComment[];
-  postDeleted: () => void;
+  postComments: UserComment[] | undefined;
+  postId: string;
 }
 
-const CommentList: React.FC<CommentListProps> = ({
-  postComments,
-  postDeleted,
-}) => {
-  const deleteComment = async (commentId: string) => {
-    try {
-      await deleteComment(commentId);
-      // setComments(comments.filter((comment) => comment.id !== +commentId));
-      postDeleted();
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    }
-  };
+const CommentList: React.FC<CommentListProps> = ({ postComments, postId }) => {
+  const { mutate: deleteComment } = useDeleteComment({ postId });
 
   if (!postComments?.length) {
     return (

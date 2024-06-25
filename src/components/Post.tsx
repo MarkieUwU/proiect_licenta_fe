@@ -16,7 +16,12 @@ interface PostProps {
 
 const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
   const [likes, setLikes] = useState(post.likes.length);
-  const [comments, setComments] = useState<Array<UserComment>>([]);
+
+  const { data: comments } = useQuery({
+    queryKey: ["comments", post.id],
+    queryFn: () => getPostComments(post.id),
+    select: (data) => data.comments as UserComment[],
+  });
 
   const queryClient = useQueryClient();
   const getIfLiked = useQuery<boolean>({
@@ -58,19 +63,6 @@ const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
     alreadyLiked ? unlikePost() : likePost();
   };
 
-  const fetchComments = async () => {
-    try {
-      const response = await getPostComments(post.id);
-      setComments(response.comments);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, [post.id]);
-
   return (
     <div className="bg-white shadow p-4 rounded-lg mb-4">
       <div className="flex items-center mb-2">
@@ -94,15 +86,8 @@ const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
         <button>Comment</button>
       </div>
       <div>
-        <AddComment
-          postId={post.id}
-          user={user}
-          onCommentAdded={() => fetchComments()}
-        />
-        <CommentList
-          postComments={comments}
-          postDeleted={() => fetchComments()}
-        />
+        <AddComment postId={post.id} user={user} />
+        <CommentList postComments={comments} postId={post.id} />
       </div>
     </div>
   );

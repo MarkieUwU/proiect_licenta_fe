@@ -1,14 +1,13 @@
-import { useUserApi } from "../api/user";
-import { User } from "../components/User";
+import { useGetUsersList } from "../hooks/user.hooks";
 
 export const Settings = () => {
-  const { data } = useUserApi();
+  const { data } = useGetUsersList();
 
   if (!data) return null;
 
   return (
     <div>
-      {data.map((user) => (
+      {data.map(() => (
         <>
           <div
             style={{
@@ -16,9 +15,7 @@ export const Settings = () => {
               padding: "12px 24px",
               border: "1px solid",
             }}
-          >
-            <User {...user} />
-          </div>
+          ></div>
         </>
       ))}
     </div>

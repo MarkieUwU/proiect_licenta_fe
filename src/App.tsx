@@ -1,12 +1,12 @@
-import { useUserApi } from "./api/user";
-import { Settings } from "./pages/Settings";
+import { Outlet } from "@tanstack/react-router";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
-  const { data } = useUserApi();
-
-  if (!data) return null;
-
-  return <Settings />;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 }
 
 export default App;

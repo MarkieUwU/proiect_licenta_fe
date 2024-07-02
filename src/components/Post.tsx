@@ -16,6 +16,7 @@ interface PostProps {
 
 const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
   const [likes, setLikes] = useState(post.likes.length);
+  const [showComments, setShowComments] = useState(false);
 
   const { data: comments } = useQuery({
     queryKey: ["comments", post.id],
@@ -66,7 +67,9 @@ const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
   return (
     <div className="bg-white shadow p-4 rounded-lg mb-4">
       <div className="flex items-center mb-2">
-        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+        <div className="text-4xl rounded-full">
+          <i className="bi bi-person-circle align-top"></i>
+        </div>
         <div className="ml-3">
           <div className="font-bold">{post.user.username}</div>
           <div className="text-sm text-gray-500">
@@ -77,17 +80,20 @@ const PostComponent: React.FC<PostProps> = ({ user, post }: PostProps) => {
       <div className="mb-2">{post.content}</div>
       <div className="mb-2 flex justify-between">
         <span>{likes} Likes</span>
-        <span>{post.comments.length} Comments</span>
+        <button onClick={() => setShowComments(!showComments)}>
+          {post.comments.length} Comments
+        </button>
       </div>
       <div className="flex space-x-4 text-gray-500">
         <button onClick={() => handleLikeButtonClicked()}>
           {alreadyLiked ? "Unlike" : "Like"}
         </button>
-        <button>Comment</button>
       </div>
       <div>
         <AddComment postId={post.id} user={user} />
-        <CommentList postComments={comments} postId={post.id} />
+        {showComments ? (
+          <CommentList postComments={comments} postId={post.id} />
+        ) : null}
       </div>
     </div>
   );

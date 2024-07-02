@@ -50,21 +50,20 @@ const AddComment: React.FC<AddCommentProps> = ({ postId, user }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <form onSubmit={handleSubmit} className="mb-4 flex gap-2">
       <textarea
-        className="w-full p-2 border border-gray-300 rounded mb-2"
+        className="w-full h-10 p-2 border border-gray-300 rounded mb-2 border-none outline-none resize-none"
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onInput={(e) => setContent(e.target.value)}
         rows={3}
         placeholder="Add a comment..."
         required
       ></textarea>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Post Comment
-      </button>
+      {content.length ? (
+        <button type="submit" className="text-blue-500 px-2 py-1 border-none">
+          Post
+        </button>
+      ) : null}
     </form>
   );
 };

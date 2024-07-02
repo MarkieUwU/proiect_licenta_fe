@@ -48,11 +48,18 @@ const ProfilePage: React.FC = () => {
         {/* Middle Column - User Profile */}
         <div className="col-span-2 bg-white shadow p-4 rounded-lg mb-4">
           <div className="flex items-center mb-4">
-            <img className="w-20 h-20 rounded-full mr-4" alt="Profile" />
+            {/* <img className="w-20 h-20 rounded-full mr-4" alt="Profile" /> */}
             <div>
-              <h1 className="text-2xl font-bold">{user.username}</h1>
-              <p className="text-gray-600">{user.bio}</p>
-              <div className="mt-2">
+              <div className="flex gap-3 item-bottom">
+                <div className="text-5xl rounded-full">
+                  <i className="bi bi-person-circle align-text-bottom"></i>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold">{user.username}</h1>
+                  <p className="text-gray-600">{user.bio}</p>
+                </div>
+              </div>
+              <div className="mt-3">
                 {owner ? (
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
@@ -75,9 +82,10 @@ const ProfilePage: React.FC = () => {
           {/* Profile Stats */}
           <div className="border-t border-gray-200 pt-4 mt-4">
             <div className="flex justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">{user.posts?.length}</h2>
-                <p className="text-sm text-gray-600">Posts</p>
+              <div className="flex">
+                <h2 className="text-lg font-semibold mb-2">
+                  {user.posts?.length} Posts
+                </h2>
               </div>
               {/* <div>
                 <h2 className="text-lg font-semibold">

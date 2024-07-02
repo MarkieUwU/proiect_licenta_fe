@@ -26,7 +26,9 @@ const Header: React.FC = () => {
           params={{ username: user.username }}
           className="[&.active]:font-bold"
         >
-          <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+          <div className="text-3xl rounded-full">
+            <i className="bi bi-person-circle align-top"></i>
+          </div>
         </Link>
       </div>
     </header>

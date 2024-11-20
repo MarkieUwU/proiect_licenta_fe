@@ -1,4 +1,4 @@
-import { useGetUsersList } from "../hooks/user.hooks";
+import { useGetUsersList } from "./ProfilePage/hooks/user.hooks";
 
 export const Settings = () => {
   const { data } = useGetUsersList();

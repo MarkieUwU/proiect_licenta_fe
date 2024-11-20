@@ -1,13 +1,15 @@
 // src/components/Header.tsx
 import { Link } from "@tanstack/react-router";
 import React from "react";
-import { useUser } from "../auth/useUser";
+import { AvatarComponent } from "./Avatar";
+import { getInitials } from "@/utils/utils";
+import { usersList } from "@/pages/ProfilePage/hooks/user.hooks";
 
 const Header: React.FC = () => {
-  const user = useUser();
+  const user = usersList[0];
 
   return (
-    <header className="bg-white shadow p-4 flex justify-between items-center">
+    <header className="fixed top-0 w-full z-10 bg-white shadow p-4 flex justify-between items-center">
       <div className="flex items-center">
         <div className="text-2xl font-bold">SocialMediaApp</div>
         <input
@@ -26,9 +28,9 @@ const Header: React.FC = () => {
           params={{ username: user.username }}
           className="[&.active]:font-bold"
         >
-          <div className="text-3xl rounded-full">
-            <i className="bi bi-person-circle align-top"></i>
-          </div>
+          <AvatarComponent
+            initials={getInitials(user.username)}
+          ></AvatarComponent>
         </Link>
       </div>
     </header>

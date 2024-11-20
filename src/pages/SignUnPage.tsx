@@ -3,7 +3,7 @@ import { Spinner } from "../components/Spinner";
 import { Navigate, useNavigate } from "@tanstack/react-router";
 import { useToken } from "../auth/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { registerUser } from "../api/user.api";
+import { registerUser } from "./ProfilePage/apis/user.api";
 
 export const RegistrationPage: React.FC = () => {
   const { setToken } = useToken();

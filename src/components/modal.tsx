@@ -8,32 +8,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { ModalConfiguration } from "@/models/moda.configuration";
 
 interface ModalProps {
   trigger: ReactNode;
-  title: string;
-  description?: string;
-  footerContent: ReactNode | ReactNode[];
-  content: ReactNode;
+  configuration: ModalConfiguration;
+  open: boolean;
+  onChangeOpen: (value: boolean) => void;
 }
 
 export const Modal: React.FC<ModalProps> = ({
   trigger,
-  title,
-  description,
-  footerContent,
-  content,
+  configuration,
+  open,
+  onChangeOpen,
 }) => {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={(value) => onChangeOpen(value)}>
       <DialogTrigger>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader className="mb-3">
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          <DialogTitle>{configuration.title}</DialogTitle>
+          {configuration.description && (
+            <DialogDescription>{configuration.description}</DialogDescription>
+          )}
         </DialogHeader>
-        {content}
-        <DialogFooter>{footerContent}</DialogFooter>
+        {configuration.content}
+        <DialogFooter>{configuration.footerContent}</DialogFooter>
       </DialogContent>
     </Dialog>
   );

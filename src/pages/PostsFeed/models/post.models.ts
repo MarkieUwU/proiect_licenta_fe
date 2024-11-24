@@ -3,12 +3,12 @@ import { Like } from "./like.models";
 import { User } from "../../ProfilePage/models/user.models";
 
 export type Post = {
-  id: string;
+  id: number;
   title: string;
   content: string;
   createdAt: string;
   updatedAt: string;
-  userId: string;
+  userId: number;
   comments: UserComment[];
   likes: Like[];
   user: User;

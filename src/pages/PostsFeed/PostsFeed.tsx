@@ -22,7 +22,7 @@ export const PostsFeed: React.FC = () => {
           className="w-full p-4 mb-4 border rounded-lg"
         />
       </PostModal>
-      <div className="flex-row gap-2 overflow-y-auto">
+      <div className="flex flex-col gap-3 overflow-y-auto">
         {!postResponse.data?.length ? (
           <NoRecordsFound text="It seems like there are no posts to show" />
         ) : (

@@ -4,7 +4,7 @@ import { UserComment } from "../models/comment.models";
 
 interface CommentProps {
   comment: UserComment;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
 export const CommentComponent: React.FC<CommentProps> = ({
@@ -20,7 +20,7 @@ export const CommentComponent: React.FC<CommentProps> = ({
       </div>
       <button
         className="text-red-500 mt-2"
-        onClick={() => onDelete(String(comment.id))}
+        onClick={() => onDelete(comment.id)}
       >
         Delete
       </button>

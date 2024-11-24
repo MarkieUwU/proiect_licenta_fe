@@ -17,5 +17,5 @@ export type UserComment = {
 export type CommentRequest = {
   author: string;
   text: string;
-  userId: string;
+  userId: number;
 };

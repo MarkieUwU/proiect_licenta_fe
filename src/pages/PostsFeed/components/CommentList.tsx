@@ -5,7 +5,7 @@ import { UserComment } from "../models/comment.models";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteComment } from "../apis/comment.api";
 
-const useDeleteComment = ({ postId }: { postId: string }) => {
+const useDeleteComment = ({ postId }: { postId: number }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -19,7 +19,7 @@ const useDeleteComment = ({ postId }: { postId: string }) => {
 
 interface CommentListProps {
   postComments: UserComment[] | undefined;
-  postId: string;
+  postId: number;
 }
 
 const CommentList: React.FC<CommentListProps> = ({ postComments, postId }) => {
@@ -27,9 +27,7 @@ const CommentList: React.FC<CommentListProps> = ({ postComments, postId }) => {
 
   if (!postComments?.length) {
     return (
-      <>
-        <p className="text-gray-500">No comments found</p>
-      </>
+      <p className="text-gray-500">No comments found</p>
     );
   }
 

@@ -2,6 +2,7 @@ import { Outlet } from "@tanstack/react-router";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Header from "./components/Header";
 import "@/App.css";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <div className="app-container min-h-screen">
         <Outlet />
       </div>
+      <Toaster richColors />
     </div>
   );
 }

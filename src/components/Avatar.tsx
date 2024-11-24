@@ -4,11 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 interface AvatarProps {
   image?: string;
   initials: string;
+  size?: string;
 }
 
-export const AvatarComponent: React.FC<AvatarProps> = ({ image, initials }) => {
+export const AvatarComponent: React.FC<AvatarProps> = ({
+  image,
+  initials,
+  size,
+}) => {
   return (
-    <Avatar>
+    <Avatar className={size && "size-" + size}>
       {image?.length ? (
         <AvatarImage src={image}></AvatarImage>
       ) : (

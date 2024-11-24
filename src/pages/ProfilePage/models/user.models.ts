@@ -1,7 +1,7 @@
 import { Post } from "../../PostsFeed/models/post.models";
 
 export type User = {
-  id: string;
+  id: number;
   fullName: string;
   username: string;
   email: string;

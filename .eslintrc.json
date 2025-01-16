@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "overrides": [
+    {
+      "files": ["*.ts, *.tsx"],
+      "parserOptions": {
+        "project": ["tsconfig.json"],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/stylistic",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint", "react", "prettier"],
+      "rules": {
+        "prettier/prettier": ["error"],
+        "no-unused-vars": "off",
+        "no-console": "warn",
+        "semi": ["error", "always"],
+        "quotes": ["error", "single"],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_"
+          }
+        ]
+      }
+    }
+  ],
+}

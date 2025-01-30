@@ -1,115 +1,203 @@
 // src/components/CreatePostModal.tsx
-import React, { ReactNode, useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Post, PostRequest } from '../models/post.models.ts';
-import { Button } from '@/shared/ui/button.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { DialogClose } from '@/shared/ui/dialog.tsx';
-import { Modal } from '../../../shared/components/Modal.tsx';
-import { ModalConfiguration } from '@/shared/models/moda.configuration.ts';
+import { DialogClose } from '@/components/ui/dialog.tsx';
+import { Modal } from '../../../components/ui/Modal.tsx';
+import { ModalConfiguration } from '@/components/models/moda.configuration.ts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost, updatePost } from '../apis/post.api.ts';
 import { toast } from 'sonner';
-import { LoggedUserContext } from '@/shared/hooks/userContext.ts';
-import { Label } from '@/shared/ui/label.tsx';
-import { Input } from '@/shared/ui/input.tsx';
-import { Textarea } from '@/shared/ui/textarea.tsx';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Textarea } from '@/components/ui/textarea.tsx';
+import { useTranslation } from 'react-i18next';
+import { useDropzone } from 'react-dropzone';
+import { toBase64 } from '@/core/utils/utils.ts';
 
-interface PostModalProps {
+interface UpsertPostModalProps {
   post?: Post;
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }
 
 const schema = yup.object({
-  title: yup.string().required('Please provide a title').min(5),
-  content: yup.string().required('The content is required').min(5),
+  title: yup.string().required().min(3),
+  content: yup.string().required().min(5),
 });
 
-const PostModal: React.FC<PostModalProps> = ({ post, open, onOpenChange }) => {
-  const user = useContext(LoggedUserContext);
+const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
+  post,
+  open,
+  onOpenChange,
+}) => {
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const [image, setImage] = useState('');
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     reset,
     formState: { errors, isValid },
   } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      title: post?.title ?? '',
-      content: post?.content ?? '',
+    resolver: yupResolver(schema)
+  });
+  const {
+    getRootProps,
+    getInputProps,
+  } = useDropzone({
+    accept: {
+      'image/*': [],
     },
+    maxFiles: 1,
+    onDrop: (files) => {
+      handleFileDrop(files);
+    }
   });
   const title = watch('title');
   const content = watch('content');
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!open) return;
+
+    if (post) {
+      setImage(post.image ?? '');
+      setValue('title', post.title);
+      setValue('content', post.content);
+    }
+  }, [open])
 
   const createPostMutation = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      toast.success('Post created successfully');
+      toast.success(t('Components.UpsertPostModal.CreateSuccessMessage'));
       resetModal();
+      onOpenChange(false);
     },
     onError: () => {
       resetModal();
+      onOpenChange(false);
     },
   });
 
   const updatePostMutation = useMutation({
     mutationFn: updatePost,
     onSuccess: () => {
-      toast.success('Post updated successfully');
+      toast.success(t('Components.UpsertPostModal.UpdateSuccessMessage'));
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       resetModal();
+      onOpenChange(false);
     },
     onError: () => {
       resetModal();
+      onOpenChange(false);
     },
   });
 
   const onSubmit = handleSubmit(() => {
     const postRequest: PostRequest = {
       title,
+      image: image ?? '',
       content,
     };
 
     if (post) {
       updatePostMutation.mutate({ id: post.id, postRequest });
-    }
-    if (user) {
-      createPostMutation.mutate({ id: user.id, postRequest });
+    } else {
+      createPostMutation.mutate({ id: loggedUser.id, postRequest });
     }
   });
 
   const resetModal = (): void => {
     reset();
-    onOpenChange(false);
+    setImage('');
   };
 
+  const handleFileDrop = async (files: any) => {
+    const file = files[0];
+    if (file) {
+      const base64 = (await toBase64(file)) as string;
+      setImage(base64);
+    }
+  };
+
+  const dropZone = (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      {image?.length ? (
+        <div className='flex justify-center max-h-[590px] w-full'>
+          <img src={image} className='w-full rounded-lg' />
+        </div>
+      ) : (
+        <div className='flex justify-center items-center w-full h-[200px] rounded-lg border cursor-pointer'>
+          <span>Choose a file</span>
+        </div>
+      )}
+    </div>
+  );
+
+  const handleModalOpenChange = (open: boolean) => {
+    onOpenChange(open);
+
+    if (!open) {
+      resetModal();
+      return;
+    }
+  }
+
   const configuration: ModalConfiguration = {
-    title: post ? 'Update Post' : 'Create New Post',
+    title: post
+      ? t('Components.UpsertPostModal.CreateTitle')
+      : t('Components.UpsertPostModal.UpdateTitle'),
     content: (
-      <form className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="title">Title</Label>
-          <Input id="title" {...register('title')} />
-          {errors.title && (
-            <p className="text-red-500 text-sm">{errors.title?.message}</p>
+      <form className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
+          <Label htmlFor='title'>{t('Components.UpsertPostModal.Title')}</Label>
+          <Input id='title' {...register('title')} />
+          {errors.title?.type === 'required' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.TitleRequired')}
+            </p>
+          )}
+          {errors.title?.type === 'min' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.TitleMin')}
+            </p>
           )}
         </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="content">Content</Label>
+        <div className='flex flex-col gap-2'>
+          <Label htmlFor='picture'>
+            {t('Components.UpsertPostModal.Picture')}
+          </Label>
+          {dropZone}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <Label htmlFor='content'>
+            {t('Components.UpsertPostModal.Content')}
+          </Label>
           <Textarea
-            id="content"
-            placeholder="What's on your mind?"
+            id='content'
+            placeholder={t('Components.UpsertPostModal.ContentPlaceholder')}
             rows={4}
             {...register('content')}
           ></Textarea>
-          {errors.content && (
-            <p className="text-red-500 text-sm">{errors.content?.message}</p>
+          {errors.content?.type === 'required' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.ContentRequired')}
+            </p>
+          )}
+          {errors.content?.type === 'min' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.ContentMin')}
+            </p>
           )}
         </div>
       </form>
@@ -117,17 +205,17 @@ const PostModal: React.FC<PostModalProps> = ({ post, open, onOpenChange }) => {
     footerContent: (
       <>
         <DialogClose asChild>
-          <Button type="button" variant="outline">
-            Cancel
+          <Button type='button' variant='outline'>
+            {t('Actions.Cancel')}
           </Button>
         </DialogClose>
         <Button
-          type="submit"
+          type='submit'
           disabled={!isValid}
           loading={createPostMutation.isPending || updatePostMutation.isPending}
           onClick={onSubmit}
         >
-          {post ? 'Save' : 'Create'}
+          {post ? t('Actions.Save') : t('Actions.Create')}
         </Button>
       </>
     ),
@@ -136,10 +224,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, open, onOpenChange }) => {
   return (
     <Modal
       open={open}
-      onChangeOpen={(value) => onOpenChange(value)}
+      onChangeOpen={handleModalOpenChange}
       configuration={configuration}
     ></Modal>
   );
 };
 
-export default PostModal;
+export default UpsertPostModal;

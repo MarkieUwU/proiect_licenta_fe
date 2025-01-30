@@ -1,38 +1,63 @@
 // src/components/Header.tsx
 import { Link } from '@tanstack/react-router';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AvatarComponent } from './Avatar';
 import { getInitials } from '@/core/utils/utils';
-import { LoggedUserContext } from '@/shared/hooks/userContext';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import MyAccountMenu from './MyAccountMenu';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu';
+import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { getUserDetails } from '@/modules/Profile/apis/user.api';
 
 const Header: React.FC = () => {
-  const user = useContext(LoggedUserContext);
+  const [openMenu, setOpenMenu] = useState(false);
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { t } = useTranslation('translation', { keyPrefix: 'Components.Header' });
+
+  const userResponse = useQuery({
+    queryKey: ['userDetails', { username: loggedUser.username }],
+    queryFn: () => getUserDetails(loggedUser.username)
+  });
+
+  const handleMenuOpen = (value: boolean) => {
+    setOpenMenu(value);
+  }
 
   return (
-    <header className='fixed top-0 w-full z-10 bg-white shadow p-4 flex justify-between items-center'>
-      <div className='flex items-center'>
-        <div className='text-2xl font-bold'>SocialMediaApp</div>
-        <input
-          type='text'
-          placeholder='Search'
-          className='ml-4 p-2 border rounded'
-        />
-      </div>
-      <div className='flex items-center space-x-4'>
-        <Link to='/' className='[&.active]:font-bold'>
-          Home
-        </Link>
-        <Link to='/connections' className='[&.active]:font-bold'>
-          Connections
-        </Link>
-        <MyAccountMenu username={user.username}>
-          <AvatarComponent
-            initials={getInitials(user.username)}
-          ></AvatarComponent>
-        </MyAccountMenu>
-      </div>
-    </header>
+    <NavigationMenu className='max-w-full justify-end p-3'>
+      <NavigationMenuList className='flex flex-end gap-4'>
+        <NavigationMenuItem>
+          <Link to='/' className='[&.active]:font-bold'>
+            <NavigationMenuLink>{t('Home')}</NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link to='/connections' className='[&.active]:font-bold'>
+            <NavigationMenuLink>{t('Connections')}</NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <MyAccountMenu
+            username={loggedUser.username}
+            open={openMenu}
+            onOpenChange={handleMenuOpen}
+          >
+            <div className='cursor-pointer' onClick={() => setOpenMenu(true)}>
+              <AvatarComponent
+                initials={getInitials(loggedUser.username)}
+                image={userResponse.data?.profileImage}
+              ></AvatarComponent>
+            </div>
+          </MyAccountMenu>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
 

@@ -1,6 +1,13 @@
 import { apiErrorHandler } from '@/core/utils/utils';
 import apiClient from '../../../assets/config';
-import { CommentRequest } from '../models/comment.models';
+import { CommentRequest, UserComment } from '../models/comment.models';
+
+export const getAllComments = apiErrorHandler<UserComment[]>(
+  async () => {
+    const { data } = await apiClient.get('/comment/all');
+    return data;
+  }
+)
 
 export const createComment = apiErrorHandler(
   async ({
@@ -31,7 +38,7 @@ export const getUserPostComment = async ({
 };
 
 export const updateComment = apiErrorHandler(
-  async (id: number, text: string) => {
+  async ({ id, text }: {id: number, text: string}) => {
     const { data } = await apiClient.put(`/comment/${id}`, { text });
     return data;
   }

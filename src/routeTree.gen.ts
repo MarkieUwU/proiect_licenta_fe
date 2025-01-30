@@ -16,14 +16,16 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as MainImport } from './routes/_main'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as MainIndexImport } from './routes/_main/index'
+import { Route as MainSettingsImport } from './routes/_main/settings'
 import { Route as MainConnectionsImport } from './routes/_main/connections'
+import { Route as MainAdminImport } from './routes/_main/admin'
+import { Route as AuthLogoutImport } from './routes/_auth/logout'
+import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as MainUsernameProfileImport } from './routes/_main/$username.profile'
 
 // Create Virtual Routes
 
 const AuthSignupLazyImport = createFileRoute('/_auth/signup')()
-const AuthLogoutLazyImport = createFileRoute('/_auth/logout')()
-const AuthLoginLazyImport = createFileRoute('/_auth/login')()
 
 // Create/Update Routes
 
@@ -45,21 +47,31 @@ const MainIndexRoute = MainIndexImport.update({
 const AuthSignupLazyRoute = AuthSignupLazyImport.update({
   path: '/signup',
   getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./routes/_auth/signup.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/_auth/signup').then((d) => d.Route))
 
-const AuthLogoutLazyRoute = AuthLogoutLazyImport.update({
-  path: '/logout',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./routes/_auth/logout.lazy').then((d) => d.Route))
-
-const AuthLoginLazyRoute = AuthLoginLazyImport.update({
-  path: '/login',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./routes/_auth/login.lazy').then((d) => d.Route))
+const MainSettingsRoute = MainSettingsImport.update({
+  path: '/settings',
+  getParentRoute: () => MainRoute,
+} as any)
 
 const MainConnectionsRoute = MainConnectionsImport.update({
   path: '/connections',
   getParentRoute: () => MainRoute,
+} as any)
+
+const MainAdminRoute = MainAdminImport.update({
+  path: '/admin',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const AuthLogoutRoute = AuthLogoutImport.update({
+  path: '/logout',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLoginRoute = AuthLoginImport.update({
+  path: '/login',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const MainUsernameProfileRoute = MainUsernameProfileImport.update({
@@ -85,6 +97,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/logout': {
+      id: '/_auth/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof AuthLogoutImport
+      parentRoute: typeof AuthImport
+    }
+    '/_main/admin': {
+      id: '/_main/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof MainAdminImport
+      parentRoute: typeof MainImport
+    }
     '/_main/connections': {
       id: '/_main/connections'
       path: '/connections'
@@ -92,19 +125,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainConnectionsImport
       parentRoute: typeof MainImport
     }
-    '/_auth/login': {
-      id: '/_auth/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginLazyImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/logout': {
-      id: '/_auth/logout'
-      path: '/logout'
-      fullPath: '/logout'
-      preLoaderRoute: typeof AuthLogoutLazyImport
-      parentRoute: typeof AuthImport
+    '/_main/settings': {
+      id: '/_main/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof MainSettingsImport
+      parentRoute: typeof MainImport
     }
     '/_auth/signup': {
       id: '/_auth/signup'
@@ -134,12 +160,14 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
-    AuthLoginLazyRoute,
-    AuthLogoutLazyRoute,
+    AuthLoginRoute,
+    AuthLogoutRoute,
     AuthSignupLazyRoute,
   }),
   MainRoute: MainRoute.addChildren({
+    MainAdminRoute,
     MainConnectionsRoute,
+    MainSettingsRoute,
     MainIndexRoute,
     MainUsernameProfileRoute,
   }),
@@ -168,22 +196,32 @@ export const routeTree = rootRoute.addChildren({
     "/_main": {
       "filePath": "_main.tsx",
       "children": [
+        "/_main/admin",
         "/_main/connections",
+        "/_main/settings",
         "/_main/",
         "/_main/$username/profile"
       ]
+    },
+    "/_auth/login": {
+      "filePath": "_auth/login.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/logout": {
+      "filePath": "_auth/logout.tsx",
+      "parent": "/_auth"
+    },
+    "/_main/admin": {
+      "filePath": "_main/admin.tsx",
+      "parent": "/_main"
     },
     "/_main/connections": {
       "filePath": "_main/connections.tsx",
       "parent": "/_main"
     },
-    "/_auth/login": {
-      "filePath": "_auth/login.lazy.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/logout": {
-      "filePath": "_auth/logout.lazy.tsx",
-      "parent": "/_auth"
+    "/_main/settings": {
+      "filePath": "_main/settings.tsx",
+      "parent": "/_main"
     },
     "/_auth/signup": {
       "filePath": "_auth/signup.lazy.tsx",

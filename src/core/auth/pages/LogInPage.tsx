@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, Navigate, useNavigate } from '@tanstack/react-router';
-import { useToken } from '../useToken';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { useToken } from '../../hooks/useToken';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginUser } from '../../../modules/Profile/apis/user.api';
 import {
@@ -9,21 +9,27 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/shared/ui/card';
-import { Label } from '@/shared/ui/label';
-import { Input } from '@/shared/ui/input';
-import { Button } from '@/shared/ui/button';
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/core/components/ThemeProvider';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 
 const schema = yup.object({
-  username: yup.string().required('Please provide the username').min(3),
-  password: yup.string().required('Please provide a password').min(3),
+  username: yup.string().required().min(3),
+  password: yup.string().required().min(4),
 });
 
 export const LogInPage: React.FC = () => {
   const { token, setToken } = useToken();
+  const { theme } = useTheme();
+  const { updateLoggedUser } = useContext(LoggedUserStateContext);
+  const { i18n } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -32,16 +38,16 @@ export const LogInPage: React.FC = () => {
     formState: { errors, isValid },
   } = useForm({ resolver: yupResolver(schema) });
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const username = watch('username');
   const password = watch('password');
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      const { token } = data;
+      const { token, userProfile } = data;
+      updateLoggedUser(userProfile);
       setToken(token);
       setLoading(false);
       reset();
@@ -55,73 +61,80 @@ export const LogInPage: React.FC = () => {
   const onSubmit = handleSubmit(() => {
     setLoading(true);
 
-    loginMutation.mutate({ username, password });
+    loginMutation.mutate({ username, password, theme, language: i18n.language });
   });
 
   if (token?.length) {
-    return <Navigate to="/"></Navigate>;
+    navigate({ to: '/'});
+    return;
   }
 
   return (
-    <Card className="w-[450px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <Card className='w-[450px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription className="py-3">
-          Enter your username below to login to your account
+        <CardTitle className='text-2xl'>{t('Pages.LoginPage.Title')}</CardTitle>
+        <CardDescription className='py-3'>
+          {t('Pages.LoginPage.Description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form>
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+          <div className='flex flex-col gap-6'>
+            <div className='grid gap-2'>
+              <Label htmlFor='username'>{t('Pages.LoginPage.Username')}</Label>
               <Input
-                id="username"
-                type="username"
+                id='username'
+                type='username'
                 required
                 {...register('username')}
               />
-              {errors.username && (
-                <p className="text-red-500 text-sm">
-                  {errors.username?.message}
+              {errors.username?.type === 'required' && (
+                <p className='text-red-500 text-sm'>
+                  {t('ValidationErrors.UsernameRequired')}
+                </p>
+              )}
+              {errors.username?.type === 'min' && (
+                <p className='text-red-500 text-sm'>
+                  {t('ValidationErrors.UsernameMin')}
                 </p>
               )}
             </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </a>
+            <div className='grid gap-2'>
+              <div className='flex items-center'>
+                <Label htmlFor='password'>
+                  {t('Pages.LoginPage.Password')}
+                </Label>
               </div>
               <Input
-                id="password"
-                type="password"
+                id='password'
+                type='password'
                 required
                 {...register('password')}
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password?.message}
+              {errors.password?.type === 'required' && (
+                <p className='text-red-500 text-sm'>
+                  {t('ValidationErrors.PasswordRequired')}
+                </p>
+              )}
+              {errors.password?.type === 'min' && (
+                <p className='text-red-500 text-sm'>
+                  {t('ValidationErrors.PasswordMin')}
                 </p>
               )}
             </div>
             <Button
-              className="w-full mt-6"
+              className='w-full mt-6'
               loading={loading}
               disabled={!isValid}
               onClick={onSubmit}
             >
-              Login
+              {t('Pages.LoginPage.Login')}
             </Button>
           </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link to="/signup" className="underline underline-offset-4">
-              Sign up
+          <div className='mt-4 text-center text-sm'>
+            {t('Pages.LoginPage.NoAccount')}
+            <Link to='/signup' className='underline underline-offset-4 ps-2'>
+              {t('Pages.LoginPage.SignUp')}
             </Link>
           </div>
         </form>

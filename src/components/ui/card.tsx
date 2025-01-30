@@ -1,20 +1,31 @@
 import * as React from 'react';
 
 import { cn } from '@/core/lib/utils';
+import { useTheme } from '@/core/components/ThemeProvider';
+import { Theme } from '@/core/models/theme.enum';
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  hover?: boolean;
+}
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  CardProps
+>(({ className, hover, ...props }, ref) => {
+  const { theme } = useTheme();
+  const isDarkTheme = theme === Theme.dark;
+  return (
   <div
     ref={ref}
     className={cn(
       'rounded-xl border bg-card text-card-foreground shadow',
+      hover && ('cursor-pointer ' + (isDarkTheme ? 'hover:bg-gray-900' : 'hover:bg-gray-100')),
       className
     )}
     {...props}
   />
-));
+);
+});
 Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<

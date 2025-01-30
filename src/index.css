@@ -10,7 +10,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --header-height: 100px;
+  --app-height: calc(100vh - 64px);
 }
 
 body {

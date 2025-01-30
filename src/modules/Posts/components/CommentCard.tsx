@@ -7,17 +7,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/shared/ui/card';
-import { Button } from '@/shared/ui/button';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteComment, updateComment } from '../apis/comment.api';
 import { toast } from 'sonner';
-import { LoggedUserContext } from '@/shared/hooks/userContext';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { Textarea } from '@/shared/ui/textarea';
-import { DeleteDialog } from '@/shared/components/DeleteDialog';
+import { Textarea } from '@/components/ui/textarea';
+import { DeleteDialog } from '@/components/ui/DeleteDialog';
+import { useTranslation } from 'react-i18next';
 
 interface CommentProps {
   comment: UserComment;
@@ -25,14 +26,15 @@ interface CommentProps {
 }
 
 const schema = yup.object({
-  comment: yup.string().required('You have to type in something'),
+  comment: yup.string().required(),
 });
 
 export const CommentCard: React.FC<CommentProps> = ({
   comment,
   onDeleteComment,
 }) => {
-  const user = useContext(LoggedUserContext);
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed.PostCard.CommentCard' })
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
@@ -50,13 +52,13 @@ export const CommentCard: React.FC<CommentProps> = ({
   });
   const commentText = watch('comment');
   const queryClient = useQueryClient();
-  const ownComment = comment.userId === user.id;
+  const ownComment = comment.userId === loggedUser.id;
   const textareaState = getFieldState('comment');
 
   const deleteCommentMutation = useMutation({
     mutationFn: deleteComment,
     onSuccess: () => {
-      toast.success('Comment deleted with success');
+      toast.success(t('DeleteSuccessMessage'));
       queryClient.invalidateQueries({ queryKey: ['comments', comment.postId] });
       onDeleteComment();
     },
@@ -65,7 +67,7 @@ export const CommentCard: React.FC<CommentProps> = ({
   const updateCommentMutation = useMutation({
     mutationFn: updateComment,
     onSuccess: () => {
-      toast.success('Comment edited succesfully');
+      toast.success(t('EditSuccessMessage'));
       setLoading(false);
       queryClient.invalidateQueries({ queryKey: ['comments', comment.postId] });
       setEditMode(false);
@@ -92,76 +94,74 @@ export const CommentCard: React.FC<CommentProps> = ({
   return (
     <>
       <Card>
-        <CardHeader className="px-4 py-3">
-          <CardTitle className="flex gap-2 items-center">
+        <CardHeader className='px-4 py-3'>
+          <CardTitle className='flex gap-2 items-center'>
             {comment.author}
-            <span className="text-xs font-normal">
+            <span className='text-xs font-normal'>
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 py-1">
+        <CardContent className='px-4 py-1'>
           {editMode ? (
             <div>
               <Textarea
-                className="resize-none border-0 p-0 shadow-none focus-visible:ring-0"
+                className='resize-none border-0 p-0 shadow-none focus-visible:ring-0'
                 {...register('comment')}
-                placeholder="Add a comment..."
+                placeholder={t('TextareaPlaceholder')}
               ></Textarea>
               {errors.comment && (
-                <p className="text-red-500">{errors.comment?.message}</p>
+                <p className='text-red-500'>{t('TextareaError')}</p>
               )}
             </div>
           ) : (
-            <p className="text-gray-700">{commentText}</p>
+            <p>{commentText}</p>
           )}
         </CardContent>
-        <CardFooter className="p-2">
+        <CardFooter className='p-2'>
           {comment.isEdited && (
-            <span className="ms-2 text-sm text-gray-400">edited</span>
+            <span className='ms-2 text-sm text-gray-400'>{t('Edited')}</span>
           )}
           {ownComment &&
             (editMode ? (
-              <div className="ms-auto">
+              <div className='ms-auto'>
                 <Button
-                  variant="ghost"
-                  size="icon"
+                  variant='ghost'
+                  size='icon'
                   disabled={textareaState.invalid}
                   loading={loading}
                   onClick={handleUpdate}
                 >
-                  <i className="ri-check-line"></i>
+                  <i className='ri-check-line'></i>
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleCancel}>
-                  <i className="ri-close-line"></i>
+                <Button variant='ghost' size='icon' onClick={handleCancel}>
+                  <i className='ri-close-line'></i>
                 </Button>
               </div>
             ) : (
-              <div className="ms-auto">
+              <div className='ms-auto'>
                 <Button
-                  variant="ghost"
-                  size="icon"
+                  variant='ghost'
+                  size='icon'
                   onClick={() => setEditMode(true)}
                 >
-                  <i className="ri-pencil-line"></i>
+                  <i className='ri-pencil-line'></i>
                 </Button>
                 <Button
-                  className="text-red-500"
-                  variant="ghost"
-                  size="icon"
+                  className='text-red-500'
+                  variant='ghost'
+                  size='icon'
                   onClick={() => setDeleteModalOpened(true)}
                 >
-                  <i className="ri-delete-bin-6-line"></i>
+                  <i className='ri-delete-bin-6-line'></i>
                 </Button>
               </div>
             ))}
         </CardFooter>
       </Card>
       <DeleteDialog
-        title={'Are you sure?'}
-        description={
-          "This action cannot be undone. This will permanently delete this comment and you won't be able to recover the data."
-        }
+        title={t('DeleteDialog.Title')}
+        description={t('DeleteDialog.Text')}
         open={deleteModalOpened}
         loading={deleteCommentMutation.isPending}
         onDelete={handleDeleteComment}

@@ -5,6 +5,7 @@ import { User } from '../../Profile/models/user.models';
 export type Post = {
   id: number;
   title: string;
+  image: string;
   content: string;
   createdAt: string;
   updatedAt: string;
@@ -16,6 +17,7 @@ export type Post = {
 
 export type PostRequest = {
   title: string;
+  image: string;
   content: string;
 };
 

@@ -13,7 +13,7 @@ type ThemeProviderState = {
 }
 
 const initialState: ThemeProviderState = {
-  theme: Theme.SYSTEM,
+  theme: Theme.light,
   setTheme: () => null
 }
 
@@ -21,7 +21,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
-  defaultTheme = Theme.SYSTEM,
+  defaultTheme = Theme.light,
   storageKey = 'vite-ui-theme',
   ...props
 }) => {
@@ -29,15 +29,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove(Theme.LIGHT, Theme.DARK);
-
-    if (theme === Theme.SYSTEM) {
-      const systmeTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches ? Theme.DARK : Theme.LIGHT;
-
-      root.classList.add(systmeTheme);
-      return;
-    }
+    root.classList.remove(Theme.light, Theme.dark);
 
     root.classList.add(theme);
   }, [theme])

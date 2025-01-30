@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { ModalConfiguration } from '@/shared/models/moda.configuration';
+} from './dialog';
+import { ModalConfiguration } from '@/components/models/moda.configuration';
 
 interface ModalProps {
   trigger?: ReactNode;

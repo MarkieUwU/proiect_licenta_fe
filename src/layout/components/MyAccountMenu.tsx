@@ -4,37 +4,41 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu';
-import { ReactNode, useNavigate } from '@tanstack/react-router';
+} from '@/components/ui/dropdown-menu';
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { useNavigate } from '@tanstack/react-router';
+import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MyAccountMenu {
   children: ReactNode;
   username: string;
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
 }
 
-const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username }) => {
+const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, open, onOpenChange }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('translation', { keyPrefix: 'Components.Header.MyAccountMenu' })
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
+      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent align='end'>
+        <DropdownMenuLabel>{t('MyAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer"
           onClick={() =>
             navigate({ to: '/$username/profile', params: { username } })
           }
         >
-          Profile
+          {t('Profile')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate({ to: '/settings' })}>
+          {t('Settings')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => navigate({ to: '/logout' })}
-        >
-          Log Out
+        <DropdownMenuItem onClick={() => navigate({ to: '/logout' })}>
+          {t('LogOut')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

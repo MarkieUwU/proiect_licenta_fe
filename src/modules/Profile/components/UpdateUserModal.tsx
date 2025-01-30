@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from '../apis/user.api';
 import {
@@ -6,18 +6,25 @@ import {
   UpdateUserRequest,
   UserProfile,
 } from '../models/user.models';
-import { Modal } from '@/shared/components/Modal';
-import { ModalConfiguration } from '@/shared/models/moda.configuration';
-import { Label } from '@/shared/ui/label';
-import { Input } from '@/shared/ui/input';
-import { Textarea } from '@/shared/ui/textarea';
-import { DialogClose } from '@/shared/ui/dialog';
-import { Button } from '@/shared/ui/button';
+import { Modal } from '@/components/ui/Modal';
+import { ModalConfiguration } from '@/components/models/moda.configuration';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
-import { useLoggedUserState } from '../hooks/useLogedUserState';
+import { useTranslation } from 'react-i18next';
+import { useDropzone } from 'react-dropzone';
+import { toBase64 } from '@/core/utils/utils';
+import { AvatarComponent } from '@/layout/components/Avatar';
+import Selector from '@/components/ui/Selector';
+import { SelectorConfiguration } from '@/components/models/selector.configuration';
+import { Gender } from '../models/gender.enum';
+import { LoggedUserStateContext } from '../hooks/logged-user-state-context';
 
 interface UpdateUserModalProps {
   user: UserProfile;
@@ -26,8 +33,8 @@ interface UpdateUserModalProps {
 }
 
 const schema = yup.object({
-  fullName: yup.string().required('Please provide a name').min(5),
-  email: yup.string().required('Please provide an email').email(),
+  fullName: yup.string().required().min(5),
+  email: yup.string().required().email(),
   bio: yup.string(),
 });
 
@@ -37,26 +44,54 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   onOpenChange,
 }) => {
   const [loading, setLoading] = useState(false);
-  const { loggedUser, setLoggedUser } = useLoggedUserState();
+  const [image, setImage] = useState('');
+  const [gender, setGender] = useState(user.gender);
+  const { t } = useTranslation();
+  const { loggedUser, updateLoggedUser } = useContext(LoggedUserStateContext);
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     reset,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      fullName: user.fullName,
-      email: user.email,
-      bio: user.bio,
-    },
   });
+  const {
+      getRootProps,
+      getInputProps,
+    } = useDropzone({
+      accept: {
+        'image/*': [],
+      },
+      maxFiles: 1,
+      onDrop: (files) => {
+        handleFileDrop(files);
+      }
+    });
+  
+  useEffect(() => {
+    if (!open) return;
+
+    setImage(user.profileImage);
+    setValue('fullName', user.fullName);
+    setValue('email', user.email);
+    setValue('bio', user.bio ?? '');
+  }, [open])
+  
   const fullName = watch('fullName');
   const email = watch('email');
   const bio = watch('bio');
 
-  const queryClient = useQueryClient();
+  const genderSelectorConfig: SelectorConfiguration = {
+      placeholder: t('Pages.SignUpPage.Gender'),
+      items: [
+        { label: t('Enums.Gender.Male'), value: Gender.male },
+        { label: t('Enums.Gender.Female'), value: Gender.female }
+      ]
+    };
 
   const updateLogedUser = () => {
     const updatedUser: LoggedUser = {
@@ -65,19 +100,19 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       email,
     };
 
-    setLoggedUser(updatedUser);
+    updateLoggedUser(updatedUser);
   };
 
   const updateUserMutation = useMutation({
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['usernameDetails', { username: user.username }],
+        queryKey: ['userDetails', { username: user.username }],
       });
       setLoading(false);
       updateLogedUser();
       reset();
-      toast.success('Profile updated successfully');
+      toast.success(t('Components.UpdateUserModal.SuccessMessage'));
       onOpenChange(false);
     },
     onError: () => {
@@ -88,43 +123,95 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   const onSubmit = handleSubmit(() => {
     setLoading(true);
     const request: UpdateUserRequest = {
+      profileImage: image,
       fullName,
       email,
-      ...(bio ? { bio } : {}),
+      ...(gender?.length && { gender }),
+      ...(bio && { bio }),
     };
 
     updateUserMutation.mutate({ id: user.id, request });
   });
 
+  const handleFileDrop = async (files: any) => {
+      const file = files[0];
+      if (file) {
+        const base64 = (await toBase64(file)) as string;
+        setImage(base64);
+      }
+    };
+
+  const dropZone = (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      {image?.length ? (
+        <div className='flex justify-center w-full'>
+          <AvatarComponent image={image} className='w-[300px] h-[300px]' />
+        </div>
+      ) : (
+        <div className='flex justify-center w-full'>
+          <div className='flex justify-center items-center w-[300px] h-[300px] rounded-full border cursor-pointer'>
+            <span>Choose a file</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const configuration: ModalConfiguration = {
-    title: 'Update Profile',
+    title: t('Components.UpdateUserModal.Title'),
     content: (
       <form className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
-          <Label htmlFor='fullName'>Full Name</Label>
+          <Label htmlFor='picture'>
+            {t('Components.UpsertPostModal.Picture')}
+          </Label>
+          {dropZone}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <Label htmlFor='fullName'>
+            {t('Components.UpdateUserModal.FullName')}
+          </Label>
           <Input id='fullName' {...register('fullName')} />
-          {errors.fullName && (
-            <p className='text-red-500 text-sm'>{errors.fullName?.message}</p>
+          {errors.fullName?.type === 'required' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.FullNameRequired')}
+            </p>
+          )}
+          {errors.fullName?.type === 'min' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.FullNameMin')}
+            </p>
           )}
         </div>
         <div className='flex flex-col gap-2'>
-          <Label htmlFor='email'>Email</Label>
+          <Label htmlFor='email'>{t('Components.UpdateUserModal.Email')}</Label>
           <Input id='email' {...register('email')} />
-          {errors.email && (
-            <p className='text-red-500 text-sm'>{errors.email?.message}</p>
+          {errors.email?.type === 'required' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.EmailRequired')}
+            </p>
+          )}
+          {errors.email?.type === 'email' && (
+            <p className='text-red-500 text-sm'>
+              {t('ValidationErrors.EmailError')}
+            </p>
           )}
         </div>
+        <div className='grid gap-2'>
+          <Label htmlFor='gender'>
+            {t('Components.UpdateUserModal.Gender')}
+          </Label>
+          <Selector {...genderSelectorConfig} defaultValue={user.gender} onValueChange={(value) => setGender(value)} />
+        </div>
         <div className='flex flex-col gap-2'>
-          <Label htmlFor='bio'>Bio</Label>
+          <Label htmlFor='bio'>{t('Components.UpdateUserModal.Bio')}</Label>
           <Textarea
             id='bio'
-            placeholder='Write something in your bio'
+            placeholder={t('Components.UpdateUserModal.BioPlaceholder')}
             rows={4}
             {...register('bio')}
           ></Textarea>
-          {errors.bio && (
-            <p className='text-red-500 text-sm'>{errors.bio?.message}</p>
-          )}
         </div>
       </form>
     ),
@@ -132,7 +219,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       <>
         <DialogClose asChild>
           <Button type='button' variant='outline'>
-            Cancel
+            {t('Actions.Cancel')}
           </Button>
         </DialogClose>
         <Button
@@ -141,7 +228,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
           loading={loading}
           onClick={onSubmit}
         >
-          Save
+          {t('Actions.Save')}
         </Button>
       </>
     ),

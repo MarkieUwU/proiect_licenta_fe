@@ -1,19 +1,21 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import React from 'react';
 
 interface AvatarProps {
   image?: string;
-  initials: string;
-  size?: number;
+  initials?: string;
+  className?: string;
 }
 
 export const AvatarComponent: React.FC<AvatarProps> = ({
   image,
   initials,
-  size,
+  className
 }) => {
   return (
-    <Avatar style={size ? { width: size, height: size } : {}}>
+    <Avatar
+      className={className}
+    >
       {image?.length ? (
         <AvatarImage src={image}></AvatarImage>
       ) : (

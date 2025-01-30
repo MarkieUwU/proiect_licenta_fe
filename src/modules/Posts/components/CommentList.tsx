@@ -4,6 +4,8 @@ import { UserComment } from '../models/comment.models';
 import { useQuery } from '@tanstack/react-query';
 import { getPostComments } from '../apis/comment.api';
 import { LoaderCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import NoRecordsFound from '@/components/ui/NoRecordsFound';
 
 interface CommentListProps {
   postId: number;
@@ -14,6 +16,7 @@ const CommentList: React.FC<CommentListProps> = ({
   postId,
   onDeletedComment,
 }) => {
+  const { t } = useTranslation();
   const { data: comments, isLoading: loading } = useQuery({
     queryKey: ['comments', postId],
     queryFn: () => getPostComments(postId),
@@ -21,14 +24,14 @@ const CommentList: React.FC<CommentListProps> = ({
 
   if (loading) {
     return (
-      <div>
+      <div className='flex justify-center'>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   if (!comments.length) {
-    return <p className="text-gray-500">No comments found</p>;
+    return <NoRecordsFound title={t('Pages.PostsFeed.PostCard.NoComments')} />;
   }
 
   return (

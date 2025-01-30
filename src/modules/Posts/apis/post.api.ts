@@ -1,18 +1,18 @@
 import { apiErrorHandler } from '@/core/utils/utils';
 import apiClient from '../../../assets/config';
-import { PostRequest, PostSortCriteria } from '../models/post.models';
+import { Post, PostRequest, PostSortCriteria } from '../models/post.models';
 
-export const getAllPosts = async () => {
+export const getAllPosts = apiErrorHandler<Post[]>(async () => {
   const { data } = await apiClient.get('/post');
   return data;
-};
+});
 
-export const getFilteredPosts = async (
-  sortCriteria: PostSortCriteria | PostSortCriteria[]
-) => {
-  const { data } = await apiClient.post('/post/filter', sortCriteria);
-  return data;
-};
+export const getFilteredPosts = apiErrorHandler<Post[]>(
+  async ({sortCriteria, userId}: { sortCriteria: PostSortCriteria | PostSortCriteria[], userId: number}) => {
+    const { data } = await apiClient.post('/post/filter', { sortCriteria, userId});
+    return data;
+  }
+);
 
 export const getPostById = async (id: number) => {
   const { data } = await apiClient.get(`/post/${id}`);
@@ -50,4 +50,9 @@ export const deletePost = async (id: number) => {
   return data;
 };
 
-export const allPosts = () => {};
+export const getTopPostsByLikes = apiErrorHandler<Post[]>(
+  async () => {
+    const { data } = await apiClient.get('/post/top/likes');
+    return data;
+  }
+)

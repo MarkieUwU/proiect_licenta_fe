@@ -8,8 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../ui/alert-dialog';
+} from './alert-dialog';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteDialogProps {
   title: string;
@@ -28,6 +28,7 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
   onOpenChange,
   loading,
 }) => {
+  const { t } = useTranslation();
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -41,7 +42,7 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
             {loading ? (
               <i className="animate-spin ri-loader-4-line"></i>
             ) : (
-              'Delete'
+              t('Actions.Delete')
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

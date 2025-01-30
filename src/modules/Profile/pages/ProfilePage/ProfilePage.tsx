@@ -1,10 +1,11 @@
 import { AvatarComponent } from '@/layout/components/Avatar';
-import { Card, CardContent, CardFooter, CardHeader } from '@/shared/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import React, { useContext, useState } from 'react';
 import UserDetails from '../../components/UserDetails';
-import { Separator } from '@/shared/ui/separator';
+import { Separator } from '@/components/ui/separator';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  acceptConnection,
   getConnectionState,
   getUserDetails,
   removeConnection,
@@ -14,23 +15,26 @@ import { getInitials } from '@/core/utils/utils';
 import PostCard from '@/modules/Posts/components/PostCard';
 import { Post } from '@/modules/Posts/models/post.models';
 import { Route } from '@/routes/_main/$username.profile';
-import { LoggedUserContext } from '@/shared/hooks/userContext';
-import { Button } from '@/shared/ui/button';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
+import { Button } from '@/components/ui/button';
 import UpdateUserModal from '../../components/UpdateUserModal';
-import NoRecordsFound from '@/core/components/NoRecordsFound';
-import { ConnectionUser } from '../../models/user.models';
 import { ErrorPage } from '@/core/pages/ErrorPage';
-import { UserCard } from '../../components/UserCard';
 import { ConnectionStateEnum } from '../../models/connection-state.enum';
-import { Skeleton } from '@/shared/ui/skeleton';
-import { useNavigate } from '@tanstack/react-router';
+import { Skeleton } from '@/components/ui/skeleton';
+import UserConnections from '../../components/UserConnections';
+import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
+import NoRecordsFound from '@/components/ui/NoRecordsFound';
+import { PrivacyOptions } from '@/core/models/privacy-options.enum';
 
 const ProfilePage: React.FC = () => {
-  const loggedUser = useContext(LoggedUserContext);
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'Pages.ProfilePage',
+  });
   const [editModalOpened, setEditModalOpened] = useState(false);
   const { username } = Route.useParams();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const userResponse = useQuery({
     queryKey: ['userDetails', { username }],
@@ -38,6 +42,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const user = userResponse.data;
+  const ownProfile = loggedUser.id === user?.id;
 
   const connectionStateResponse = useQuery({
     queryKey: ['connection'],
@@ -61,29 +66,46 @@ const ProfilePage: React.FC = () => {
     },
   });
 
+  const acceptConnectionMutation = useMutation({
+    mutationFn: acceptConnection,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['connection'] });
+      queryClient.invalidateQueries({ queryKey: ['userDetails'] });
+    },
+  });
+
   if (userResponse.isPending) {
     return <i className='ri-loader-4-line animate-spin'></i>;
   }
 
   if (!user) {
     return (
-      <ErrorPage
-        title='No user found'
-        text="The user you're trying to find doesn't seem to exist anymore"
-      />
+      <ErrorPage title={t('ErrorPage.Title')} text={t('ErrorPage.Text')} />
     );
   }
 
-  const initials = getInitials(user.username);
-  const userPosts = user.posts.map((post: Post) => (
-    <PostCard key={post.id} post={post} />
-  ));
+  const showInformation = (privacyOption: PrivacyOptions) => {
+    switch (privacyOption) {
+      case PrivacyOptions.private:
+        return false;
+      case PrivacyOptions.public:
+        return true;
+      case PrivacyOptions.connections:
+        user.connections.some((connection) => connection.id === loggedUser.id);
+    }
+  };
 
-  const connections = user.connections
-    .slice(0, 6)
-    .map((connection: ConnectionUser) => (
-      <UserCard key={connection.id} user={connection} />
+  const initials = getInitials(user.username);
+
+  let userPosts;
+
+  if (showInformation(user.settings.postsPrivacy)) {
+    userPosts = user.posts.map((post: Post) => (
+      <PostCard key={post.id} post={post} />
     ));
+  } else {
+    userPosts = null;
+  }
 
   const handleRequestConnection = () => {
     requestConnectionMutation.mutate({
@@ -106,8 +128,11 @@ const ProfilePage: React.FC = () => {
     });
   };
 
-  const navigateToConnectionsPage = () => {
-    navigate({ to: '/connections' });
+  const handleAcceptConnection = () => {
+    acceptConnectionMutation.mutate({
+      id: connectionStateResponse.data?.connection.followerId,
+      connectionId: connectionStateResponse.data?.connection.followingId,
+    });
   };
 
   let connectionButton;
@@ -122,7 +147,7 @@ const ProfilePage: React.FC = () => {
           onClick={handleCancelConnection}
         >
           <i className='ri-user-unfollow-fill' />
-          Cancel connection
+          {t('CancelConnection')}
         </Button>
       );
       break;
@@ -133,7 +158,7 @@ const ProfilePage: React.FC = () => {
           onClick={handleRemoveConnection}
         >
           <i className='ri-user-unfollow-line' />
-          Remove connection
+          {t('RemoveConnection')}
         </Button>
       );
       break;
@@ -144,89 +169,113 @@ const ProfilePage: React.FC = () => {
           onClick={handleRequestConnection}
         >
           <i className='ri-user-add-line' />
-          Add connection
+          {t('AddConnection')}
         </Button>
       );
       break;
+    case ConnectionStateEnum.ACCEPT:
+      connectionButton = (
+        <div className='flex gap-3 flex-wrap'>
+          <Button
+            loading={acceptConnectionMutation.isPending}
+            onClick={handleAcceptConnection}
+          >
+            <i className='ri-user-add-line' />
+            {t('AcceptConnection')}
+          </Button>
+          <Button
+            variant='destructive'
+            loading={removeConnectionMutation.isPending}
+            onClick={handleRemoveConnection}
+          >
+            <i className='ri-user-unfollow-line' />
+            {t('RejectConnection')}
+          </Button>
+        </div>
+      );
   }
 
   return (
-    <>
-      <div className='flex flex-col gap-5 w-full md:w-7/12 md:min-w-[900px] mx-auto'>
+    <div
+      className='overflow-y-auto pt-6 pb-3'
+      style={{ maxHeight: 'var(--app-height)' }}
+    >
+      <div className='flex flex-col gap-5 w-full md:w-8/12 md:min-w-[850px] mx-auto'>
         <Card className='px-3'>
           <CardHeader>
             <div className='flex items-center gap-10 ms-5 text-3xl md:text-5xl lg:text-6xl'>
-              <AvatarComponent initials={initials} size={200}></AvatarComponent>
+              <AvatarComponent
+                initials={initials}
+                image={user.profileImage}
+                className='w-[80px] h-[80px] md:w-[150px] md:h-[150px] lg:w-[200px] lg:h-[200px]'
+              ></AvatarComponent>
               <span className='font-bold'>{user.fullName}</span>
             </div>
           </CardHeader>
           <CardContent>
             <Separator />
-            <div className='flex flex-wrap-reverse justify-between w-full gap-4 pt-3 ps-4 mb-6'>
+            <div className='flex flex-wrap justify-between w-full gap-4 pt-3 ps-4 mb-6'>
               <div className='flex gap-6 font-bold text-lg text-nowrap'>
-                <Button
-                  variant='secondary'
-                  className='border-2 border-black font-bold shadow hover:bg-slate-200'
-                >{`${user.connections.length} Connections`}</Button>
-                <Button
-                  variant='secondary'
-                  className='border-2 border-black font-bold shadow hover:bg-slate-200'
-                >{`${user.posts.length} Posts`}</Button>
+                {showInformation(user.settings.connectionsPrivacy) && (
+                  <Badge className='border-2 px-2 py-1 font-bold text-sm'>
+                    {user.connections.length === 1
+                      ? t('Connection', { count: user.connections.length })
+                      : t('Connections', { count: user.connections.length })}
+                  </Badge>
+                )}
+                {!!userPosts && (
+                  <Badge className='border-2 px-2 py-1 font-bold text-sm'>
+                    {user.posts.length === 1
+                      ? t('Post', { count: user.posts.length })
+                      : t('Posts', { count: user.posts.length })}
+                  </Badge>
+                )}
               </div>
-              {loggedUser.username !== username &&
+              {!ownProfile &&
                 (connectionStateResponse.isPending ? (
                   <Skeleton className='h-[36px] w-[155px]' />
                 ) : (
                   connectionButton
                 ))}
-              {loggedUser.username === username && (
+              {ownProfile && (
                 <Button
                   variant='outline'
                   className='border-2 border-black shadow'
                   onClick={() => setEditModalOpened(true)}
                 >
                   <i className='ri-pencil-fill' />
-                  Edit profile
+                  {t('EditProfile')}
                 </Button>
               )}
             </div>
-            <div className='m-4'>
-              <UserDetails user={user} />
-            </div>
+            {showInformation(user.settings.detailsPrivacy) && (
+              <div className='m-4'>
+                <UserDetails user={user} />
+              </div>
+            )}
           </CardContent>
         </Card>
-        <div className='grid grid-cols-7 gap-5'>
-          <Card className='col-start-1 col-end-3 h-fit max-h-[500px]'>
-            <CardHeader className='text-xl font-bold'>Connections</CardHeader>
-            <CardContent>
-              {connections.length ? (
-                connections
-              ) : (
-                <NoRecordsFound
-                  title='No Connections found'
-                  text='No connections made yet'
-                />
-              )}
-            </CardContent>
-            {user.connections.length > 6 && (
-              <CardFooter>
-                <Button
-                  variant='ghost'
-                  className='mx-auto text-blue-500'
-                  onClick={navigateToConnectionsPage}
-                >
-                  View more
-                </Button>
-              </CardFooter>
-            )}
-          </Card>
-          <div className='col-start-3 col-end-8 flex flex-col overflow-y-auto gap-1'>
-            {userPosts.length ? (
-              userPosts
-            ) : (
-              <NoRecordsFound title='No posts found' />
-            )}
-          </div>
+        <div className='flex flex-col lg:flex-row gap-5'>
+          {showInformation(user.settings.connectionsPrivacy) && (
+            <div className='lg:me-auto lg:w-3/12 flex justify-center lg:block lg:justify-normal'>
+              <UserConnections
+                ownConnections={ownProfile}
+                userConnections={user.connections}
+              />
+            </div>
+          )}
+          {!!userPosts && (
+            <div className='flex flex-col lg:w-9/12 gap-5 lg:ms-auto'>
+              <span className='font-bold text-xl ps-4'>{t('UserPosts')}</span>
+              <div className='flex flex-col gap-2'>
+                {userPosts.length ? (
+                  userPosts
+                ) : (
+                  <NoRecordsFound title={t('NoPosts')} />
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <UpdateUserModal
@@ -234,7 +283,7 @@ const ProfilePage: React.FC = () => {
         open={editModalOpened}
         onOpenChange={(value) => setEditModalOpened(value)}
       />
-    </>
+    </div>
   );
 };
 

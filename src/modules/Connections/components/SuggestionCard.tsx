@@ -2,19 +2,21 @@ import { getInitials } from "@/core/utils/utils";
 import { AvatarComponent } from "@/layout/components/Avatar";
 import { removeConnection, requestConnection } from "@/modules/Profile/apis/user.api";
 import { User } from "@/modules/Profile/models/user.models";
-import { LoggedUserContext } from "@/shared/hooks/userContext";
-import { Button } from "@/shared/ui/button";
-import { Card, CardContent } from "@/shared/ui/card";
+import { LoggedUserStateContext } from "@/modules/Profile/hooks/logged-user-state-context";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SuggestionCardProps {
   user: User
 }
 
 export const SuggestionCard: React.FC<SuggestionCardProps> = ({ user }) => {
-  const loggedUser = useContext(LoggedUserContext);
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage.SuggestionsTab.SuggestionCard' });
   const [connectionRequested, setConnectionRequested] = useState(false);
 
   const queryClient = useQueryClient();
@@ -69,7 +71,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({ user }) => {
         onClick={(e) => handleCancelConnection(e)}
       >
         <i className='ri-user-unfollow-fill' />
-        Cancel connection
+        {t('Cancel')}
       </Button>
     );
   } else {
@@ -79,20 +81,21 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({ user }) => {
         onClick={(e) => handleRequestConnection(e)}
       >
         <i className='ri-user-add-line' />
-        Add connection
+        {t('Add')}
       </Button>
     );
   }
 
   return (
     <Card
-      className='p-5 w-[400px] hover:bg-gray-50 cursor-pointer'
+      className='p-5 w-[400px]'
+      hover={true}
       onClick={navigateToProfile}
     >
       <CardContent className='p-0'>
         <div className='flex gap-5'>
           <div className='text-3xl'>
-            <AvatarComponent initials={initials} size={110}></AvatarComponent>
+            <AvatarComponent initials={initials} image={user.profileImage} className="w-[110px] h-[110px]"></AvatarComponent>
           </div>
           <div className='flex flex-col gap-4 justify-center'>
             <span className='font-bold text-3xl'>{user.fullName}</span>

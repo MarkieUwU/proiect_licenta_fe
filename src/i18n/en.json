@@ -1,0 +1,244 @@
+{
+  "Actions": {
+    "Save": "Save",
+    "Create": "Create",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "Cancel": "Cancel",
+    "Accept": "Accept",
+    "Decline": "Decline"
+  },
+  "Enums": {
+    "Language": {
+      "English": "English",
+      "Romanian": "Romanian"
+    },
+    "Theme": {
+      "Dark": "Dark",
+      "Light": "Light"
+    },
+    "Gender": {
+      "Male": "Male",
+      "Female": "Female"
+    },
+    "PrivacyOptions": {
+      "Public": "Public",
+      "Connections": "Connections only",
+      "Private": "Private"
+    }
+  },
+  "ValidationErrors": {
+    "UsernameRequired": "Please provide a username",
+    "UsernameMin": "Username should be at least 3 characters long",
+    "PasswordRequired": "Please provide a password",
+    "PasswordMin": "Password should be at least 4 characters long",
+    "FullNameRequired": "Please provide a name",
+    "FullNameMin": "Full name must have at least 5 characters",
+    "EmailRequired": "Please provide an email",
+    "EmailError": "Please provide a proper email",
+    "TitleRequired": "Please provide a title",
+    "TitleMin": "Title should be at least 3 characters long",
+    "ContentRequired": "The text is required",
+    "ContentMin": "The content should be at least 5 characters long"
+  },
+  "Pages": {
+    "LoginPage": {
+      "Title": "Login",
+      "Description": "Enter your username below to login to your account",
+      "Username": "Username",
+      "Password": "Password",
+      "NoAccount": "Don't have an account?",
+      "Login": "Login",
+      "SignUp": "Sign Up"
+    },
+    "SignUpPage": {
+      "Title": "Sign Up",
+      "Description": "Add user details below to sign up to a new account",
+      "Username": "Username",
+      "FullName": "Full Name",
+      "Email": "Email",
+      "Gender": "Gender",
+      "Password": "Password",
+      "ConfirmPassword": "Confirm Password",
+      "SignUp": "Sign Up",
+      "AlreadyAccount": "Already have an account?",
+      "LogIn": "Log in"
+    },
+    "LogOutPage": {
+      "Title": "Log Out",
+      "Description": "By proceeding you will be loged out of the application",
+      "LogOut": "Log Out"
+    },
+    "PostsFeed": {
+      "InputPlaceholder": "What's on your mind?",
+      "NoRecords": "It seems like there are no posts to show",
+      "PostCard": {
+        "Comments": "Comments",
+        "NoComments": "No comments found",
+        "DropDown": {
+          "Edit": "Edit",
+          "Delete": "Delete"
+        },
+        "DeleteDialog": {
+          "Title": "Are you sure?",
+          "Description": "This action cannot be undone. This will permanently delete this post and you won't be able to recover the data.",
+          "SuccessMessage": "Post deleted successfully"
+        },
+        "CommentCard": {
+          "TextareaPlaceholder": "Add a comment...",
+          "TextareaError": "You have to type in something",
+          "EditSuccessMessage": "Comment edited succesfully",
+          "DeleteSuccessMessage": "Comment deleted with success",
+          "Edited": "edited",
+          "DeleteDialog": {
+            "Title": "Are you sure?",
+            "Text": "This action cannot be undone. This will permanently delete this comment and you won't be able to recover the data."
+          }
+        }
+      },
+      "AddCommentComponent": {
+        "TextareaPlaceholder": "Add a comment...",
+        "TextareaError": "You have to type in something",
+        "Post": "Post"
+      }
+    },
+    "ConnectionsPage": {
+      "Connections": "Connections",
+      "Suggestions": "Suggestions",
+      "ConnectionsTab": {
+        "ConnectionRequestList": {
+          "Title": "Connection Requests"
+        },
+        "ConnectionsList": {
+          "SearchPlaceholder": "Search...",
+          "NoRecords": {
+            "Title": "No connections found",
+            "Text": "Go to sugestions to make some connections"
+          },
+          "ConnectionCard": {
+            "Connection": "{{count}} connection",
+            "Connections": "{{count}} connections",
+            "Post": "{{count}} post",
+            "Posts": "{{count}} posts"
+          }
+        }
+      },
+      "SuggestionsTab": {
+        "SearchPlaceholder": "Search...",
+        "NoRecords": {
+          "Title": "No suggestions found",
+          "Text": "There are no suggestions available for the moment"
+        },
+        "SuggestionCard": {
+          "Add": "Add connection",
+          "Cancel": "Cancel connection"
+        }
+      }
+    },
+    "ProfilePage": {
+      "AddConnection": "Add connection",
+      "CancelConnection": "Cancel connection",
+      "RemoveConnection": "Remove connection",
+      "AcceptConnection": "Accept connection",
+      "RejectConnection": "Reject connection",
+      "Connection": "{{count}} connection",
+      "Connections": "{{count}} connections",
+      "Post": "{{count}} post",
+      "Posts": "{{count}} posts",
+      "EditProfile": "Edit profile",
+      "UserPosts": "Posts",
+      "NoPosts": "No posts found",
+      "UserDetails": {
+        "Username": "Username",
+        "Email": "Email",
+        "Gender": "Gender",
+        "Bio": "Bio"
+      },
+      "UserConnections": {
+        "Title": "Connections",
+        "ViewMore": "View more",
+        "NoRecords": {
+          "Title": "No connections found",
+          "Text": "You didn't make any connections"
+        },
+        "ConnectionSuggestions": "Connection Suggestions"
+      },
+      "ErrorPage": {
+        "Title": "No user found",
+        "Text": "The user you're trying to find doesn't seem to exist anymore"
+      }
+    },
+    "Settings": {
+      "Title": "Settings",
+      "Admin": "Admin page",
+      "PreferenceSettings": {
+        "Title": "Preferences",
+        "Theme": "Theme",
+        "Language": "Language"
+      },
+      "PrivacySettings": {
+        "Title": "Privacy",
+        "ProfileDetails": "Profile Details",
+        "Connections": "Connections",
+        "Posts": "Posts"
+      }
+    },
+    "Admin": {
+      "Users": "Users",
+      "Posts": "Posts",
+      "Comments": "Comments",
+      "Likes": "Likes",
+      "Connections": "Connections",
+      "Male": "Male",
+      "Female": "Female",
+      "Undeclared": "Undeclared",
+      "NrOfUsers": "nr of users",
+      "UsersByConnectionsTitle": "Top 5 users by connections number",
+      "UsersByPostsTitle": "Top 5 users by posts number",
+      "UsersGenderTitle": "User gender ratio",
+      "PostsByLikes": "Top 5 posts by likes number"
+    }
+  },
+  "Components": {
+    "Header": {
+      "Home": "Home",
+      "Connections": "Connections",
+      "MyAccountMenu": {
+        "MyAccount": "My Account",
+        "Profile": "Profile",
+        "Settings": "Settings",
+        "LogOut": "Log Out"
+      }
+    },
+    "SuggestionsSidebar": {
+      "Title": "Connection Suggestions",
+      "NoRecords": "No suggestions found"
+    },
+    "UpsertPostModal": {
+      "CreateTitle": "Create New Post",
+      "UpdateTitle": "Update Post",
+      "Title": "Title",
+      "Picture": "Picture",
+      "Content": "Text",
+      "ContentPlaceholder": "What's on your mind?",
+      "CreateSuccessMessage": "Post created successfully",
+      "UpdateSuccessMessage": "Post updated successfully"
+    },
+    "UpdateUserModal": {
+      "Title": "Update Profile",
+      "FullName": "Full Name",
+      "Email": "Email",
+      "Gender": "Gender",
+      "Bio": "Bio",
+      "BioPlaceholder": "Write something in your bio",
+      "SuccessMessage": "Profile updated successfully"
+    },
+    "ErrorPage": {
+      "Title": "Something went wrong",
+      "Text": "We're sorry, something unexpected happened. Please try again later."
+    },
+    "NoRecordFound": {
+      "Title": "No records found"
+    }
+  }
+}

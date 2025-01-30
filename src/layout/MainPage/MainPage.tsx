@@ -1,43 +1,60 @@
 import Header from '@/layout/components/Header';
 import { Outlet, useNavigate } from '@tanstack/react-router';
 import '@/layout/MainPage/MainPage.css';
-import { LoggedUserContext } from '@/shared/hooks/userContext';
-import { useToken } from '@/core/auth/useToken';
-import { jwtDecode } from 'jwt-decode';
-import { LoggedUser } from '@/modules/Profile/models/user.models';
-import { useLoggedUserState } from '@/modules/Profile/hooks/useLogedUserState';
+import { Theme } from '@/core/models/theme.enum';
+import { useTheme } from '@/core/components/ThemeProvider';
+import { useContext, useEffect } from 'react';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
+import { useToken } from '@/core/hooks/useToken';
+import { decodeToken } from '@/core/utils/utils';
+import { useTranslation } from 'react-i18next';
 
 const MainPage: React.FC = () => {
+  const { theme, setTheme } = useTheme();
+  const { i18n } = useTranslation();
   const { token } = useToken();
-  const { loggedUser } = useLoggedUserState(() => {
-
-    if (!token) {
-      return {} as LoggedUser;
-    }
-
-    const decodedUser = jwtDecode(token) as any;
-    const user = Object.assign<LoggedUser, LoggedUser>({} as LoggedUser, {
-      id: decodedUser.id,
-      fullName: decodedUser.fullName,
-      username: decodedUser.username,
-      email: decodedUser.email,
-    });
-    return user;
-  });
+  const { loggedUser, updateLoggedUser } = useContext(LoggedUserStateContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!token?.length) {
+      navigate({ to: '/login' });
+      return;
+    }
+
+    if (!loggedUser?.id) {
+      const user = decodeToken(token);
+      setTheme(user.theme);
+      i18n.changeLanguage(user.language);
+      updateLoggedUser(user);
+      return;
+    }
+
+    setTheme(loggedUser.theme);
+    i18n.changeLanguage(loggedUser.language);
+  }, [loggedUser, theme]);
+
+  const isDarkTheme = theme === Theme.dark;
+
+  if (isDarkTheme) {
+    document.documentElement.style.setProperty('color-scheme', 'dark');
+  } else {
+    document.documentElement.style.setProperty('color-scheme', 'light');
+  }
+
   if (!loggedUser?.id) {
-    navigate({ to: '/login' });
-    return;
+    return null;
   }
 
   return (
-    <LoggedUserContext.Provider value={loggedUser}>
+    <>
       <Header />
-      <div className="bg-gray-100 app-container min-h-screen">
+      <div
+        className={`app-container ${isDarkTheme ? 'bg-slate-900' : 'bg-gray-100'}`}
+      >
         <Outlet />
       </div>
-    </LoggedUserContext.Provider>
+    </>
   );
 };
 

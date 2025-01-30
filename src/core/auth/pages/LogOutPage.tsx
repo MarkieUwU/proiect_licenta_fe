@@ -1,16 +1,18 @@
-import { useToken } from '../useToken';
+import { useToken } from '../../hooks/useToken';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/shared/ui/card';
-import { Button } from '@/shared/ui/button';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 const LogOutPage: React.FC = () => {
   const { removeToken } = useToken();
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.LogOutPage' });
   const navigate = useNavigate();
 
   const onSubmit = () => {
@@ -21,14 +23,14 @@ const LogOutPage: React.FC = () => {
   return (
     <Card className="w-[450px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
       <CardHeader>
-        <CardTitle className="text-2xl">Log Out</CardTitle>
+        <CardTitle className="text-2xl">{t('LogOut')}</CardTitle>
         <CardDescription className="py-3">
-          By proceeding you will be loged out of the application
+          {t('Description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Button className="w-full" onClick={onSubmit}>
-          Log Out
+          {t('LogOut')}
         </Button>
       </CardContent>
     </Card>

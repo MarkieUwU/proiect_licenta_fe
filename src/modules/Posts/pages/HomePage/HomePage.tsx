@@ -1,17 +1,15 @@
 // src/pages/HomePage.tsx
 import React from 'react';
-import Sidebar from '../../../../layout/components/Sidebar';
+import SuggestionsSidebar from '../../../../layout/components/SuggestionsSidebar';
 import '@/modules/Posts/pages/HomePage/HomePage.css';
 import { PostsFeed } from '../../components/PostsFeed';
 
 const HomePage: React.FC = () => {
   return (
-    <div className="grid home-page-container grid-cols-10 gap-5">
-      <div className="col-span-3"></div>
+    <div className='flex h-full pt-6'>
+      <div className="w-0 lg:w-1/3"></div>
       <PostsFeed />
-      <div className="col-span-3 flex justify-end pb-8 me-8">
-        <Sidebar />
-      </div>
+      <SuggestionsSidebar />
     </div>
   );
 };

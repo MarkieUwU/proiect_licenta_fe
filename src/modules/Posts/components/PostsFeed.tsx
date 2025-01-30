@@ -1,46 +1,60 @@
-import React, { useState } from 'react';
-import NoRecordsFound from '@/core/components/NoRecordsFound';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { getFilteredPosts } from '../apis/post.api';
 import { Post } from '../models/post.models';
 import PostCard from './PostCard';
-import PostModal from './UpsertPostModal';
+import UpsertPostModal from './UpsertPostModal';
+import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
+import NoRecordsFound from '@/components/ui/NoRecordsFound';
+import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 
 export const PostsFeed: React.FC = () => {
   const [postModalOpened, setPostModalOpened] = useState(false);
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed' });
+  const { loggedUser } = useContext(LoggedUserStateContext);
   const postResponse = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getFilteredPosts({ createdAt: 'desc' }),
+    queryFn: () => getFilteredPosts({ sortCriteria: { createdAt: 'desc' }, userId: loggedUser.id}),
+    enabled: false
   });
+
+  useEffect(() => {
+    postResponse.refetch();
+  }, [loggedUser.id])
 
   if (postResponse.isLoading) {
     return <LoaderCircle className="animate-spin" />;
   }
 
-  const postsList = postResponse.data;
+  let postCards;
 
-  const postCards = postsList.map((post: Post) => (
-    <PostCard key={post.id} post={post} />
-  ));
-
+  if (!postResponse.data?.length) {
+   postCards = <NoRecordsFound text={t('NoRecords')} />;
+  } else {
+    postCards = (
+      <div className='flex flex-col overflow-y-auto h-full gap-2 pb-3'>
+        {postResponse.data.map((post: Post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
+    );
+  }
   return (
-    <main className='col-span-4 max-w-[750px] flex flex-col'>
-      <input
-        type='text'
-        placeholder="What's on your mind?"
-        className='w-full p-4 mb-4 border rounded-lg'
-        onClick={() => setPostModalOpened(true)}
-      />
-      <PostModal
+    <>
+      <main className='w-[750px] min-w-[400px] flex flex-col gap-3 mx-auto lg:mx-0'>
+        <Input
+          placeholder={t('InputPlaceholder')}
+          className='h-14 rounded-xl'
+          onClick={() => setPostModalOpened(true)}
+        />
+        {postCards}
+      </main>
+      <UpsertPostModal
         open={postModalOpened}
         onOpenChange={(value) => setPostModalOpened(value)}
       />
-      {postCards.length ? (
-        <div className='flex flex-col overflow-y-auto gap-1'>{postCards}</div>
-      ) : (
-        <NoRecordsFound text='It seems like there are no posts to show' />
-      )}
-    </main>
+    </>
   );
 };

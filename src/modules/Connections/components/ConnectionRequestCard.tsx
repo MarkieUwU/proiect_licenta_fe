@@ -4,68 +4,79 @@ import {
   acceptConnection,
   removeConnection,
 } from '@/modules/Profile/apis/user.api';
-import { Connection } from '@/modules/Profile/models/user.models';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
+import { ConnectionRequest } from '@/modules/Profile/models/user.models';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from '@tanstack/react-router';
 
 interface ConnectionRequestCardProps {
-  connection: Connection;
+  connection: ConnectionRequest;
 }
 
 const ConnectionRequestCard: React.FC<ConnectionRequestCardProps> = ({
   connection,
 }) => {
-  const user = connection.following;
+  const user = connection.user;
   const initials = getInitials(user.username);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const acceptConnectionMutation = useMutation({
     mutationFn: acceptConnection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connectionRequests'] });
+      queryClient.invalidateQueries({ queryKey: ['connections']});
     },
   });
 
   const declineConnectionMutation = useMutation({
     mutationFn: removeConnection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connectionRequests'] });
     },
   });
 
-  const handleAcceptConnection = () => {
+  const handleAcceptConnection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     acceptConnectionMutation.mutate({
-      id: connection.followingId,
-      connectionId: connection.followerId,
+      id: connection.userId,
+      connectionId: connection.connectionId,
     });
   };
 
-  const handleDeclineConnection = () => {
+  const handleDeclineConnection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     declineConnectionMutation.mutate({
-      id: connection.followerId,
-      connectionId: connection.followingId,
+      id: connection.userId,
+      connectionId: connection.connectionId,
     });
+  };
+
+  const navigateToProfile = () => {
+    navigate({ to: `/${user.username}/profile` });
   };
 
   return (
-    <Card className='p-4'>
+    <Card className='p-4' hover={true} onClick={navigateToProfile}>
       <CardContent className='p-0'>
         <div className='flex gap-5 items-center'>
           <div className='flex items-center gap-6 md:text-lg lg:text-2xl'>
-            <AvatarComponent initials={initials} size={80}></AvatarComponent>
+            <AvatarComponent initials={initials} image={user.profileImage} className='w-[80px] h-[80px]'></AvatarComponent>
           </div>
           <div className='flex flex-col gap-2'>
             <span className='font-bold text-2xl'>{user.fullName}</span>
             <div className='flex gap-3'>
               <Button onClick={handleAcceptConnection}>
-                Accept
+                {t('Actions.Accept')}
               </Button>
               <Button
                 variant='destructive'
                 onClick={handleDeclineConnection}
               >
-                Decline
+                {t('Actions.Decline')}
               </Button>
             </div>
           </div>

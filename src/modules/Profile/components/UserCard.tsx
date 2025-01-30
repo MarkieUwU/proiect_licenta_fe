@@ -1,11 +1,12 @@
 import React from 'react';
-import { ConnectionUser } from '../models/user.models';
+import { ConnectionUser, User } from '../models/user.models';
 import { AvatarComponent } from '@/layout/components/Avatar';
 import { getInitials } from '@/core/utils/utils';
 import { useNavigate } from '@tanstack/react-router';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface UserProps {
-  user: ConnectionUser;
+  user: ConnectionUser | User;
 }
 
 export const UserCard: React.FC<UserProps> = ({ user }) => {
@@ -17,14 +18,17 @@ export const UserCard: React.FC<UserProps> = ({ user }) => {
   };
 
   return (
-    <div
-      className="flex items-center mb-2 p-2 bg-white border-solid border border-gray-200 rounded-lg shadow hover:bg-gray-100 cursor-pointer"
+    <Card
+      className="p-3 ps-4 w-[300px] md:w-auto"
+      hover={true}
       onClick={navigateToProfile}
     >
-      <AvatarComponent initials={initials} />
-      <div className="ml-3">
-        <div className="font-bold text-lg">{user.fullName}</div>
-      </div>
-    </div>
+      <CardContent className='flex items-center p-0'>
+        <AvatarComponent initials={initials} image={user.profileImage} />
+        <div className='ml-3'>
+          <div className='font-bold text-lg'>{user.fullName}</div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

@@ -1,0 +1,244 @@
+{
+  "Actions": {
+    "Save": "Salvează",
+    "Create": "Creează",
+    "Delete": "Șterge",
+    "Edit": "Editează",
+    "Cancel": "Anulează",
+    "Accept": "Acceptă",
+    "Decline": "Respinge"
+  },
+  "Enums": {
+    "Language": {
+      "English": "Engleză",
+      "Romanian": "Română"
+    },
+    "Theme": {
+      "Dark": "Întunecat",
+      "Light": "Luminos"
+    },
+    "Gender": {
+      "Male": "Masculin",
+      "Female": "Feminin"
+    },
+    "PrivacyOptions": {
+      "Public": "Public",
+      "Connections": "Numai conexiuni",
+      "Private": "Privat"
+    }
+  },
+  "ValidationErrors": {
+    "UsernameRequired": "Te rog să introduci un nume de utilizator",
+    "UsernameMin": "Numele de utilizator trebuie să aibă minim 3 charactere",
+    "PasswordRequired": "Te rog să introduci o parolă",
+    "PasswordMin": "Parola trebuie să aibă minim 4 charactere",
+    "FullNameRequired": "Te rog să introduci un nume",
+    "FullNameMin": "Numele trebuie să fie de minim 5 charactere",
+    "EmailRequired": "Te rog să introduci un email",
+    "EmailError": "Acesta nu este un email valid",
+    "TitleRequired": "Te rog să introduci un titlu",
+    "TitleMin": "Titlul trebuie să aibă minim 3 caractere",
+    "ContentRequired": "Te rog să introduci un text",
+    "ContentMin": "Textul trebuie să fie de minim 5 caractere"
+  },
+  "Pages": {
+    "LoginPage": {
+      "Title": "Conectare",
+      "Description": "Introduceți numele de utilizator mai jos pentru a vă conecta la contul dvs",
+      "Username": "Nume utilizator",
+      "Password": "Parola",
+      "NoAccount": "Nu ai un cont?",
+      "Login": "Conectare",
+      "SignUp": "Înscriere"
+    },
+    "SignUpPage": {
+      "Title": "Înscriere",
+      "Description": "Adăugați detaliile utilizatorului pentru a vă crea un cont nou",
+      "Username": "Nume utilizator",
+      "FullName": "Nume întreg",
+      "Email": "Adresă email",
+      "Gender": "Sex",
+      "Password": "Parola",
+      "ConfirmPassword": "Repetă parola",
+      "SignUp": "Înscriere",
+      "AlreadyAccount": "Ai deja un cont?",
+      "LogIn": "Conectare"
+    },
+    "LogOutPage": {
+      "Title": "Deconectare",
+      "Description": "Prin această acțiune vei fi deconectat din aplicație",
+      "LogOut": "Deconectare"
+    },
+    "PostsFeed": {
+      "InputPlaceholder": "La ce te gândești?",
+      "NoRecords": "Se pare că nu există postări",
+      "PostCard": {
+        "Comments": "Comentarii",
+        "NoComments": "Nu s-au găsit comentarii",
+        "DropDown": {
+          "Edit": "Editează",
+          "Delete": "Șterge"
+        },
+        "DeleteDialog": {
+          "Title": "Ești sigur?",
+          "Description": "Această acțiune nu poate fi anulată. Continuând vei șterge permanent această postare, iar datele nu vor mai putea fi recuperate.",
+          "SuccessMessage": "Postare ștearsă cu succes"
+        },
+        "CommentCard": {
+          "TextareaPlaceholder": "Adaugă un comentariu...",
+          "TextareaError": "Trebuie să scrii ceva",
+          "EditSuccessMessage": "Comentariu editat cu succes",
+          "DeleteSuccessMessage": "Comentariu șters cu succes",
+          "Edited": "editat",
+          "DeleteDialog": {
+            "Title": "Ești sigur?",
+            "Text": "Această acțiune nu poate fi anulată. Continuând vei șterge permanent acest comentariu, iar datele nu vor putea fi recuperate."
+          }
+        }
+      },
+      "AddCommentComponent": {
+        "TextareaPlaceholder": "Adaugă un comentariu...",
+        "TextareaError": "Trebuie să scrii ceva",
+        "Post": "Postează"
+      }
+    },
+    "ConnectionsPage": {
+      "Connections": "Conexiuni",
+      "Suggestions": "Sugestii",
+      "ConnectionsTab": {
+        "ConnectionRequestList": {
+          "Title": "Cereri de conectare"
+        },
+        "ConnectionsList": {
+          "SearchPlaceholder": "Caută...",
+          "NoRecords": {
+            "Title": "Nici-o conectare găsită",
+            "Text": "Mergi la sugestii pentru ați face conexiuni"
+          },
+          "ConnectionCard": {
+            "Connection": "{{count}} conexiune",
+            "Connections": "{{count}} conexiuni",
+            "Post": "{{count}} postare",
+            "Posts": "{{count}} postări"
+          }
+        }
+      },
+      "SuggestionsTab": {
+        "SearchPlaceholder": "Caută...",
+        "NoRecords": {
+          "Title": "Nici-o sugestie găsită",
+          "Text": "În acest moment nu există sugestii de conectare"
+        },
+        "SuggestionCard": {
+          "Add": "Adaugă conexiune",
+          "Cancel": "Anulează conexiune"
+        }
+      }
+    },
+    "ProfilePage": {
+      "AddConnection": "Adaugă conexiune",
+      "CancelConnection": "Anulează conexiune",
+      "RemoveConnection": "Eliminați conexiune",
+      "AcceptConnection": "Acceptă conexiunea",
+      "RejectConnection": "Respinge conexiunea",
+      "Connection": "{{count}} conexiune",
+      "Connections": "{{count}} conexiuni",
+      "Post": "{{count}} postare",
+      "Posts": "{{count}} postări",
+      "EditProfile": "Editează profil",
+      "UserPosts": "Postări",
+      "NoPosts": "Nici-o postare găsită",
+      "UserDetails": {
+        "Username": "Nume de utilizator",
+        "Email": "Email",
+        "Gender": "Sex",
+        "Bio": "Biografie"
+      },
+      "UserConnections": {
+        "Title": "Conexiuni",
+        "ViewMore": "Arată mai multe",
+        "NoRecords": {
+          "Title": "Nici-o conexiune găsită",
+          "Text": "Nu ți-ai făcut conexiuni"
+        },
+        "ConnectionSuggestions": "Sugestii de conectare"
+      },
+      "ErrorPage": {
+        "Title": "Utilizator inexistent",
+        "Text": "Se pare că utilizatorul pe care încerci să îl găsești nu mai există"
+      }
+    },
+    "Settings": {
+      "Title": "Setări",
+      "Admin": "Pagină admin",
+      "PreferenceSettings": {
+        "Title": "Preferințe",
+        "Theme": "Temă",
+        "Language": "Limbă"
+      },
+      "PrivacySettings": {
+        "Title": "Confidențialitate",
+        "ProfileDetails": "Informații profil",
+        "Connections": "Conexiuni",
+        "Posts": "Postări"
+      }
+    },
+    "Admin": {
+      "Users": "Utilizatori",
+      "Posts": "Postări",
+      "Comments": "Comentarii",
+      "Likes": "Aprecieri",
+      "Connections": "Conexiuni",
+      "Male": "Masculin",
+      "Female": "Feminin",
+      "Undeclared": "Nedeclarat",
+      "NrOfUsers": "nr de utilizatori",
+      "UsersByConnectionsTitle": "Top 5 utilizatori după numărul de conexiuni",
+      "UsersByPostsTitle": "Top 5 utilizatori după numărul de postări",
+      "UsersGenderTitle": "Procentaj pe sexe al utilizatorilor",
+      "PostsByLikes": "Top 5 cele mai apreciate postări"
+    }
+  },
+  "Components": {
+    "Header": {
+      "Home": "Postări",
+      "Connections": "Conexiuni",
+      "MyAccountMenu": {
+        "MyAccount": "Contul meu",
+        "Profile": "Profil",
+        "Settings": "Setări",
+        "LogOut": "Deconectare"
+      }
+    },
+    "SuggestionsSidebar": {
+      "Title": "Sugestii de conectare",
+      "NoRecords": "Nici-o sugestie găsită"
+    },
+    "UpsertPostModal": {
+      "CreateTitle": "Creează o nouă postare",
+      "UpdateTitle": "Editează postare",
+      "Title": "Titlu",
+      "Picture": "Poză",
+      "Content": "Text",
+      "ContentPlaceholder": "La ce te gândești?",
+      "CreateSuccessMessage": "Postare creată cu succes",
+      "UpdateSuccessMessage": "Postare editată cu succes"
+    },
+    "UpdateUserModal": {
+      "Title": "Editare profil",
+      "FullName": "Nume întreg",
+      "Email": "Email",
+      "Gender": "Sex",
+      "Bio": "Biografie",
+      "BioPlaceholder": "Scrie ceva în biografia ta",
+      "SuccessMessage": "Profil editat cu succes"
+    },
+    "ErrorPage": {
+      "Title": "A apărut o eroare",
+      "Text": "Ne cerem scuze! Ceva neașteptat s-a întâmplat. Te rog să mai încerci."
+    },
+    "NoRecordFound": {
+      "Title": "Nu au fost găsite date"
+    }
+  }
+}

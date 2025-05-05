@@ -8,8 +8,8 @@ import { ChartColor } from "../models/chart-color.enum";
 import PieChartSection from "../components/pie-chart-section";
 import { useTranslation } from "react-i18next";
 
-const AdminPage: React.FC = () => {
-  const { t } = useTranslation('translation', { keyPrefix: 'Pages.Admin' });
+const StatisticsPage: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.Statistics' });
 
   const topUsersByConnections = useQuery({
     queryKey: ['topUsersByConnections'],
@@ -129,4 +129,4 @@ const AdminPage: React.FC = () => {
   );
 }
 
-export default AdminPage;
+export default StatisticsPage;

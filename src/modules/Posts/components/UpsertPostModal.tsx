@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { DialogClose } from '@/components/ui/dialog.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { ModalConfiguration } from '@/components/models/moda.configuration.ts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { createPost, updatePost } from '../apis/post.api.ts';
 import { toast } from 'sonner';
 import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context.tsx';
@@ -23,6 +23,7 @@ interface UpsertPostModalProps {
   post?: Post;
   open: boolean;
   onOpenChange: (value: boolean) => void;
+  requestRefetch: () => void;
 }
 
 const schema = yup.object({
@@ -34,9 +35,8 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
   post,
   open,
   onOpenChange,
+  requestRefetch
 }) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
-  const [image, setImage] = useState('');
   const {
     register,
     handleSubmit,
@@ -47,6 +47,14 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
   } = useForm({
     resolver: yupResolver(schema)
   });
+
+  const { loggedUser } = useContext(LoggedUserStateContext);
+  const [image, setImage] = useState('');
+  const { t } = useTranslation();
+
+  const title = watch('title');
+  const content = watch('content');
+
   const {
     getRootProps,
     getInputProps,
@@ -59,10 +67,6 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
       handleFileDrop(files);
     }
   });
-  const title = watch('title');
-  const content = watch('content');
-  const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (!open) return;
@@ -77,7 +81,7 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
   const createPostMutation = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      requestRefetch();
       toast.success(t('Components.UpsertPostModal.CreateSuccessMessage'));
       resetModal();
       onOpenChange(false);
@@ -92,7 +96,7 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
     mutationFn: updatePost,
     onSuccess: () => {
       toast.success(t('Components.UpsertPostModal.UpdateSuccessMessage'));
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      requestRefetch();
       resetModal();
       onOpenChange(false);
     },

@@ -106,7 +106,7 @@ const fullName = watch('fullName');
       <CardContent>
         <form>
           <div className='flex flex-col gap-6'>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='username'>{t('Pages.SignUpPage.Username')}</Label>
               <Input
                 id='username'
@@ -125,7 +125,7 @@ const fullName = watch('fullName');
                 </p>
               )}
             </div>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='fullName'>{t('Pages.SignUpPage.FullName')}</Label>
               <Input
                 id='fullName'
@@ -144,7 +144,7 @@ const fullName = watch('fullName');
                 </p>
               )}
             </div>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='email'>{t('Pages.SignUpPage.Email')}</Label>
               <Input id='email' type='email' required {...register('email')} />
               {errors.email?.type === 'required' && (
@@ -158,11 +158,11 @@ const fullName = watch('fullName');
                 </p>
               )}
             </div>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='gender'>{t('Pages.SignUpPage.Gender')}</Label>
               <Selector {...genderSelectorConfig} onValueChange={(value) => setGender(value)} />
             </div>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='password'>{t('Pages.SignUpPage.Password')}</Label>
               <Input
                 id='password'
@@ -181,7 +181,7 @@ const fullName = watch('fullName');
                 </p>
               )}
             </div>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='confirmPassword'>
                 {t('Pages.SignUpPage.ConfirmPassword')}
               </Label>

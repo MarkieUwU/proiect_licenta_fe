@@ -34,13 +34,13 @@ const ConnectionRequestsList: React.FC<ConnectionRequestsListProps> = ({ userId 
     ));
 
   return (
-    <>
+    <div className="flex flex-col">
       <span className='font-bold text-xl p-4'>{t('Pages.ConnectionsPage.ConnectionsTab.ConnectionRequestList.Title')}</span>
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5 w-fit mb-5'>
+      <div className='flex flex-wrap gap-5 mb-5'>
         {connectionRequests}
       </div>
       <Separator />
-    </>
+    </div>
   );
 }
 

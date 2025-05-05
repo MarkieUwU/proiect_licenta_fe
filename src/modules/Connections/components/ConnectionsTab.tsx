@@ -7,7 +7,7 @@ const ConnectionsTab: React.FC = () => {
   const { loggedUser } = useContext(LoggedUserStateContext);
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col gap-3'>
       <ConnectionRequestsList userId={loggedUser.id} />
       <ConnectionsList userId={loggedUser.id} />
     </div>

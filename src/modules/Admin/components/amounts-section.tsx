@@ -10,7 +10,7 @@ import AmountCard from './amount-card';
 import { useTranslation } from 'react-i18next';
 
 const AmountsSection: React.FC = () => {
-  const { t } = useTranslation('translation', { keyPrefix: 'Pages.Admin' });
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.Statistics' });
 
   const usersResponse = useQuery({
     queryKey: ['usersList'],

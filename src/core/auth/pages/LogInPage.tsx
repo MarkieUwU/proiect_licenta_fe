@@ -80,7 +80,7 @@ export const LogInPage: React.FC = () => {
       <CardContent>
         <form>
           <div className='flex flex-col gap-6'>
-            <div className='grid gap-2'>
+            <div className='flex flex-col gap-2'>
               <Label htmlFor='username'>{t('Pages.LoginPage.Username')}</Label>
               <Input
                 id='username'
@@ -99,7 +99,7 @@ export const LogInPage: React.FC = () => {
                 </p>
               )}
             </div>
-            <div className='grid gap-2'>
+            <div className='flex-col gap-2'>
               <div className='flex items-center'>
                 <Label htmlFor='password'>
                   {t('Pages.LoginPage.Password')}

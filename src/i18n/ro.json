@@ -75,14 +75,14 @@
       "PostCard": {
         "Comments": "Comentarii",
         "NoComments": "Nu s-au găsit comentarii",
+        "SuccessMessage": "Postare ștearsă cu succes",
         "DropDown": {
           "Edit": "Editează",
           "Delete": "Șterge"
         },
         "DeleteDialog": {
           "Title": "Ești sigur?",
-          "Description": "Această acțiune nu poate fi anulată. Continuând vei șterge permanent această postare, iar datele nu vor mai putea fi recuperate.",
-          "SuccessMessage": "Postare ștearsă cu succes"
+          "Description": "Această acțiune nu poate fi anulată. Continuând vei șterge permanent această postare, iar datele nu vor mai putea fi recuperate."
         },
         "CommentCard": {
           "TextareaPlaceholder": "Adaugă un comentariu...",
@@ -119,7 +119,11 @@
             "Connection": "{{count}} conexiune",
             "Connections": "{{count}} conexiuni",
             "Post": "{{count}} postare",
-            "Posts": "{{count}} postări"
+            "Posts": "{{count}} postări",
+            "Add": "Adaugă conexiune",
+            "Cancel": "Anulează conexiune",
+            "Accept": "Acceptă",
+            "Reject": "Respinge"
           }
         }
       },
@@ -128,10 +132,6 @@
         "NoRecords": {
           "Title": "Nici-o sugestie găsită",
           "Text": "În acest moment nu există sugestii de conectare"
-        },
-        "SuggestionCard": {
-          "Add": "Adaugă conexiune",
-          "Cancel": "Anulează conexiune"
         }
       }
     },
@@ -170,7 +170,7 @@
     },
     "Settings": {
       "Title": "Setări",
-      "Admin": "Pagină admin",
+      "Statistics": "Pagină statistici",
       "PreferenceSettings": {
         "Title": "Preferințe",
         "Theme": "Temă",
@@ -183,7 +183,7 @@
         "Posts": "Postări"
       }
     },
-    "Admin": {
+    "Statistics": {
       "Users": "Utilizatori",
       "Posts": "Postări",
       "Comments": "Comentarii",

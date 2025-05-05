@@ -6,6 +6,7 @@ import {
   LoggedUser,
   Settings,
   SettingsRequest,
+  Suggestion,
   UpdateUserRequest,
   User,
   UserConnection,
@@ -21,13 +22,6 @@ export const getUsersList = apiErrorHandler<User[]>(async (nrOfUsers?: number) =
   });
   return data;
 });
-
-export const getFilteredUsers = async ({ pageParam = null }) => {
-  const { data } = await apiClient.post('/user/filtered', {
-    params: { cursor: pageParam, limit: 10, search },
-  });
-  return data;
-};
 
 export const getUserDetails = apiErrorHandler<UserProfile>(
   async ( username: string ) => {
@@ -87,7 +81,7 @@ export const getConnectionRequests = apiErrorHandler<ConnectionRequest[]>(
   }
 )
 
-export const getSuggestions = apiErrorHandler<User[]>(
+export const getSuggestions = apiErrorHandler<Suggestion[]>(
   async ({ id, searchString }: { id: number; searchString?: string }) => {
     const { data } = await apiClient.post(`/user/suggestions/${id}`, {
       searchString,

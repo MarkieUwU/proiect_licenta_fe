@@ -37,7 +37,7 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
         <UserCard key={connection.id} user={connection} />
       ));
     connectionsContent = (
-      <div className='flex md:flex-col gap-2'>
+      <div className='flex flex-wrap lg:flex-col gap-2'>
         {connectionsList}
       </div>
     )
@@ -62,9 +62,9 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
   }
 
   return (
-    <div className='md:col-start-1 md:col-end-3 flex flex-col gap-5 max-h-[500px]'>
+    <div className='flex flex-col gap-5 max-h-[500px]'>
       <span className='text-xl font-bold ps-4'>{t('Title')}</span>
-      <div className='flex md:flex-col flex-wrap gap-5'>
+      <div>
         {connectionsContent}
       </div>
       {userConnections.length > 6 && (

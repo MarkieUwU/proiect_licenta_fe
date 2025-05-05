@@ -14,35 +14,18 @@ export const getFilteredPosts = apiErrorHandler<Post[]>(
   }
 );
 
-export const getPostById = async (id: number) => {
-  const { data } = await apiClient.get(`/post/${id}`);
-  return data;
-};
-
-export const getPostComments = async (id: number) => {
-  const { data } = await apiClient.get(`/post/comments/${id}`);
-  return data;
-};
-
-export const getPostLikes = async (id: number) => {
-  const { data } = await apiClient.get(`/post/likes/${id}`);
-  return data;
-};
-
 export const createPost = apiErrorHandler(
   async ({ id, postRequest }: { id: number; postRequest: PostRequest }) => {
     const { data } = await apiClient.post(`/post/${id}`, postRequest);
     return data;
-  },
-  'Failed to create post! Please try again'
+  }
 );
 
 export const updatePost = apiErrorHandler(
   async ({ id, postRequest }: { id: number; postRequest: PostRequest }) => {
     const { data } = await apiClient.put(`/post/${id}`, postRequest);
     return data;
-  },
-  'Failed to update the post! Please try again'
+  }
 );
 
 export const deletePost = async (id: number) => {

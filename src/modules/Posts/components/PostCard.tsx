@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Post } from '../models/post.models';
 import { likeAPost, unlikeAPost } from '../apis/like.api';
 import AddComment from './AddComment';
@@ -32,9 +32,10 @@ import { useNavigate } from '@tanstack/react-router';
 
 interface PostProps {
   post: Post;
+  requestRefetch: () => void;
 }
 
-const PostCard: React.FC<PostProps> = ({ post }: PostProps) => {
+const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
   const { loggedUser } = useContext(LoggedUserStateContext);
   const [likes, setLikes] = useState(post.likes?.length);
   const [commentsCount, setCommentsCount] = useState(post.comments?.length);
@@ -45,7 +46,6 @@ const PostCard: React.FC<PostProps> = ({ post }: PostProps) => {
   const [editModalOpened, setEditModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed.PostCard' });
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const ownPost = loggedUser.id === post.userId;
 
@@ -70,7 +70,7 @@ const PostCard: React.FC<PostProps> = ({ post }: PostProps) => {
   const deletePostMutation = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      requestRefetch();
       toast.success(t('SuccessMessage'));
     },
   });
@@ -206,6 +206,7 @@ const PostCard: React.FC<PostProps> = ({ post }: PostProps) => {
         post={post}
         open={editModalOpened}
         onOpenChange={(value) => setEditModalOpened(value)}
+        requestRefetch={() => requestRefetch()}
       />
       <DeleteDialog
         title={t('DeleteDialog.Title')}

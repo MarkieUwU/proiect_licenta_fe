@@ -67,7 +67,7 @@ export const Settings = () => {
             </>
           )}
           <Button className='mt-5' onClick={navigateToAdmin}>
-            Admin page
+            {t('Pages.Settings.Statistics')}
           </Button>
         </CardContent>
       </Card>

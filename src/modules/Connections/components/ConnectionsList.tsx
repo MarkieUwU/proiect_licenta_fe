@@ -9,6 +9,7 @@ import ConnectionCard from './ConnectionCard';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
+import { UserCardType } from '../models/enums/user-card-type.enum';
 
 interface ConnectionsListProps {
   userId: number;
@@ -19,7 +20,9 @@ const schema = yup.object({
 });
 
 const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage.ConnectionsTab.ConnectionsList' });
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'Pages.ConnectionsPage.ConnectionsTab.ConnectionsList',
+  });
   const { register, watch } = useForm({
     resolver: yupResolver(schema),
   });
@@ -40,47 +43,43 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
     }, 300);
   };
 
-  if (!userConnections.data) {
-    return (
-      <NoRecordsFound
-        title={t('NoRecords.Title')}
-        text={t('NoRecords.Text')}
-      />
+  let connections;
+
+  if (userConnections.isPending) {
+    connections = <LoaderCircle className='animate-spin' />;
+  } else if (!userConnections.data) {
+    connections = (
+      <NoRecordsFound title={t('NoRecords.Title')} text={t('NoRecords.Text')} />
+    );
+  } else if (!userConnections.data.length) {
+    connections = <NoRecordsFound title={t('NoRecords.Title')} />;
+  } else {
+    connections = (
+      <div className='flex flex-wrap justify-center gap-2 md:gap-5 pb-1 overflow-y-auto'>
+        {userConnections.data
+          .filter((connection: UserConnection) => !connection.pending)
+          .map((connection: UserConnection) => (
+            <ConnectionCard
+              key={connection.userId}
+              user={connection.user}
+              type={UserCardType.connection}
+            ></ConnectionCard>
+          ))}
+      </div>
     );
   }
 
-  const connections = userConnections.data
-    .filter((connection: UserConnection) => !connection.pending)
-    .map((connection: UserConnection) => (
-      <ConnectionCard
-        key={connection.userId}
-        user={connection.user}
-      ></ConnectionCard>
-    ));
-
   return (
-    <div className='flex flex-col'>
+    <div className='w-screen flex flex-col items-center py-2 px-4 md:px-2 lg:max-w-[1270px]'>
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}
-        className='max-w-[500px] mx-auto mt-5 mb-5 rounded-lg'
+        className='max-w-[500px] mb-5 rounded-lg'
         onInput={handleSearching}
       />
-      {userConnections.isPending ? (
-        <LoaderCircle className='animate-spin' />
-      ) : (
-        <div className='w-screen lg:max-w-[1270px]'>
-          {!userConnections.data.length ? (
-            <NoRecordsFound title={t('NoRecords.Title')} />
-          ) : (
-            <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5 pb-1 overflow-y-auto'>
-              {connections}
-            </div>
-          )}
-        </div>
-      )}
+      {connections}
     </div>
   );
-}
+};
 
 export default ConnectionsList;

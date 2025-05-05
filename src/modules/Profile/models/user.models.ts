@@ -117,3 +117,9 @@ export type SettingsRequest = {
   connectionsPrivacy: PrivacyOptions;
   postsPrivacy: PrivacyOptions;
 };
+
+export type Suggestion = {
+  user: User;
+  connection?: Connection;
+  connectionState: ConnectionStateEnum;
+};

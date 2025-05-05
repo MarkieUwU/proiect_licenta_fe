@@ -11,8 +11,8 @@ const ConnectionsPage: React.FC<ConnectionsPageProps> = ({ showSuggestions }) =>
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage' });
 
   return (
-    <Tabs defaultValue={showSuggestions ? 'suggestions' : 'connections'} className="w-fit mx-auto pt-6 flex flex-col items-center">
-      <TabsList className="mb-2">
+    <Tabs defaultValue={showSuggestions ? 'suggestions' : 'connections'} className="w-fit mx-auto pt-6 flex flex-col items-center h-full">
+      <TabsList>
         <TabsTrigger value="connections">{t('Connections')}</TabsTrigger>
         <TabsTrigger value="suggestions">{t('Suggestions')}</TabsTrigger>
       </TabsList>

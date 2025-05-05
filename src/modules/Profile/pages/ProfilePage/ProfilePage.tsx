@@ -85,6 +85,8 @@ const ProfilePage: React.FC = () => {
   }
 
   const showInformation = (privacyOption: PrivacyOptions) => {
+    if (ownProfile) return true;
+  
     switch (privacyOption) {
       case PrivacyOptions.private:
         return false;
@@ -101,7 +103,7 @@ const ProfilePage: React.FC = () => {
 
   if (showInformation(user.settings.postsPrivacy)) {
     userPosts = user.posts.map((post: Post) => (
-      <PostCard key={post.id} post={post} />
+      <PostCard key={post.id} post={post} requestRefetch={() => queryClient.invalidateQueries({ queryKey: ['userDetails'] })} />
     ));
   } else {
     userPosts = null;
@@ -200,14 +202,14 @@ const ProfilePage: React.FC = () => {
       className='overflow-y-auto pt-6 pb-3'
       style={{ maxHeight: 'var(--app-height)' }}
     >
-      <div className='flex flex-col gap-5 w-full md:w-8/12 md:min-w-[850px] mx-auto'>
+      <div className='flex flex-col gap-5 w-full lg:w-8/12 lg:max-w-[1100px] mx-auto'>
         <Card className='px-3'>
           <CardHeader>
-            <div className='flex items-center gap-10 ms-5 text-3xl md:text-5xl lg:text-6xl'>
+            <div className='flex flex-col sm:flex-row items-center gap-5 sm:gap-10 sm:ms-5 text-4xl sm:text-5xl lg:text-6xl'>
               <AvatarComponent
                 initials={initials}
                 image={user.profileImage}
-                className='w-[80px] h-[80px] md:w-[150px] md:h-[150px] lg:w-[200px] lg:h-[200px]'
+                className='w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] lg:w-[200px] lg:h-[200px]'
               ></AvatarComponent>
               <span className='font-bold'>{user.fullName}</span>
             </div>
@@ -217,14 +219,14 @@ const ProfilePage: React.FC = () => {
             <div className='flex flex-wrap justify-between w-full gap-4 pt-3 ps-4 mb-6'>
               <div className='flex gap-6 font-bold text-lg text-nowrap'>
                 {showInformation(user.settings.connectionsPrivacy) && (
-                  <Badge className='border-2 px-2 py-1 font-bold text-sm'>
+                  <Badge>
                     {user.connections.length === 1
                       ? t('Connection', { count: user.connections.length })
                       : t('Connections', { count: user.connections.length })}
                   </Badge>
                 )}
                 {!!userPosts && (
-                  <Badge className='border-2 px-2 py-1 font-bold text-sm'>
+                  <Badge>
                     {user.posts.length === 1
                       ? t('Post', { count: user.posts.length })
                       : t('Posts', { count: user.posts.length })}
@@ -244,7 +246,7 @@ const ProfilePage: React.FC = () => {
                   onClick={() => setEditModalOpened(true)}
                 >
                   <i className='ri-pencil-fill' />
-                  {t('EditProfile')}
+                {t('EditProfile')}
                 </Button>
               )}
             </div>
@@ -257,7 +259,7 @@ const ProfilePage: React.FC = () => {
         </Card>
         <div className='flex flex-col lg:flex-row gap-5'>
           {showInformation(user.settings.connectionsPrivacy) && (
-            <div className='lg:me-auto lg:w-3/12 flex justify-center lg:block lg:justify-normal'>
+            <div className='lg:me-auto lg:w-3/12 flex w-full px-2 lg:px-0 lg:block lg:justify-normal'>
               <UserConnections
                 ownConnections={ownProfile}
                 userConnections={user.connections}

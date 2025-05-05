@@ -24,19 +24,21 @@ export const PostsFeed: React.FC = () => {
     postResponse.refetch();
   }, [loggedUser.id])
 
-  if (postResponse.isLoading) {
-    return <LoaderCircle className="animate-spin" />;
-  }
-
   let postCards;
 
-  if (!postResponse.data?.length) {
+  if (postResponse.isPending) {
+    postCards = (
+      <div className='flex justify-center p-4'>
+        <LoaderCircle className='animate-spin' />
+      </div>
+    );
+  } else if (!postResponse.data?.length) {
    postCards = <NoRecordsFound text={t('NoRecords')} />;
   } else {
     postCards = (
       <div className='flex flex-col overflow-y-auto h-full gap-2 pb-3'>
         {postResponse.data.map((post: Post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} requestRefetch={() => postResponse.refetch()} />
         ))}
       </div>
     );
@@ -54,6 +56,7 @@ export const PostsFeed: React.FC = () => {
       <UpsertPostModal
         open={postModalOpened}
         onOpenChange={(value) => setPostModalOpened(value)}
+        requestRefetch={() => postResponse.refetch()}
       />
     </>
   );

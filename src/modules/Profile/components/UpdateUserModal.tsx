@@ -198,7 +198,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
             </p>
           )}
         </div>
-        <div className='grid gap-2'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='gender'>
             {t('Components.UpdateUserModal.Gender')}
           </Label>

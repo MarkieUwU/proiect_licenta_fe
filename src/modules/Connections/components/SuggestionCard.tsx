@@ -71,6 +71,33 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
     });
   };
 
+  const handleRequestCancel = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    removeConnectionMutation.mutate({
+      id: connection?.followerId,
+      connectionId: connection?.followingId,
+    });
+  }
+
+  const handleRequestAccept = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    acceptConnectionMutation.mutate({ id: connection?.followerId, connectionId: connection?.followingId })
+  }
+
+  const handleRequestReject = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    removeConnectionMutation.mutate({
+      id: connection?.followerId,
+      connectionId: connection?.followingId,
+    });
+  }
+
   let connectionButton;
 
   switch (connectionState) {
@@ -78,7 +105,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
       connectionButton = (
         <Button
           loading={requestConnectionMutation.isPending}
-          onClick={(e) => handleRequestConnection(e)}
+          onClick={handleRequestConnection}
         >
           <i className='ri-user-add-line' />
           {t('Add')}
@@ -91,12 +118,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           variant='outline'
           className='border-2 border-black shadow'
           loading={removeConnectionMutation.isPending}
-          onClick={() =>
-            removeConnectionMutation.mutate({
-              id: connection?.followerId,
-              connectionId: connection?.followingId,
-            })
-          }
+          onClick={handleRequestCancel}
         >
           <i className='ri-user-unfollow-fill' />
           {t('Cancel')}
@@ -108,14 +130,14 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
         <div className='flex gap-3 flex-wrap'>
           <Button
             loading={acceptConnectionMutation.isPending}
-            onClick={() => acceptConnectionMutation.mutate({ id: connection?.followerId, connectionId: connection?.followingId })}
+            onClick={handleRequestAccept}
           >
             {t('Accept')}
           </Button>
           <Button
             variant='destructive'
             loading={removeConnectionMutation.isPending}
-            onClick={() => removeConnectionMutation.mutate({ id: connection?.followerId, connectionId: connection?.followingId })}
+            onClick={handleRequestReject}
           >
             {t('Reject')}
           </Button>

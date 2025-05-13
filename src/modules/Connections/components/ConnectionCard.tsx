@@ -59,13 +59,43 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
 
   const handleRequestConnection = (
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
-      e.stopPropagation();
-      requestConnectionMutation.mutate({
-        id: loggedUser.id,
-        connectionId: user.id,
-      });
-    };
+  ) => {
+    e.stopPropagation();
+    requestConnectionMutation.mutate({
+      id: loggedUser.id,
+      connectionId: user.id,
+    });
+  };
+
+  const handleRemoveConnection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    removeConnectionMutation.mutate({
+      id: connection?.followerId,
+      connectionId: connection?.followingId,
+    });
+  }
+
+  const handleAcceptConnection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    acceptConnectionMutation.mutate({
+      id: connection?.followerId,
+      connectionId: connection?.followingId,
+    });
+  };
+
+  const handleRejectConnection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    removeConnectionMutation.mutate({
+      id: connection?.followerId,
+      connectionId: connection?.followingId,
+    });
+  };
 
     let connectionButton;
 
@@ -74,7 +104,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
         connectionButton = (
           <Button
             loading={requestConnectionMutation.isPending}
-            onClick={(e) => handleRequestConnection(e)}
+            onClick={handleRequestConnection}
           >
             <i className='ri-user-add-line' />
             {t('Add')}
@@ -87,12 +117,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
             variant='outline'
             className='border-2 border-black shadow'
             loading={removeConnectionMutation.isPending}
-            onClick={() =>
-              removeConnectionMutation.mutate({
-                id: connection?.followerId,
-                connectionId: connection?.followingId,
-              })
-            }
+            onClick={handleRemoveConnection}
           >
             <i className='ri-user-unfollow-fill' />
             {t('Cancel')}
@@ -104,24 +129,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
           <div className='flex gap-3 flex-wrap'>
             <Button
               loading={acceptConnectionMutation.isPending}
-              onClick={() =>
-                acceptConnectionMutation.mutate({
-                  id: connection?.followerId,
-                  connectionId: connection?.followingId,
-                })
-              }
+              onClick={handleAcceptConnection}
             >
               {t('Accept')}
             </Button>
             <Button
               variant='destructive'
               loading={removeConnectionMutation.isPending}
-              onClick={() =>
-                removeConnectionMutation.mutate({
-                  id: connection?.followerId,
-                  connectionId: connection?.followingId,
-                })
-              }
+              onClick={handleRejectConnection}
             >
               {t('Reject')}
             </Button>

@@ -43,6 +43,9 @@ const ProfilePage: React.FC = () => {
 
   const user = userResponse.data;
   const ownProfile = loggedUser.id === user?.id;
+  const isConnection = !!user?.connections.some(
+    (connection) => connection.id === loggedUser.id
+  );
 
   const connectionStateResponse = useQuery({
     queryKey: ['connection'],
@@ -84,30 +87,49 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  const initials = getInitials(user.username);
+
   const showInformation = (privacyOption: PrivacyOptions) => {
     if (ownProfile) return true;
-  
+
     switch (privacyOption) {
       case PrivacyOptions.private:
         return false;
       case PrivacyOptions.public:
         return true;
-      case PrivacyOptions.connections:
-        user.connections.some((connection) => connection.id === loggedUser.id);
+      case PrivacyOptions.followers:
+        return isConnection;
     }
   };
 
-  const initials = getInitials(user.username);
+  const connectionsContent = () => {
+    if (showInformation(user.settings.connectionsPrivacy)) {
+      return (
+        <UserConnections
+          ownConnections={ownProfile}
+          userConnections={user.connections}
+        />
+      );
+    }
 
-  let userPosts;
+    return <NoRecordsFound title={t('UserConnections.NoRecords.Title')} />;
+  };
 
-  if (showInformation(user.settings.postsPrivacy)) {
-    userPosts = user.posts.map((post: Post) => (
-      <PostCard key={post.id} post={post} requestRefetch={() => queryClient.invalidateQueries({ queryKey: ['userDetails'] })} />
-    ));
-  } else {
-    userPosts = null;
-  }
+  const postsContent = () => {
+    if (showInformation(user.settings.postsPrivacy) && user.posts.length) {
+      return user.posts.map((post: Post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          requestRefetch={() =>
+            queryClient.invalidateQueries({ queryKey: ['userDetails'] })
+          }
+        />
+      ));
+    }
+
+    return <NoRecordsFound title={t('NoPosts')} />;
+  };
 
   const handleRequestConnection = () => {
     requestConnectionMutation.mutate({
@@ -202,7 +224,7 @@ const ProfilePage: React.FC = () => {
       className='overflow-y-auto pt-6 pb-3'
       style={{ maxHeight: 'var(--app-height)' }}
     >
-      <div className='flex flex-col gap-5 w-full lg:w-8/12 lg:max-w-[1100px] mx-auto'>
+      <div className='flex flex-col gap-5 w-full lg:max-w-[1100px] px-2 mx-auto'>
         <Card className='px-3'>
           <CardHeader>
             <div className='flex flex-col sm:flex-row items-center gap-5 sm:gap-10 sm:ms-5 text-4xl sm:text-5xl lg:text-6xl'>
@@ -225,7 +247,7 @@ const ProfilePage: React.FC = () => {
                       : t('Connections', { count: user.connections.length })}
                   </Badge>
                 )}
-                {!!userPosts && (
+                {showInformation(user.settings.postsPrivacy) && (
                   <Badge>
                     {user.posts.length === 1
                       ? t('Post', { count: user.posts.length })
@@ -246,7 +268,7 @@ const ProfilePage: React.FC = () => {
                   onClick={() => setEditModalOpened(true)}
                 >
                   <i className='ri-pencil-fill' />
-                {t('EditProfile')}
+                  {t('EditProfile')}
                 </Button>
               )}
             </div>
@@ -258,26 +280,16 @@ const ProfilePage: React.FC = () => {
           </CardContent>
         </Card>
         <div className='flex flex-col lg:flex-row gap-5'>
-          {showInformation(user.settings.connectionsPrivacy) && (
-            <div className='lg:me-auto lg:w-3/12 flex w-full px-2 lg:px-0 lg:block lg:justify-normal'>
-              <UserConnections
-                ownConnections={ownProfile}
-                userConnections={user.connections}
-              />
-            </div>
-          )}
-          {!!userPosts && (
-            <div className='flex flex-col lg:w-9/12 gap-5 lg:ms-auto'>
-              <span className='font-bold text-xl ps-4'>{t('UserPosts')}</span>
-              <div className='flex flex-col gap-2'>
-                {userPosts.length ? (
-                  userPosts
-                ) : (
-                  <NoRecordsFound title={t('NoPosts')} />
-                )}
-              </div>
-            </div>
-          )}
+          <div className='lg:w-3/12 flex flex-col gap-5 mb-5'>
+            <span className='text-xl font-bold ps-4'>
+              {t('UserConnections.Title')}
+            </span>
+            {connectionsContent()}
+          </div>
+          <div className='flex flex-col lg:w-9/12 gap-5'>
+            <span className='font-bold text-xl ps-4'>{t('UserPosts')}</span>
+            <div className='flex flex-col gap-2'>{postsContent()}</div>
+          </div>
         </div>
       </div>
       <UpdateUserModal

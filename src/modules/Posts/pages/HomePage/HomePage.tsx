@@ -1,7 +1,6 @@
 // src/pages/HomePage.tsx
 import React from 'react';
 import SuggestionsSidebar from '../../../../layout/components/SuggestionsSidebar';
-import '@/modules/Posts/pages/HomePage/HomePage.css';
 import { PostsFeed } from '../../components/PostsFeed';
 
 const HomePage: React.FC = () => {

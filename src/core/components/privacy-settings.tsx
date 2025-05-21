@@ -14,7 +14,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
 
   const items = [
     { label: t('Enums.PrivacyOptions.Public'), value: PrivacyOptions.public },
-    { label: t('Enums.PrivacyOptions.Connections'), value: PrivacyOptions.connections },
+    { label: t('Enums.PrivacyOptions.Connections'), value: PrivacyOptions.followers },
     { label: t('Enums.PrivacyOptions.Private'), value: PrivacyOptions.private }
   ];
 

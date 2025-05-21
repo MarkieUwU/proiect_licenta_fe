@@ -56,7 +56,7 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
         </thead>
         <tbody>
           <tr>
-            <td className='py-5 pe-3'>
+            <td className='py-4 pe-3'>
               {t('Pages.Settings.PreferenceSettings.Theme')}
             </td>
             <td>
@@ -68,7 +68,7 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
             </td>
           </tr>
           <tr>
-            <td className='py-3 pe-3'>
+            <td className='py-4 pe-3'>
               {t('Pages.Settings.PreferenceSettings.Language')}
             </td>
             <td>

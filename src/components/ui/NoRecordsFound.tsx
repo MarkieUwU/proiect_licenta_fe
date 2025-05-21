@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 interface NoRecordsProps {
   title?: string;
-  text?: string;
+  text?: string | null;
 }
 
 const NoRecordsFound: React.FC<NoRecordsProps> = ({

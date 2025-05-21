@@ -40,13 +40,14 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
       <div className='flex flex-wrap lg:flex-col gap-2'>
         {connectionsList}
       </div>
-    )
+    );
   } else {
+    const text = ownConnections ? t('NoRecords.Text') : null;
     connectionsContent = (
-      <div className='flex flex-col items-center'>
+      <div className='flex flex-col w-full items-center'>
         <NoRecordsFound
           title={t('NoRecords.Title')}
-          text={t('NoRecords.Text')}
+          text={text}
         />
         {ownConnections && (
           <Button
@@ -62,21 +63,18 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
   }
 
   return (
-    <div className='flex flex-col gap-5 max-h-[500px]'>
-      <span className='text-xl font-bold ps-4'>{t('Title')}</span>
-      <div>
-        {connectionsContent}
-      </div>
-      {userConnections.length > 6 && (
-        <Button
-          variant='outline'
-          className='mx-auto text-blue-500'
-          onClick={navigateToConnectionsPage}
-        >
-          {t('ViewMore')}
-        </Button>
-      )}
-    </div>
+    <div className='flex flex-col gap-2'>
+    {connectionsContent}
+    {userConnections.length > 6 && (
+      <Button
+        variant='ghost'
+        className='mx-auto'
+        onClick={navigateToConnectionsPage}
+      >
+        {t('ViewMore')}
+      </Button>
+    )}
+  </div>
   );
 };
 

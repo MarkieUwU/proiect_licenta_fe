@@ -7,9 +7,9 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@/components/ui/button';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/core/auth/AuthContext';
 interface AddCommentProps {
   postId: number;
   onCreateComment: () => void;
@@ -20,7 +20,7 @@ const schema = yup.object({
 });
 
 const AddComment: React.FC<AddCommentProps> = ({ postId, onCreateComment }) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -57,7 +57,7 @@ const AddComment: React.FC<AddCommentProps> = ({ postId, onCreateComment }) => {
 
     const commentRequest: CommentRequest = {
       text: comment,
-      userId: loggedUser.id,
+      userId: user!.id,
     };
 
     createCommentMutation.mutate({ postId, commentRequest });
@@ -87,5 +87,5 @@ const AddComment: React.FC<AddCommentProps> = ({ postId, onCreateComment }) => {
     </form>
   );
 };
-
 export default AddComment;
+

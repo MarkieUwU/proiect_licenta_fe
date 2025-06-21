@@ -28,14 +28,14 @@ export const updatePost = apiErrorHandler(
   }
 );
 
-export const deletePost = async (id: number) => {
+export const deletePost = apiErrorHandler(async (id: number) => {
   const { data } = await apiClient.delete(`/post/${id}`);
   return data;
-};
+});
 
 export const getTopPostsByLikes = apiErrorHandler<Post[]>(
   async () => {
     const { data } = await apiClient.get('/post/top/likes');
     return data;
   }
-)
+);

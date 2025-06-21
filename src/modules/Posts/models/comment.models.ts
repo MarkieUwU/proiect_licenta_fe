@@ -1,6 +1,13 @@
 import { User } from '../../Profile/models/user.models';
 import { Post } from './post.models';
 
+export enum CommentStatus {
+  ALL = 'ALL',
+  ACTIVE = 'ACTIVE',
+  ARCHIVED = 'ARCHIVED',
+  REPORTED = 'REPORTED',
+}
+
 export type UserComment = {
   id: number;
   text: string;
@@ -12,6 +19,7 @@ export type UserComment = {
   userId: number;
   post: Post;
   user: User;
+  status: CommentStatus;
 };
 
 export type CommentRequest = {

@@ -1,17 +1,16 @@
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
-import { useContext } from 'react';
 import ConnectionRequestsList from './ConnectionRequestsList';
 import ConnectionsList from './ConnectionsList';
+import { useAuth } from '@/core/auth/AuthContext';
 
 const ConnectionsTab: React.FC = () => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
 
   return (
     <div className='flex flex-col gap-3'>
-      <ConnectionRequestsList userId={loggedUser.id} />
-      <ConnectionsList userId={loggedUser.id} />
+      <ConnectionRequestsList userId={user!.id} />
+      <ConnectionsList userId={user!.id} />
     </div>
   );
 };
-
 export default ConnectionsTab;
+

@@ -6,14 +6,14 @@ import {
   requestConnection,
 } from '@/modules/Profile/apis/user.api';
 import { Connection, User } from '@/modules/Profile/models/user.models';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConnectionStateEnum } from '@/modules/Profile/models/connection-state.enum';
+import { useAuth } from '@/core/auth/AuthContext';
 
 interface SuggestionCardProps {
   user: User;
@@ -26,7 +26,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   connection,
   connectionState,
 }) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user: loggedUser } = useAuth();
   const { t } = useTranslation('translation', {
     keyPrefix: 'Pages.ConnectionsPage.SuggestionsTab.SuggestionCard',
   });
@@ -66,7 +66,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   ) => {
     e.stopPropagation();
     requestConnectionMutation.mutate({
-      id: loggedUser.id,
+      id: loggedUser!.id,
       connectionId: user.id,
     });
   };

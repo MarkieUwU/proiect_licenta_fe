@@ -1,6 +1,20 @@
-import { createRootRoute } from '@tanstack/react-router';
+import { createRootRouteWithContext } from '@tanstack/react-router';
 import App from '../App';
+import { QueryClient } from '@tanstack/react-query';
+import ErrorBoundary from '@/core/components/error-boundary';
+import { Suspense } from 'react';
+import { LoadingPage } from '@/core/pages/LoadingPage';
 
-export const Route = createRootRoute({
-  component: () => <App />,
+interface MyRouterContext {
+  queryClient: QueryClient;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  component: () => (
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingPage />}>
+        <App />
+      </Suspense>
+    </ErrorBoundary>
+  ),
 });

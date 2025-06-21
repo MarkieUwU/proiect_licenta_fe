@@ -43,30 +43,26 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
     }, 300);
   };
 
-  let connections;
+  const renderConnections = () => {
+    if (userConnections.isPending) {
+      return <LoaderCircle className='animate-spin' />;
+    }
 
-  if (userConnections.isPending) {
-    connections = <LoaderCircle className='animate-spin' />;
-  } else if (!userConnections.data) {
-    connections = (
-      <NoRecordsFound title={t('NoRecords.Title')} text={t('NoRecords.Text')} />
-    );
-  } else if (!userConnections.data.length) {
-    connections = <NoRecordsFound title={t('NoRecords.Title')} />;
-  } else {
-    connections = (
+    if (!userConnections.data?.length) {
+      return <NoRecordsFound title={t('NoRecords.Title')} />;
+    }
+
+    return (
       <div className='flex flex-wrap justify-center gap-2 md:gap-5 pb-1 overflow-y-auto'>
-        {userConnections.data
-          .filter((connection: UserConnection) => !connection.pending)
-          .map((connection: UserConnection) => (
-            <ConnectionCard
-              key={connection.userId}
-              user={connection.user}
-              type={UserCardType.connection}
-            ></ConnectionCard>
-          ))}
+        {userConnections.data.map((connection: UserConnection) => (
+          <ConnectionCard
+            key={connection.userId}
+            user={connection.user}
+            type={UserCardType.connection}
+          />
+        ))}
       </div>
-    );
+    )
   }
 
   return (
@@ -74,10 +70,10 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}
-        className='max-w-[500px] mb-5 rounded-lg'
+        className='w-[400px] min-w-[300px] mx-3 my-5 rounded-lg'
         onInput={handleSearching}
       />
-      {connections}
+      {renderConnections()}
     </div>
   );
 };

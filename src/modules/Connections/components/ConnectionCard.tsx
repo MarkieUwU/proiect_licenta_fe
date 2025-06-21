@@ -7,11 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { acceptConnection, removeConnection, requestConnection } from '@/modules/Profile/apis/user.api';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
-import { useContext } from 'react';
 import { ConnectionStateEnum } from '@/modules/Profile/models/connection-state.enum';
 import { Button } from '@/components/ui/button';
 import { UserCardType } from '../models/enums/user-card-type.enum';
+import { useAuth } from '@/core/auth/AuthContext';
 
 interface ConnectionCardProps {
   user: User;
@@ -21,15 +20,11 @@ interface ConnectionCardProps {
 }
 
 const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, connectionState, type }) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user: loggedUser } = useAuth();
   const initials = getInitials(user.username);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage.ConnectionsTab.ConnectionsList.ConnectionCard'});
-  const connections = [
-    ...user.following,
-    ...user.follower
-  ];
 
   const requestConnectionMutation = useMutation({
     mutationFn: requestConnection,
@@ -62,7 +57,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   ) => {
     e.stopPropagation();
     requestConnectionMutation.mutate({
-      id: loggedUser.id,
+      id: loggedUser!.id,
       connectionId: user.id,
     });
   };
@@ -169,14 +164,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
             {type === UserCardType.connection && (
               <div className='flex justify-center gap-2 md:gap-4'>
                 <Badge>
-                  {connections.length === 1
-                    ? t('Connection', { count: connections.length })
-                    : t('Connections', { count: connections.length })}
+                  {user.connectionCount === 1
+                    ? t('Connection', { count: user.connectionCount })
+                    : t('Connections', { count: user.connectionCount })}
                 </Badge>
                 <Badge>
-                  {user.posts.length === 1
-                    ? t('Post', { count: user.posts.length })
-                    : t('Posts', { count: user.posts.length })}
+                  {user.postsCount === 1
+                    ? t('Post', { count: user.postsCount })
+                    : t('Posts', { count: user.postsCount })}
                 </Badge>
               </div>
             )}

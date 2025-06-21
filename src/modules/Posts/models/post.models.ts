@@ -2,6 +2,13 @@ import { UserComment } from './comment.models';
 import { Like } from './like.models';
 import { User } from '../../Profile/models/user.models';
 
+export enum PostStatus {
+  ALL = 'ALL',
+  ACTIVE = 'ACTIVE',
+  ARCHIVED = 'ARCHIVED',
+  REPORTED = 'REPORTED',
+}
+
 export type Post = {
   id: number;
   title: string;
@@ -13,6 +20,7 @@ export type Post = {
   comments: UserComment[];
   likes: Like[];
   user: User;
+  status: PostStatus;
 };
 
 export type PostRequest = {
@@ -27,3 +35,15 @@ export type PostSortCriteria = {
   createdAt?: 'desc' | 'asc';
   updatedAt?: 'desc' | 'asc';
 };
+
+export interface AdminPost {
+  id: number;
+  title: string;
+  content: string;
+  status: PostStatus;
+  user: { fullName?: string };
+  createdAt: string;
+  updatedAt: string;
+  comments: number;
+  likes: number;
+}

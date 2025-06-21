@@ -16,7 +16,7 @@ import {
 import { ThumbsUp } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
 import { toast } from 'sonner';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
+import { useAuth } from '@/core/auth/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -36,18 +36,18 @@ interface PostProps {
 }
 
 const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
   const [likes, setLikes] = useState(post.likes?.length);
   const [commentsCount, setCommentsCount] = useState(post.comments?.length);
   const [showComments, setShowComments] = useState(false);
   const initials = getInitials(post.user.username);
-  const getIfLiked = post.likes?.some((like) => like.userId === loggedUser.id);
+  const getIfLiked = post.likes?.some((like) => like.userId === user!.id);
   const [alreadyLiked, setAlreadyLiked] = useState(getIfLiked);
   const [editModalOpened, setEditModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed.PostCard' });
   const navigate = useNavigate();
-  const ownPost = loggedUser.id === post.userId;
+  const ownPost = user!.id === post.userId;
 
   const likeMutation = useMutation({
     mutationFn: likeAPost,
@@ -76,12 +76,12 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
   });
 
   const likePost = () => {
-    likeMutation.mutate({ userId: loggedUser.id, postId: post.id });
+    likeMutation.mutate({ userId: user!.id, postId: post.id });
     setLikes(likes + 1);
   };
 
   const unlikePost = () => {
-    unlikeMutation.mutate({ userId: loggedUser.id, postId: post.id });
+    unlikeMutation.mutate({ userId: user!.id, postId: post.id });
     setLikes(likes - 1);
   };
 

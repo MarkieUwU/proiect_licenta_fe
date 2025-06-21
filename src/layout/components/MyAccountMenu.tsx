@@ -37,6 +37,10 @@ const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, open, onOp
           {t('Settings')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate({ to: '/admin' })}>
+          {t('Admin')}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate({ to: '/logout' })}>
           {t('LogOut')}
         </DropdownMenuItem>

@@ -29,17 +29,18 @@
   },
   "ValidationErrors": {
     "UsernameRequired": "Te rog să introduci un nume de utilizator",
-    "UsernameMin": "Numele de utilizator trebuie să aibă minim 3 charactere",
+    "UsernameMin": "Numele de utilizator trebuie să aibă minim {{min}} charactere",
     "PasswordRequired": "Te rog să introduci o parolă",
-    "PasswordMin": "Parola trebuie să aibă minim 4 charactere",
+    "PasswordMin": "Parola trebuie să aibă minim {{min}} charactere",
     "FullNameRequired": "Te rog să introduci un nume",
-    "FullNameMin": "Numele trebuie să fie de minim 5 charactere",
+    "FullNameMin": "Numele trebuie să fie de minim {{min}} charactere",
     "EmailRequired": "Te rog să introduci un email",
     "EmailError": "Acesta nu este un email valid",
     "TitleRequired": "Te rog să introduci un titlu",
-    "TitleMin": "Titlul trebuie să aibă minim 3 caractere",
+    "TitleMin": "Titlul trebuie să aibă minim {{min}} caractere",
     "ContentRequired": "Te rog să introduci un text",
-    "ContentMin": "Textul trebuie să fie de minim 5 caractere"
+    "ContentMin": "Textul trebuie să fie de minim {{min}} caractere",
+    "InvalidField": "Câmp nevalid"
   },
   "Pages": {
     "LoginPage": {
@@ -47,9 +48,10 @@
       "Description": "Introduceți numele de utilizator mai jos pentru a vă conecta la contul dvs",
       "Username": "Nume utilizator",
       "Password": "Parola",
+      "ForgotPassword": "Ți-ai uitat parola?",
       "NoAccount": "Nu ai un cont?",
       "Login": "Conectare",
-      "SignUp": "Înscriere"
+      "SignUp": "Înscrie-te"
     },
     "SignUpPage": {
       "Title": "Înscriere",
@@ -68,6 +70,23 @@
       "Title": "Deconectare",
       "Description": "Prin această acțiune vei fi deconectat din aplicație",
       "LogOut": "Deconectare"
+    },
+    "ForgotPasswordPage": {
+      "Title": "Parolă uitată",
+      "Description": "Introdu adresa de email pentru a reseta parola",
+      "Email": "Email",
+      "SubmitButton": "Solicită resetarea parolei"
+    },
+    "EmailSentSuccessfullyPage": {
+      "Title": "Cererea resetare parolă",
+      "Paragraph1": "În câteva momente vei primi un email cu linkul pentru resetarea parolei. Linkul este disponibil timp de o oră.",
+      "Paragraph2": "Poți închide această pagină."
+    },
+    "ResetPasswordPage": {
+      "Title": "Reset password",
+      "Description": "Add your new password below",
+      "Password": "Password",
+      "ConfirmPassword": "Confirm Password"
     },
     "PostsFeed": {
       "InputPlaceholder": "La ce te gândești?",
@@ -89,6 +108,7 @@
           "TextareaError": "Trebuie să scrii ceva",
           "EditSuccessMessage": "Comentariu editat cu succes",
           "DeleteSuccessMessage": "Comentariu șters cu succes",
+          "DeleteErrorMessage": "Eroare la ștergerea comentariului",
           "Edited": "editat",
           "DeleteDialog": {
             "Title": "Ești sigur?",
@@ -112,8 +132,7 @@
         "ConnectionsList": {
           "SearchPlaceholder": "Caută...",
           "NoRecords": {
-            "Title": "Nici-o conectare găsită",
-            "Text": "Mergi la sugestii pentru ați face conexiuni"
+            "Title": "Nici-o conectare găsită"
           },
           "ConnectionCard": {
             "Connection": "{{count}} conexiune",
@@ -207,12 +226,14 @@
         "MyAccount": "Contul meu",
         "Profile": "Profil",
         "Settings": "Setări",
+        "Admin": "Admin",
         "LogOut": "Deconectare"
       }
     },
     "SuggestionsSidebar": {
       "Title": "Sugestii de conectare",
-      "NoRecords": "Nici-o sugestie găsită"
+      "NoRecords": "Nici-o sugestie găsită",
+      "ViewMore": "Arată mai multe"
     },
     "UpsertPostModal": {
       "CreateTitle": "Creează o nouă postare",
@@ -226,6 +247,8 @@
     },
     "UpdateUserModal": {
       "Title": "Editare profil",
+      "Picture": "Poză",
+      "ChooseAFile": "Alege un fișier",
       "FullName": "Nume întreg",
       "Email": "Email",
       "Gender": "Sex",

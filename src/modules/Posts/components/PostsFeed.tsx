@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { getFilteredPosts } from '../apis/post.api';
@@ -8,21 +8,21 @@ import UpsertPostModal from './UpsertPostModal';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
+import { useAuth } from '@/core/auth/AuthContext';
 
 export const PostsFeed: React.FC = () => {
   const [postModalOpened, setPostModalOpened] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed' });
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
   const postResponse = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getFilteredPosts({ sortCriteria: { createdAt: 'desc' }, userId: loggedUser.id}),
+    queryFn: () => getFilteredPosts({ sortCriteria: { createdAt: 'desc' }, userId: user!.id}),
     enabled: false
   });
 
   useEffect(() => {
     postResponse.refetch();
-  }, [loggedUser.id])
+  }, [user!.id])
 
   let postCards;
 

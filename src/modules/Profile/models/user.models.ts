@@ -3,6 +3,7 @@ import { ConnectionStateEnum } from './connection-state.enum';
 import { Theme } from '@/core/models/theme.enum';
 import { LanguageCodes } from '@/core/models/language-codes.enum';
 import { PrivacyOptions } from '@/core/models/privacy-options.enum';
+import { Role } from './role.enum';
 
 export type LoggedUser = {
   id: number;
@@ -11,6 +12,7 @@ export type LoggedUser = {
   email: string;
   theme: Theme;
   language: LanguageCodes;
+  role: Role;
 };
 
 export type User = {
@@ -25,6 +27,9 @@ export type User = {
   posts: Post[];
   following: Connection[];
   follower: Connection[];
+  connectionCount: number;
+  postsCount: number;
+  role: Role;
 };
 
 export type UserProfile = {
@@ -71,6 +76,12 @@ export type UserLoginRequest = {
   password: string;
   language: LanguageCodes;
   theme: Theme;
+};
+
+export type ResetPasswordRequest = {
+  userId: number;
+  password: string;
+  confirmPassword: string;
 };
 
 export type Connection = {

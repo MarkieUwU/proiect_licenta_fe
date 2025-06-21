@@ -11,13 +11,13 @@ import { ModalConfiguration } from '@/components/models/moda.configuration.ts';
 import { useMutation } from '@tanstack/react-query';
 import { createPost, updatePost } from '../apis/post.api.ts';
 import { toast } from 'sonner';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
 import { toBase64 } from '@/core/utils/utils.ts';
+import { useAuth } from '@/core/auth/AuthContext.tsx';
 
 interface UpsertPostModalProps {
   post?: Post;
@@ -26,17 +26,26 @@ interface UpsertPostModalProps {
   requestRefetch: () => void;
 }
 
-const schema = yup.object({
-  title: yup.string().required().min(3),
-  content: yup.string().required().min(5),
-});
-
 const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
   post,
   open,
   onOpenChange,
   requestRefetch
 }) => {
+  const { user } = useAuth();
+  const [image, setImage] = useState('');
+  const { t } = useTranslation();
+
+  const schema = yup.object({
+    title: yup
+      .string()
+      .required(t('ValidationErrors.TitleRequired'))
+      .min(3, t('ValidationErrors.TitleMin', { min: 3 })),
+    content: yup
+      .string()
+      .required(t('ValidationErrors.ContentRequired'))
+      .min(5, t('ValidationErrors.ContentMin', { min: 5 })),
+  });
   const {
     register,
     handleSubmit,
@@ -47,11 +56,6 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
   } = useForm({
     resolver: yupResolver(schema)
   });
-
-  const { loggedUser } = useContext(LoggedUserStateContext);
-  const [image, setImage] = useState('');
-  const { t } = useTranslation();
-
   const title = watch('title');
   const content = watch('content');
 
@@ -116,7 +120,7 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
     if (post) {
       updatePostMutation.mutate({ id: post.id, postRequest });
     } else {
-      createPostMutation.mutate({ id: loggedUser.id, postRequest });
+      createPostMutation.mutate({ id: user!.id, postRequest });
     }
   });
 
@@ -165,17 +169,7 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
       <form className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='title'>{t('Components.UpsertPostModal.Title')}</Label>
-          <Input id='title' {...register('title')} />
-          {errors.title?.type === 'required' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.TitleRequired')}
-            </p>
-          )}
-          {errors.title?.type === 'min' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.TitleMin')}
-            </p>
-          )}
+          <Input id='title' errorMessage={errors.title?.message} {...register('title')} />
         </div>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='picture'>
@@ -193,14 +187,9 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
             rows={4}
             {...register('content')}
           ></Textarea>
-          {errors.content?.type === 'required' && (
+          {!!errors.content && (
             <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.ContentRequired')}
-            </p>
-          )}
-          {errors.content?.type === 'min' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.ContentMin')}
+              {errors?.content.message}
             </p>
           )}
         </div>
@@ -233,5 +222,5 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
     ></Modal>
   );
 };
-
 export default UpsertPostModal;
+

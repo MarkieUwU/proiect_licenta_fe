@@ -18,16 +18,23 @@ export const getInitials = (name: string): string => {
   return initials;
 };
 
+interface ApiErrorHandlerOptions {
+  errorMessage?: string;
+  errorToaster: boolean;
+}
+
 export const apiErrorHandler =
-  <T>(apiFn: any, errorMessage?: string) =>
+  <T>(apiFn: any, options: ApiErrorHandlerOptions = { errorToaster: true }) =>
   async (...args: any[]): Promise<T> => {
     try {
       return await apiFn(...args);
     } catch (e) {
       const error = (e as AxiosError).response?.data as any;
-      const message = errorMessage ?? error.message;
-      toast.error(message);
-      throw error;
+      const message = options.errorMessage ?? error.message;
+      if (options.errorToaster) {
+        toast.error(message);
+      }
+      throw new Error(message);
     }
   };
 
@@ -49,7 +56,8 @@ export const apiErrorHandler =
       username: decodedValue.username,
       email: decodedValue.email,
       theme: decodedValue.theme,
-      language: decodedValue.language
+      language: decodedValue.language,
+      role: decodedValue.role
     });
 
     return loggedUser;

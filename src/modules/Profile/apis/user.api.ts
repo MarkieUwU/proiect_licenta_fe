@@ -4,6 +4,7 @@ import {
   ConnectionRequest,
   ConnectionStateResponse,
   LoggedUser,
+  ResetPasswordRequest,
   Settings,
   SettingsRequest,
   Suggestion,
@@ -16,16 +17,20 @@ import {
 } from '../models/user.models';
 import { apiErrorHandler } from '@/core/utils/utils';
 
-export const getUsersList = apiErrorHandler<User[]>(async (nrOfUsers?: number) => {
-  const { data } = await apiClient.get('/user', {
-    params: { nr: nrOfUsers },
-  });
-  return data;
-});
+export const getUsersList = apiErrorHandler<User[]>(
+  async (nrOfUsers?: number) => {
+    const { data } = await apiClient.get('/user', {
+      params: { nr: nrOfUsers },
+    });
+    return data;
+  }
+);
 
 export const getUserDetails = apiErrorHandler<UserProfile>(
-  async ( username: string ) => {
-    const { data } = await apiClient.post<UserProfile>('/user/details', { username });
+  async (username: string) => {
+    const { data } = await apiClient.post<UserProfile>('/user/details', {
+      username,
+    });
     return data;
   }
 );
@@ -42,11 +47,41 @@ export const registerUser = apiErrorHandler<{ token: any; user: LoggedUser }>(
   }
 );
 
-export const loginUser = apiErrorHandler<{ token: any, userProfile: LoggedUser }>(
-  async (loginRequest: UserLoginRequest) => {
-    const { data } = await apiClient.post('/user/login', loginRequest);
+export const loginUser = apiErrorHandler<{
+  token: any;
+  userProfile: LoggedUser;
+}>(async (loginRequest: UserLoginRequest) => {
+  const { data } = await apiClient.post('/user/login', loginRequest);
+  return data;
+});
+
+export const requestPasswordReset = apiErrorHandler(
+  async ({ email }: { email: string }) => {
+    const { data } = await apiClient.post('/user/password/reset/request', {
+      email,
+    });
     return data;
   }
+);
+
+export const resetPassword = apiErrorHandler(
+  async (request: ResetPasswordRequest) => {
+    const { data } = await apiClient.put(
+      `/user/password/reset/${request.userId}`,
+      request
+    );
+    return data;
+  }
+);
+
+export const resetTokenVerify = apiErrorHandler<{ userId: number }>(
+  async ({ token }: { token: string }) => {
+    const { data } = await apiClient.get(
+      `/user/password/reset/token/verify/${token}`
+    );
+    return data;
+  },
+  { errorToaster: false }
 );
 
 export const updateUser = apiErrorHandler(
@@ -68,8 +103,10 @@ export const deleteUser = async (id: string) => {
 };
 
 export const getConnections = apiErrorHandler<UserConnection[]>(
-  async ({id, searchString}: { id: number, searchString: string }) => {
-    const { data } = await apiClient.post(`/user/connections/${id}`, { searchString });
+  async ({ id, searchString }: { id: number; searchString: string }) => {
+    const { data } = await apiClient.post(`/user/connections/${id}`, {
+      searchString,
+    });
     return data;
   }
 );
@@ -79,7 +116,7 @@ export const getConnectionRequests = apiErrorHandler<ConnectionRequest[]>(
     const { data } = await apiClient.get(`/user/connections/requests/${id}`);
     return data;
   }
-)
+);
 
 export const getSuggestions = apiErrorHandler<Suggestion[]>(
   async ({ id, searchString }: { id: number; searchString?: string }) => {
@@ -119,52 +156,59 @@ export const removeConnection = apiErrorHandler<void>(
 );
 
 export const getConnectionState = apiErrorHandler<ConnectionStateResponse>(
-  async ({ userId, connectionId }: { userId: number; connectionId: number }) => {
+  async ({
+    userId,
+    connectionId,
+  }: {
+    userId: number;
+    connectionId: number;
+  }) => {
     const { data } = await apiClient.get(
       `/user/connection/${userId}/with/${connectionId}`
     );
-    return data
+    return data;
   }
 );
 
-export const getAllConnections = apiErrorHandler<Connection[]>(
-  async () => {
-    const { data } = await apiClient.get('/user/connections/all');
-    return data;
-  }
-)
+export const getAllConnections = apiErrorHandler<Connection[]>(async () => {
+  const { data } = await apiClient.get('/user/connections/all');
+  return data;
+});
 
 export const getTopUsersByConnection = apiErrorHandler<Connection[]>(
   async () => {
     const { data } = await apiClient.get('/user/top/connections');
     return data;
   }
-)
+);
 
-export const getTopUsersByPosts = apiErrorHandler<User[]>(
-  async () => {
-    const { data } = await apiClient.get('/user/top/posts');
-    return data;
-  }
-)
+export const getTopUsersByPosts = apiErrorHandler<User[]>(async () => {
+  const { data } = await apiClient.get('/user/top/posts');
+  return data;
+});
 
-export const getGenderRatio = apiErrorHandler<number[]>(
-  async () => {
-    const { data } = await apiClient.get('/user/gender/ratio');
-    return data;
-  }
-)
+export const getGenderRatio = apiErrorHandler<number[]>(async () => {
+  const { data } = await apiClient.get('/user/gender/ratio');
+  return data;
+});
 
 export const updateSettings = apiErrorHandler<Settings>(
-  async ({ userId, settingsRequest }: { userId: number, settingsRequest: SettingsRequest }) => {
-    const { data } = await apiClient.put(`/user/settings/${userId}`, settingsRequest);
+  async ({
+    userId,
+    settingsRequest,
+  }: {
+    userId: number;
+    settingsRequest: SettingsRequest;
+  }) => {
+    const { data } = await apiClient.put(
+      `/user/settings/${userId}`,
+      settingsRequest
+    );
     return data;
   }
-)
+);
 
-export const getSettings = apiErrorHandler<Settings>(
-  async (userId: number) => {
-    const { data } = await apiClient.get(`/user/settings/${userId}`);
-    return data;
-  }
-)
+export const getSettings = apiErrorHandler<Settings>(async (userId: number) => {
+  const { data } = await apiClient.get(`/user/settings/${userId}`);
+  return data;
+});

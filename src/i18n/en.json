@@ -39,7 +39,8 @@
     "TitleRequired": "Please provide a title",
     "TitleMin": "Title should be at least 3 characters long",
     "ContentRequired": "The text is required",
-    "ContentMin": "The content should be at least 5 characters long"
+    "ContentMin": "The content should be at least 5 characters long",
+    "InvalidField": "Invalid field"
   },
   "Pages": {
     "LoginPage": {
@@ -47,6 +48,7 @@
       "Description": "Enter your username below to login to your account",
       "Username": "Username",
       "Password": "Password",
+      "ForgotPassword": "Forgot your password?",
       "NoAccount": "Don't have an account?",
       "Login": "Login",
       "SignUp": "Sign Up"
@@ -67,7 +69,25 @@
     "LogOutPage": {
       "Title": "Log Out",
       "Description": "By proceeding you will be loged out of the application",
-      "LogOut": "Log Out"
+      "LogOut": "Log Out",
+      "Cancel": "Cancel"
+    },
+    "ForgotPasswordPage": {
+      "Title": "Forgot password",
+      "Description": "Enter your email address in order to reset your password",
+      "Email": "Email",
+      "SubmitButton": "Request password reset"
+    },
+    "EmailSentSuccessfullyPage": {
+      "Title": "Request sent successfully",
+      "Paragraph1": "We received your request for resetting the password.",
+      "Paragraph2": "We've sent you an email that contains a link to a page where you can reset your password. The link is available for 1h."
+    },
+    "ResetPasswordPage": {
+      "Title": "Reset password",
+      "Description": "Add your new password below",
+      "Password": "Password",
+      "ConfirmPassword": "Confirm Password"
     },
     "PostsFeed": {
       "InputPlaceholder": "What's on your mind?",
@@ -88,7 +108,8 @@
           "TextareaPlaceholder": "Add a comment...",
           "TextareaError": "You have to type in something",
           "EditSuccessMessage": "Comment edited succesfully",
-          "DeleteSuccessMessage": "Comment deleted with success",
+          "DeleteSuccessMessage": "Comment deleted successfully",
+          "DeleteErrorMessage": "Failed to delete comment",
           "Edited": "edited",
           "DeleteDialog": {
             "Title": "Are you sure?",
@@ -112,8 +133,7 @@
         "ConnectionsList": {
           "SearchPlaceholder": "Search...",
           "NoRecords": {
-            "Title": "No connections found",
-            "Text": "Go to sugestions to make some connections"
+            "Title": "No connections found"
           },
           "ConnectionCard": {
             "Connection": "{{count}} connection",
@@ -130,8 +150,7 @@
       "SuggestionsTab": {
         "SearchPlaceholder": "Search...",
         "NoRecords": {
-          "Title": "No suggestions found",
-          "Text": "There are no suggestions available for the moment"
+          "Title": "No suggestions found"
         }
       }
     },
@@ -207,12 +226,14 @@
         "MyAccount": "My Account",
         "Profile": "Profile",
         "Settings": "Settings",
+        "Admin": "Admin",
         "LogOut": "Log Out"
       }
     },
     "SuggestionsSidebar": {
       "Title": "Connection Suggestions",
-      "NoRecords": "No suggestions found"
+      "NoRecords": "No suggestions found",
+      "ViewMore": "View more"
     },
     "UpsertPostModal": {
       "CreateTitle": "Create New Post",
@@ -226,6 +247,8 @@
     },
     "UpdateUserModal": {
       "Title": "Update Profile",
+      "Picture": "Picture",
+      "ChooseAFile": "Choose a file",
       "FullName": "Full Name",
       "Email": "Email",
       "Gender": "Gender",

@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useToken } from '../../hooks/useToken';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { loginUser } from '../../../modules/Profile/apis/user.api';
 import {
   Card,
@@ -18,28 +17,37 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/core/components/ThemeProvider';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
-
-const schema = yup.object({
-  username: yup.string().required().min(3),
-  password: yup.string().required().min(4),
-});
+import { useAuth } from '../AuthContext';
 
 export const LogInPage: React.FC = () => {
-  const { token, setToken } = useToken();
   const { theme } = useTheme();
-  const { updateLoggedUser } = useContext(LoggedUserStateContext);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  const schema = yup.object({
+    username: yup
+      .string()
+      .required(t('ValidationErrors.UsernameRequired'))
+      .min(3, t('ValidationErrors.UsernameMin', { min: 3 })),
+    password: yup
+      .string()
+      .required(t('ValidationErrors.PasswordRequired'))
+      .min(4, t('ValidationErrors.PasswordMin', { min: 4 })),
+  });
+
   const {
     register,
     handleSubmit,
     watch,
     reset,
     formState: { errors, isValid },
-  } = useForm({ resolver: yupResolver(schema) });
-  const [loading, setLoading] = useState(false);
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onTouched',
+    reValidateMode: 'onBlur',
+  });
   const username = watch('username');
   const password = watch('password');
 
@@ -47,8 +55,7 @@ export const LogInPage: React.FC = () => {
     mutationFn: loginUser,
     onSuccess: (data) => {
       const { token, userProfile } = data;
-      updateLoggedUser(userProfile);
-      setToken(token);
+      login(token, userProfile);
       setLoading(false);
       reset();
       navigate({ to: '/' });
@@ -60,17 +67,21 @@ export const LogInPage: React.FC = () => {
 
   const onSubmit = handleSubmit(() => {
     setLoading(true);
-
-    loginMutation.mutate({ username, password, theme, language: i18n.language });
+    loginMutation.mutate({
+      username,
+      password,
+      theme,
+      language: i18n.language,
+    });
   });
 
-  if (token?.length) {
-    navigate({ to: '/'});
-    return;
+  if (isAuthenticated) {
+    navigate({ to: '/' });
+    return null;
   }
 
   return (
-    <Card className='w-[450px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
+    <Card className='w-full max-w-[500px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
       <CardHeader>
         <CardTitle className='text-2xl'>{t('Pages.LoginPage.Title')}</CardTitle>
         <CardDescription className='py-3'>
@@ -80,46 +91,39 @@ export const LogInPage: React.FC = () => {
       <CardContent>
         <form>
           <div className='flex flex-col gap-6'>
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col gap-3'>
               <Label htmlFor='username'>{t('Pages.LoginPage.Username')}</Label>
               <Input
                 id='username'
                 type='username'
                 required
+                errorMessage={errors.username?.message}
                 {...register('username')}
               />
-              {errors.username?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.UsernameRequired')}
-                </p>
-              )}
-              {errors.username?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.UsernameMin')}
-                </p>
-              )}
             </div>
-            <div className='flex flex-col gap-2'>
-              <Label htmlFor='password'>{t('Pages.LoginPage.Password')}</Label>
+            <div className='flex flex-col gap-3'>
+              <div className='flex justify-between items-center'>
+                <Label htmlFor='password'>
+                  {t('Pages.LoginPage.Password')}
+                </Label>
+                <Link
+                  to='/forgot-password'
+                  className='hover:underline underline-offset-4 text-sm'
+                >
+                  {t('Pages.LoginPage.ForgotPassword')}
+                </Link>
+              </div>
               <Input
                 id='password'
                 type='password'
                 required
+                errorMessage={errors.password?.message}
                 {...register('password')}
               />
-              {errors.password?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordRequired')}
-                </p>
-              )}
-              {errors.password?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordMin')}
-                </p>
-              )}
             </div>
             <Button
               className='w-full mt-6'
+              type='submit'
               loading={loading}
               disabled={!isValid}
               onClick={onSubmit}
@@ -129,7 +133,7 @@ export const LogInPage: React.FC = () => {
           </div>
           <div className='mt-4 text-center text-sm'>
             {t('Pages.LoginPage.NoAccount')}
-            <Link to='/signup' className='underline underline-offset-4 ps-2'>
+            <Link to='/signup' className='hover:underline underline-offset-4 ps-2'>
               {t('Pages.LoginPage.SignUp')}
             </Link>
           </div>

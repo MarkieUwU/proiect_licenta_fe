@@ -1,9 +1,8 @@
 // src/components/Header.tsx
 import { Link } from '@tanstack/react-router';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { AvatarComponent } from './Avatar';
 import { getInitials } from '@/core/utils/utils';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import MyAccountMenu from './MyAccountMenu';
 import {
   NavigationMenu,
@@ -14,15 +13,16 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '@/modules/Profile/apis/user.api';
+import { useAuth } from '@/core/auth/AuthContext';
 
 const Header: React.FC = () => {
   const [openMenu, setOpenMenu] = useState(false);
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
   const { t } = useTranslation('translation', { keyPrefix: 'Components.Header' });
 
   const userResponse = useQuery({
-    queryKey: ['userDetails', { username: loggedUser.username }],
-    queryFn: () => getUserDetails(loggedUser.username)
+    queryKey: ['userDetails', { username: user!.username }],
+    queryFn: () => getUserDetails(user!.username)
   });
 
   const handleMenuOpen = (value: boolean) => {
@@ -31,7 +31,7 @@ const Header: React.FC = () => {
 
   return (
     <NavigationMenu className='max-w-full justify-end p-3'>
-      <NavigationMenuList className='flex flex-end gap-4'>
+      <NavigationMenuList className='flex flex-end gap-4 me-3'>
         <NavigationMenuItem>
           <Link to='/' className='[&.active]:font-bold'>
             <NavigationMenuLink>{t('Home')}</NavigationMenuLink>
@@ -44,13 +44,13 @@ const Header: React.FC = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <MyAccountMenu
-            username={loggedUser.username}
+            username={user!.username}
             open={openMenu}
             onOpenChange={handleMenuOpen}
           >
             <div className='cursor-pointer' onClick={() => setOpenMenu(true)}>
               <AvatarComponent
-                initials={getInitials(loggedUser.username)}
+                initials={getInitials(user!.username)}
                 image={userResponse.data?.profileImage}
               ></AvatarComponent>
             </div>

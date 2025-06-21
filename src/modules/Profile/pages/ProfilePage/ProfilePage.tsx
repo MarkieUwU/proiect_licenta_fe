@@ -1,9 +1,9 @@
 import { AvatarComponent } from '@/layout/components/Avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import UserDetails from '../../components/UserDetails';
 import { Separator } from '@/components/ui/separator';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   acceptConnection,
   getConnectionState,
@@ -15,10 +15,8 @@ import { getInitials } from '@/core/utils/utils';
 import PostCard from '@/modules/Posts/components/PostCard';
 import { Post } from '@/modules/Posts/models/post.models';
 import { Route } from '@/routes/_main/$username.profile';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import { Button } from '@/components/ui/button';
 import UpdateUserModal from '../../components/UpdateUserModal';
-import { ErrorPage } from '@/core/pages/ErrorPage';
 import { ConnectionStateEnum } from '../../models/connection-state.enum';
 import { Skeleton } from '@/components/ui/skeleton';
 import UserConnections from '../../components/UserConnections';
@@ -26,32 +24,32 @@ import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
 import { PrivacyOptions } from '@/core/models/privacy-options.enum';
+import { useAuth } from '@/core/auth/AuthContext';
 
 const ProfilePage: React.FC = () => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user: loggedUser } = useAuth();
   const { t } = useTranslation('translation', {
     keyPrefix: 'Pages.ProfilePage',
   });
   const [editModalOpened, setEditModalOpened] = useState(false);
-  const { username } = Route.useParams();
   const queryClient = useQueryClient();
-
-  const userResponse = useQuery({
+  
+  const { username } = Route.useParams();
+  const { data: user } = useSuspenseQuery({
     queryKey: ['userDetails', { username }],
     queryFn: () => getUserDetails(username),
   });
 
-  const user = userResponse.data;
-  const ownProfile = loggedUser.id === user?.id;
+  const ownProfile = loggedUser!.id === user?.id;
   const isConnection = !!user?.connections.some(
-    (connection) => connection.id === loggedUser.id
+    (connection) => connection.id === loggedUser!.id
   );
 
   const connectionStateResponse = useQuery({
     queryKey: ['connection'],
     queryFn: () =>
-      getConnectionState({ userId: loggedUser.id, connectionId: user?.id }),
-    enabled: !!user?.id && loggedUser.id !== user?.id,
+      getConnectionState({ userId: loggedUser!.id, connectionId: user?.id }),
+    enabled: !!user?.id && loggedUser!.id !== user?.id,
   });
 
   const requestConnectionMutation = useMutation({
@@ -77,16 +75,6 @@ const ProfilePage: React.FC = () => {
     },
   });
 
-  if (userResponse.isPending) {
-    return <i className='ri-loader-4-line animate-spin'></i>;
-  }
-
-  if (!user) {
-    return (
-      <ErrorPage title={t('ErrorPage.Title')} text={t('ErrorPage.Text')} />
-    );
-  }
-
   const initials = getInitials(user.username);
 
   const showInformation = (privacyOption: PrivacyOptions) => {
@@ -106,6 +94,7 @@ const ProfilePage: React.FC = () => {
     if (showInformation(user.settings.connectionsPrivacy)) {
       return (
         <UserConnections
+          userId={user.id}
           ownConnections={ownProfile}
           userConnections={user.connections}
         />
@@ -133,7 +122,7 @@ const ProfilePage: React.FC = () => {
 
   const handleRequestConnection = () => {
     requestConnectionMutation.mutate({
-      id: loggedUser.id,
+      id: loggedUser!.id,
       connectionId: user.id,
     });
   };
@@ -147,7 +136,7 @@ const ProfilePage: React.FC = () => {
 
   const handleCancelConnection = () => {
     removeConnectionMutation.mutate({
-      id: loggedUser.id,
+      id: loggedUser!.id,
       connectionId: user.id,
     });
   };

@@ -12,7 +12,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ title, text }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'Components.ErrorPage' });
 
   return (
-    <Card className="w-[450px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <Card className="w-full max-w-[500px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <CardHeader>
         <CardTitle className="text-center text-3xl">
           {title ?? t('Title')}

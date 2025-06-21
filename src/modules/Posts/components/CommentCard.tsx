@@ -1,5 +1,5 @@
 // src/components/Comment.tsx
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { UserComment } from '../models/comment.models';
 import {
   Card,
@@ -12,13 +12,13 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteComment, updateComment } from '../apis/comment.api';
 import { toast } from 'sonner';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { DeleteDialog } from '@/components/ui/DeleteDialog';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/core/auth/AuthContext';
 
 interface CommentProps {
   comment: UserComment;
@@ -33,7 +33,7 @@ export const CommentCard: React.FC<CommentProps> = ({
   comment,
   onDeleteComment,
 }) => {
-  const { loggedUser } = useContext(LoggedUserStateContext);
+  const { user } = useAuth();
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed.PostCard.CommentCard' })
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -52,7 +52,7 @@ export const CommentCard: React.FC<CommentProps> = ({
   });
   const commentText = watch('comment');
   const queryClient = useQueryClient();
-  const ownComment = comment.userId === loggedUser.id;
+  const ownComment = comment.userId === user!.id;
   const textareaState = getFieldState('comment');
 
   const deleteCommentMutation = useMutation({

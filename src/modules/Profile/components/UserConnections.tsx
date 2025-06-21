@@ -6,11 +6,13 @@ import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
 
 interface UserConnectionsProps {
+  userId: number;
   userConnections: ConnectionUser[];
   ownConnections: boolean;
 }
 
 const UserConnections: React.FC<UserConnectionsProps> = ({
+  userId,
   userConnections,
   ownConnections
 }) => {
@@ -18,7 +20,10 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.ProfilePage.UserConnections' });
 
   const navigateToConnectionsPage = () => {
-    navigate({ to: '/connections' });
+    navigate({ 
+      to: '/connections/$userId',
+      params: { userId: userId.toString() }
+    });
   };
 
   const navigateToSuggestions = () => {
@@ -28,27 +33,24 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
     });
   };
 
-  let connectionsContent;
+  const connectionsContent = () => {
+    if (userConnections.length) {
+      const connectionsList = userConnections
+        .slice(0, 6)
+        .map((connection: ConnectionUser) => (
+          <UserCard key={connection.id} user={connection} />
+        ));
+      return (
+        <div className='flex flex-wrap lg:flex-col gap-2'>
+          {connectionsList}
+        </div>
+      );
+    }
 
-  if (userConnections.length) {
-    const connectionsList = userConnections
-      .slice(0, 6)
-      .map((connection: ConnectionUser) => (
-        <UserCard key={connection.id} user={connection} />
-      ));
-    connectionsContent = (
-      <div className='flex flex-wrap lg:flex-col gap-2'>
-        {connectionsList}
-      </div>
-    );
-  } else {
     const text = ownConnections ? t('NoRecords.Text') : null;
-    connectionsContent = (
+    return (
       <div className='flex flex-col w-full items-center'>
-        <NoRecordsFound
-          title={t('NoRecords.Title')}
-          text={text}
-        />
+        <NoRecordsFound title={t('NoRecords.Title')} text={text} />
         {ownConnections && (
           <Button
             variant='ghost'
@@ -64,7 +66,7 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
 
   return (
     <div className='flex flex-col gap-2'>
-    {connectionsContent}
+    {connectionsContent()}
     {userConnections.length > 6 && (
       <Button
         variant='ghost'

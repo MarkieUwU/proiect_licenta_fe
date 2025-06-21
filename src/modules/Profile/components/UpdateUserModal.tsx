@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from '../apis/user.api';
 import {
@@ -24,19 +24,13 @@ import { AvatarComponent } from '@/layout/components/Avatar';
 import Selector from '@/components/ui/Selector';
 import { SelectorConfiguration } from '@/components/models/selector.configuration';
 import { Gender } from '../models/gender.enum';
-import { LoggedUserStateContext } from '../hooks/logged-user-state-context';
+import { useAuth } from '@/core/auth/AuthContext';
 
 interface UpdateUserModalProps {
   user: UserProfile;
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }
-
-const schema = yup.object({
-  fullName: yup.string().required().min(5),
-  email: yup.string().required().email(),
-  bio: yup.string(),
-});
 
 const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   user,
@@ -47,8 +41,20 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   const [image, setImage] = useState('');
   const [gender, setGender] = useState(user.gender);
   const { t } = useTranslation();
-  const { loggedUser, updateLoggedUser } = useContext(LoggedUserStateContext);
+  const { user: authUser, updateUser: authUpdateUser } = useAuth();
   const queryClient = useQueryClient();
+
+  const schema = yup.object({
+    fullName: yup
+      .string()
+      .required(t('ValidationErrors.FullNameRequired'))
+      .min(5, t('ValidationErrors.FullNameMin', { min: 5 })),
+    email: yup
+      .string()
+      .required(t('ValidationErrors.EmailRequired'))
+      .email(t('ValidationErrors.EmailError')),
+    bio: yup.string(),
+  });
   const {
     register,
     handleSubmit,
@@ -59,19 +65,20 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const {
-      getRootProps,
-      getInputProps,
-    } = useDropzone({
-      accept: {
-        'image/*': [],
-      },
-      maxFiles: 1,
-      onDrop: (files) => {
-        handleFileDrop(files);
-      }
-    });
-  
+  const fullName = watch('fullName');
+  const email = watch('email');
+  const bio = watch('bio');
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/*': [],
+    },
+    maxFiles: 1,
+    onDrop: (files) => {
+      handleFileDrop(files);
+    },
+  });
+
   useEffect(() => {
     if (!open) return;
 
@@ -79,28 +86,24 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
     setValue('fullName', user.fullName);
     setValue('email', user.email);
     setValue('bio', user.bio ?? '');
-  }, [open])
-  
-  const fullName = watch('fullName');
-  const email = watch('email');
-  const bio = watch('bio');
+  }, [open]);
 
   const genderSelectorConfig: SelectorConfiguration = {
-      placeholder: t('Pages.SignUpPage.Gender'),
-      items: [
-        { label: t('Enums.Gender.Male'), value: Gender.male },
-        { label: t('Enums.Gender.Female'), value: Gender.female }
-      ]
-    };
+    placeholder: t('Pages.SignUpPage.Gender'),
+    items: [
+      { label: t('Enums.Gender.Male'), value: Gender.male },
+      { label: t('Enums.Gender.Female'), value: Gender.female },
+    ],
+  };
 
-  const updateLogedUser = () => {
+  const updateAuthUser = () => {
     const updatedUser: LoggedUser = {
-      ...(loggedUser || ({} as LoggedUser)),
+      ...(authUser || ({} as LoggedUser)),
       fullName,
       email,
     };
 
-    updateLoggedUser(updatedUser);
+    authUpdateUser(updatedUser);
   };
 
   const updateUserMutation = useMutation({
@@ -110,7 +113,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
         queryKey: ['userDetails', { username: user.username }],
       });
       setLoading(false);
-      updateLogedUser();
+      updateAuthUser();
       reset();
       toast.success(t('Components.UpdateUserModal.SuccessMessage'));
       onOpenChange(false);
@@ -134,12 +137,12 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
   });
 
   const handleFileDrop = async (files: any) => {
-      const file = files[0];
-      if (file) {
-        const base64 = (await toBase64(file)) as string;
-        setImage(base64);
-      }
-    };
+    const file = files[0];
+    if (file) {
+      const base64 = (await toBase64(file)) as string;
+      setImage(base64);
+    }
+  };
 
   const dropZone = (
     <div {...getRootProps()}>
@@ -151,7 +154,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       ) : (
         <div className='flex justify-center w-full'>
           <div className='flex justify-center items-center w-[300px] h-[300px] rounded-full border cursor-pointer'>
-            <span>Choose a file</span>
+            {t('Components.UpdateUserModal.ChooseAFile')}
           </div>
         </div>
       )}
@@ -164,7 +167,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       <form className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='picture'>
-            {t('Components.UpsertPostModal.Picture')}
+            {t('Components.UpdateUserModal.Picture')}
           </Label>
           {dropZone}
         </div>
@@ -172,37 +175,29 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
           <Label htmlFor='fullName'>
             {t('Components.UpdateUserModal.FullName')}
           </Label>
-          <Input id='fullName' {...register('fullName')} />
-          {errors.fullName?.type === 'required' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.FullNameRequired')}
-            </p>
-          )}
-          {errors.fullName?.type === 'min' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.FullNameMin')}
-            </p>
-          )}
+          <Input
+            id='fullName'
+            errorMessage={errors.fullName?.message}
+            {...register('fullName')}
+          />
         </div>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='email'>{t('Components.UpdateUserModal.Email')}</Label>
-          <Input id='email' {...register('email')} />
-          {errors.email?.type === 'required' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.EmailRequired')}
-            </p>
-          )}
-          {errors.email?.type === 'email' && (
-            <p className='text-red-500 text-sm'>
-              {t('ValidationErrors.EmailError')}
-            </p>
-          )}
+          <Input
+            id='email'
+            errorMessage={errors.email?.message}
+            {...register('email')}
+          />
         </div>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='gender'>
             {t('Components.UpdateUserModal.Gender')}
           </Label>
-          <Selector {...genderSelectorConfig} defaultValue={user.gender} onValueChange={(value) => setGender(value)} />
+          <Selector
+            {...genderSelectorConfig}
+            defaultValue={user.gender}
+            onValueChange={(value) => setGender(value)}
+          />
         </div>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='bio'>{t('Components.UpdateUserModal.Bio')}</Label>

@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useToken } from '../../hooks/useToken';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { registerUser } from '../../../modules/Profile/apis/user.api';
 import {
   Card,
@@ -21,25 +20,39 @@ import Selector from '@/components/ui/Selector';
 import { SelectorConfiguration } from '@/components/models/selector.configuration';
 import { Gender } from '@/modules/Profile/models/gender.enum';
 import { useTheme } from '@/core/components/ThemeProvider';
-import { LoggedUserStateContext } from '@/modules/Profile/hooks/logged-user-state-context';
-
-const schema = yup.object({
-  fullName: yup.string().required().min(5),
-  username: yup.string().required().min(3),
-  email: yup.string().required().email(),
-  password: yup.string().required().min(4),
-  confirmPassword: yup.string().required().min(4),
-});
+import { useAuth } from '../AuthContext';
 
 export const RegistrationPage: React.FC = () => {
-  const { setToken } = useToken();
   const { theme } = useTheme();
   const { i18n } = useTranslation();
-  const { updateLoggedUser } = useContext(LoggedUserStateContext);
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [gender, setGender] = useState(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const schema = yup.object({
+    fullName: yup
+      .string()
+      .required(t('ValidationErrors.FullNameRequired'))
+      .min(5, t('ValidationErrors.FullNameMin', { min: 5 })),
+    username: yup
+      .string()
+      .required(t('ValidationErrors.UsernameRequired'))
+      .min(3, t('ValidationErrors.UsernameMin', { min: 3 })),
+    email: yup
+      .string()
+      .required(t('ValidationErrors.EmailRequired'))
+      .email(t('ValidationErrors.EmailError')),
+    password: yup
+      .string()
+      .required(t('ValidationErrors.PasswordRequired'))
+      .min(4, t('ValidationErrors.PasswordMin', { min: 4 })),
+    confirmPassword: yup
+      .string()
+      .required(t('ValidationErrors.PasswordRequired'))
+      .min(4, t('ValidationErrors.PasswordMin', { min: 4 })),
+  });
   const {
     register,
     handleSubmit,
@@ -47,8 +60,7 @@ export const RegistrationPage: React.FC = () => {
     reset,
     formState: { errors, isValid },
   } = useForm({ resolver: yupResolver(schema) });
-  const queryClient = useQueryClient();
-const fullName = watch('fullName');
+  const fullName = watch('fullName');
   const username = watch('username');
   const email = watch('email');
   const password = watch('password');
@@ -58,17 +70,15 @@ const fullName = watch('fullName');
     placeholder: t('Pages.SignUpPage.Gender'),
     items: [
       { label: t('Enums.Gender.Male'), value: Gender.male },
-      { label: t('Enums.Gender.Female'), value: Gender.female }
-    ]
+      { label: t('Enums.Gender.Female'), value: Gender.female },
+    ],
   };
 
   const createMutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
       const { token, user } = data;
-      setToken(token);
-      updateLoggedUser(user);
+      login(token, user);
       reset();
       setLoading(false);
       navigate({ to: '/' });
@@ -89,12 +99,12 @@ const fullName = watch('fullName');
       password,
       confirmPassword,
       theme,
-      language: i18n.language
+      language: i18n.language,
     });
   });
 
   return (
-    <Card className='w-[450px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
+    <Card className='w-full max-w-[500px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
       <CardHeader>
         <CardTitle className='text-2xl'>
           {t('Pages.SignUpPage.Title')}
@@ -112,18 +122,9 @@ const fullName = watch('fullName');
                 id='username'
                 type='username'
                 required
+                errorMessage={errors.username?.message}
                 {...register('username')}
               />
-              {errors.username?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.UsernameRequired')}
-                </p>
-              )}
-              {errors.username?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.UsernameMin')}
-                </p>
-              )}
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='fullName'>{t('Pages.SignUpPage.FullName')}</Label>
@@ -131,36 +132,26 @@ const fullName = watch('fullName');
                 id='fullName'
                 type='fullName'
                 required
+                errorMessage={errors.fullName?.message}
                 {...register('fullName')}
               />
-              {errors.fullName?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.FullNameRequired')}
-                </p>
-              )}
-              {errors.fullName?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.FullNameMin')}
-                </p>
-              )}
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='email'>{t('Pages.SignUpPage.Email')}</Label>
-              <Input id='email' type='email' required {...register('email')} />
-              {errors.email?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.EmailRequired')}
-                </p>
-              )}
-              {errors.email?.type === 'email' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.EmailError')}
-                </p>
-              )}
+              <Input
+                id='email'
+                type='email'
+                required
+                errorMessage={errors.email?.message}
+                {...register('email')}
+              />
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='gender'>{t('Pages.SignUpPage.Gender')}</Label>
-              <Selector {...genderSelectorConfig} onValueChange={(value) => setGender(value)} />
+              <Selector
+                {...genderSelectorConfig}
+                onValueChange={(value) => setGender(value)}
+              />
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='password'>{t('Pages.SignUpPage.Password')}</Label>
@@ -168,18 +159,9 @@ const fullName = watch('fullName');
                 id='password'
                 type='password'
                 required
+                errorMessage={errors.password?.message}
                 {...register('password')}
               />
-              {errors.password?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordRequired')}
-                </p>
-              )}
-              {errors.password?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordMin')}
-                </p>
-              )}
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='confirmPassword'>
@@ -189,18 +171,9 @@ const fullName = watch('fullName');
                 id='confirmPassword'
                 type='password'
                 required
+                errorMessage={errors.confirmPassword?.message}
                 {...register('confirmPassword')}
               />
-              {errors.confirmPassword?.type === 'required' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordRequired')}
-                </p>
-              )}
-              {errors.confirmPassword?.type === 'min' && (
-                <p className='text-red-500 text-sm'>
-                  {t('ValidationErrors.PasswordMin')}
-                </p>
-              )}
             </div>
             <Button
               className='w-full mt-6'

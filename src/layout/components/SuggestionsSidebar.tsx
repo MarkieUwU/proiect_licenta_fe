@@ -46,7 +46,7 @@ const SuggestionsSidebar: React.FC = () => {
             variant='ghost'
             className='mx-auto'
             onClick={() =>
-              navigate({ to: '/connections', hash: 'suggestions' })
+              navigate({ to: '/friends', hash: 'suggestions' })
             }
           >
             {t('ViewMore')}

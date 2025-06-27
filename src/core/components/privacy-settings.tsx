@@ -35,7 +35,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
 
   return (
     <div className='flex flex-col'>
-      <table className='text-md font-semibold mt-1 w-[300px]'>
+      <table className='text-md font-semibold mt-1 w-full'>
         <thead>
           <tr>
             <th
@@ -51,10 +51,14 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             <td className='py-4 pe-3'>
               {t('Pages.Settings.PrivacySettings.ProfileDetails')}
             </td>
-            <td>
+            <td className='flex justify-end pt-3'>
               <Selector
                 defaultValue={settings.detailsPrivacy}
-                onValueChange={(value) => onSettingsChange({ detailsPrivacy: value } as SettingsRequest)}
+                onValueChange={(value) =>
+                  onSettingsChange({
+                    detailsPrivacy: value,
+                  } as SettingsRequest)
+                }
                 {...detailsPrivacySelectorConfig}
               />
             </td>
@@ -63,10 +67,14 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             <td className='py-4 pe-3'>
               {t('Pages.Settings.PrivacySettings.Connections')}
             </td>
-            <td>
+            <td className='flex justify-end pt-3'>
               <Selector
                 defaultValue={settings.connectionsPrivacy}
-                onValueChange={(value) => onSettingsChange({ connectionsPrivacy: value } as SettingsRequest)}
+                onValueChange={(value) =>
+                  onSettingsChange({
+                    connectionsPrivacy: value,
+                  } as SettingsRequest)
+                }
                 {...connectionsPrivacySelectorConfig}
               />
             </td>
@@ -75,10 +83,12 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             <td className='py-4 pe-3'>
               {t('Pages.Settings.PrivacySettings.Posts')}
             </td>
-            <td>
+            <td className='flex justify-end pt-3'>
               <Selector
                 defaultValue={settings.postsPrivacy}
-                onValueChange={(value) => onSettingsChange({ postsPrivacy: value } as SettingsRequest)}
+                onValueChange={(value) =>
+                  onSettingsChange({ postsPrivacy: value } as SettingsRequest)
+                }
                 {...postsPrivacySelectorConfig}
               />
             </td>

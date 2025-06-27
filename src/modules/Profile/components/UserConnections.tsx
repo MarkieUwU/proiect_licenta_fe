@@ -1,12 +1,12 @@
-import { Button } from '@/components/ui/button';
 import { ConnectionUser } from '../models/user.models';
-import { UserCard } from './UserCard';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { UserCard } from './UserCard';
+import { Button } from '@/components/ui/button';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
 
 interface UserConnectionsProps {
-  userId: number;
+  userId: string;
   userConnections: ConnectionUser[];
   ownConnections: boolean;
 }
@@ -19,42 +19,42 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
   const navigate = useNavigate();
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.ProfilePage.UserConnections' });
 
-  const navigateToConnectionsPage = () => {
-    navigate({ 
-      to: '/connections/$userId',
-      params: { userId: userId.toString() }
+  const navigateToFriendsPage = () => {
+    navigate({
+      to: '/friends/$userId',
+      params: { userId }
     });
   };
 
   const navigateToSuggestions = () => {
     navigate({
-      to: '/connections',
-      hash: 'suggestions',
+      to: '/friends',
+      hash: 'suggestions'
     });
   };
 
-  const connectionsContent = () => {
+  const friendsContent = () => {
     if (userConnections.length) {
-      const connectionsList = userConnections
+      const friendsList = userConnections
         .slice(0, 6)
         .map((connection: ConnectionUser) => (
           <UserCard key={connection.id} user={connection} />
         ));
+
       return (
-        <div className='flex flex-wrap lg:flex-col gap-2'>
-          {connectionsList}
-        </div>
+        <div className='flex flex-wrap lg:flex-col gap-2'>{friendsList}</div>
       );
     }
 
     const text = ownConnections ? t('NoRecords.Text') : null;
+
     return (
-      <div className='flex flex-col w-full items-center'>
+      <div className='text-center'>
         <NoRecordsFound title={t('NoRecords.Title')} text={text} />
         {ownConnections && (
           <Button
-            variant='ghost'
-            className='w-fit'
+            variant='outline'
+            className='mt-4'
             onClick={navigateToSuggestions}
           >
             {t('ConnectionSuggestions')}
@@ -62,21 +62,21 @@ const UserConnections: React.FC<UserConnectionsProps> = ({
         )}
       </div>
     );
-  }
+  };
 
   return (
     <div className='flex flex-col gap-2'>
-    {connectionsContent()}
-    {userConnections.length > 6 && (
-      <Button
-        variant='ghost'
-        className='mx-auto'
-        onClick={navigateToConnectionsPage}
-      >
-        {t('ViewMore')}
-      </Button>
-    )}
-  </div>
+      {friendsContent()}
+      {userConnections.length > 6 && (
+        <Button
+          variant='outline'
+          className='w-full'
+          onClick={navigateToFriendsPage}
+        >
+          {t('ViewMore')}
+        </Button>
+      )}
+    </div>
   );
 };
 

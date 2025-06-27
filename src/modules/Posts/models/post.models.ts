@@ -1,13 +1,7 @@
 import { UserComment } from './comment.models';
 import { Like } from './like.models';
 import { User } from '../../Profile/models/user.models';
-
-export enum PostStatus {
-  ALL = 'ALL',
-  ACTIVE = 'ACTIVE',
-  ARCHIVED = 'ARCHIVED',
-  REPORTED = 'REPORTED',
-}
+import { ContentStatus } from '@/core/models/content-status.enum';
 
 export type Post = {
   id: number;
@@ -20,7 +14,7 @@ export type Post = {
   comments: UserComment[];
   likes: Like[];
   user: User;
-  status: PostStatus;
+  status: ContentStatus;
 };
 
 export type PostRequest = {
@@ -40,8 +34,8 @@ export interface AdminPost {
   id: number;
   title: string;
   content: string;
-  status: PostStatus;
-  user: { fullName?: string };
+  status: ContentStatus;
+  user: { fullName?: string, username?: string, profileImage?: string };
   createdAt: string;
   updatedAt: string;
   comments: number;

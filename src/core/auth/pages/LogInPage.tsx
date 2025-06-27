@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from '@tanstack/react-query';
 import { loginUser } from '../../../modules/Profile/apis/user.api';
@@ -25,6 +25,12 @@ export const LogInPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate({ to: '/' });
+    }
+  }, [isAuthenticated, navigate]);
 
   const schema = yup.object({
     username: yup
@@ -58,14 +64,13 @@ export const LogInPage: React.FC = () => {
       login(token, userProfile);
       setLoading(false);
       reset();
-      navigate({ to: '/' });
     },
     onError: () => {
       setLoading(false);
     },
   });
 
-  const onSubmit = handleSubmit(() => {
+  const onSubmit = () => {
     setLoading(true);
     loginMutation.mutate({
       username,
@@ -73,10 +78,9 @@ export const LogInPage: React.FC = () => {
       theme,
       language: i18n.language,
     });
-  });
+  };
 
   if (isAuthenticated) {
-    navigate({ to: '/' });
     return null;
   }
 
@@ -89,7 +93,7 @@ export const LogInPage: React.FC = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className='flex flex-col gap-6'>
             <div className='flex flex-col gap-3'>
               <Label htmlFor='username'>{t('Pages.LoginPage.Username')}</Label>
@@ -123,10 +127,8 @@ export const LogInPage: React.FC = () => {
             </div>
             <Button
               className='w-full mt-6'
-              type='submit'
               loading={loading}
               disabled={!isValid}
-              onClick={onSubmit}
             >
               {t('Pages.LoginPage.Login')}
             </Button>
@@ -142,3 +144,5 @@ export const LogInPage: React.FC = () => {
     </Card>
   );
 };
+
+export default LogInPage;

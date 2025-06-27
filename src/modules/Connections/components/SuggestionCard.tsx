@@ -28,7 +28,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 }) => {
   const { user: loggedUser } = useAuth();
   const { t } = useTranslation('translation', {
-    keyPrefix: 'Pages.ConnectionsPage.SuggestionsTab.SuggestionCard',
+    keyPrefix: 'Pages.ProfilePage',
   });
 
   const queryClient = useQueryClient();
@@ -108,7 +108,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           onClick={handleRequestConnection}
         >
           <i className='ri-user-add-line' />
-          {t('Add')}
+          {t('AddConnection')}
         </Button>
       );
       break;
@@ -121,7 +121,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           onClick={handleRequestCancel}
         >
           <i className='ri-user-unfollow-fill' />
-          {t('Cancel')}
+          {t('CancelConnection')}
         </Button>
       );
       break;
@@ -132,14 +132,14 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
             loading={acceptConnectionMutation.isPending}
             onClick={handleRequestAccept}
           >
-            {t('Accept')}
+            {t('AcceptConnection')}
           </Button>
           <Button
             variant='destructive'
             loading={removeConnectionMutation.isPending}
             onClick={handleRequestReject}
           >
-            {t('Reject')}
+            {t('RejectConnection')}
           </Button>
         </div>
       );

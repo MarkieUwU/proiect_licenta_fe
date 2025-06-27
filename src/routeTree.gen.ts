@@ -11,28 +11,32 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AdminImport } from './routes/admin'
 import { Route as MainImport } from './routes/_main'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as AdminImport } from './routes/_admin'
+import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
+import { Route as AdminUsersImport } from './routes/admin/users'
+import { Route as AdminDashboardImport } from './routes/admin/dashboard'
+import { Route as AdminContentImport } from './routes/admin/content'
 import { Route as MainSettingsImport } from './routes/_main/settings'
+import { Route as MainNotificationsImport } from './routes/_main/notifications'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLogoutImport } from './routes/_auth/logout'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordImport } from './routes/_auth/forgot-password'
 import { Route as AuthEmailSentSuccessfullyImport } from './routes/_auth/email-sent-successfully'
-import { Route as MainConnectionsIndexImport } from './routes/_main/connections/index'
-import { Route as AdminAdminIndexImport } from './routes/_admin.admin/index'
-import { Route as MainConnectionsAnotherImport } from './routes/_main/connections/another'
-import { Route as MainConnectionsUserIdImport } from './routes/_main/connections/$userId'
+import { Route as MainFriendsIndexImport } from './routes/_main/friends/index'
+import { Route as MainFriendsUserIdImport } from './routes/_main/friends/$userId'
 import { Route as MainUsernameProfileImport } from './routes/_main/$username.profile'
 import { Route as AuthResetPasswordTokenImport } from './routes/_auth/reset-password.$token'
-import { Route as AdminAdminUsersImport } from './routes/_admin.admin/users'
-import { Route as AdminAdminSettingsImport } from './routes/_admin.admin/settings'
-import { Route as AdminAdminContentImport } from './routes/_admin.admin/content'
-import { Route as AdminAdminAnalyticsImport } from './routes/_admin.admin/analytics'
 
 // Create/Update Routes
+
+const AdminRoute = AdminImport.update({
+  path: '/admin',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const MainRoute = MainImport.update({
   id: '/_main',
@@ -44,9 +48,9 @@ const AuthRoute = AuthImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AdminRoute = AdminImport.update({
-  id: '/_admin',
-  getParentRoute: () => rootRoute,
+const AdminIndexRoute = AdminIndexImport.update({
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 const MainIndexRoute = MainIndexImport.update({
@@ -54,8 +58,28 @@ const MainIndexRoute = MainIndexImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 
+const AdminUsersRoute = AdminUsersImport.update({
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminDashboardRoute = AdminDashboardImport.update({
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminContentRoute = AdminContentImport.update({
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+
 const MainSettingsRoute = MainSettingsImport.update({
   path: '/settings',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainNotificationsRoute = MainNotificationsImport.update({
+  path: '/notifications',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -84,23 +108,13 @@ const AuthEmailSentSuccessfullyRoute = AuthEmailSentSuccessfullyImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const MainConnectionsIndexRoute = MainConnectionsIndexImport.update({
-  path: '/connections/',
+const MainFriendsIndexRoute = MainFriendsIndexImport.update({
+  path: '/friends/',
   getParentRoute: () => MainRoute,
 } as any)
 
-const AdminAdminIndexRoute = AdminAdminIndexImport.update({
-  path: '/admin/',
-  getParentRoute: () => AdminRoute,
-} as any)
-
-const MainConnectionsAnotherRoute = MainConnectionsAnotherImport.update({
-  path: '/connections/another',
-  getParentRoute: () => MainRoute,
-} as any)
-
-const MainConnectionsUserIdRoute = MainConnectionsUserIdImport.update({
-  path: '/connections/$userId',
+const MainFriendsUserIdRoute = MainFriendsUserIdImport.update({
+  path: '/friends/$userId',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -114,37 +128,10 @@ const AuthResetPasswordTokenRoute = AuthResetPasswordTokenImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AdminAdminUsersRoute = AdminAdminUsersImport.update({
-  path: '/admin/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-
-const AdminAdminSettingsRoute = AdminAdminSettingsImport.update({
-  path: '/admin/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-
-const AdminAdminContentRoute = AdminAdminContentImport.update({
-  path: '/admin/content',
-  getParentRoute: () => AdminRoute,
-} as any)
-
-const AdminAdminAnalyticsRoute = AdminAdminAnalyticsImport.update({
-  path: '/admin/analytics',
-  getParentRoute: () => AdminRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_admin': {
-      id: '/_admin'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AdminImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -157,6 +144,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof MainImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminImport
       parentRoute: typeof rootRoute
     }
     '/_auth/email-sent-successfully': {
@@ -194,12 +188,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof AuthImport
     }
+    '/_main/notifications': {
+      id: '/_main/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof MainNotificationsImport
+      parentRoute: typeof MainImport
+    }
     '/_main/settings': {
       id: '/_main/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof MainSettingsImport
       parentRoute: typeof MainImport
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentImport
+      parentRoute: typeof AdminImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardImport
+      parentRoute: typeof AdminImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersImport
+      parentRoute: typeof AdminImport
     }
     '/_main/': {
       id: '/_main/'
@@ -208,32 +230,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainIndexImport
       parentRoute: typeof MainImport
     }
-    '/_admin/admin/analytics': {
-      id: '/_admin/admin/analytics'
-      path: '/admin/analytics'
-      fullPath: '/admin/analytics'
-      preLoaderRoute: typeof AdminAdminAnalyticsImport
-      parentRoute: typeof AdminImport
-    }
-    '/_admin/admin/content': {
-      id: '/_admin/admin/content'
-      path: '/admin/content'
-      fullPath: '/admin/content'
-      preLoaderRoute: typeof AdminAdminContentImport
-      parentRoute: typeof AdminImport
-    }
-    '/_admin/admin/settings': {
-      id: '/_admin/admin/settings'
-      path: '/admin/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminAdminSettingsImport
-      parentRoute: typeof AdminImport
-    }
-    '/_admin/admin/users': {
-      id: '/_admin/admin/users'
-      path: '/admin/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminAdminUsersImport
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexImport
       parentRoute: typeof AdminImport
     }
     '/_auth/reset-password/$token': {
@@ -250,32 +251,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainUsernameProfileImport
       parentRoute: typeof MainImport
     }
-    '/_main/connections/$userId': {
-      id: '/_main/connections/$userId'
-      path: '/connections/$userId'
-      fullPath: '/connections/$userId'
-      preLoaderRoute: typeof MainConnectionsUserIdImport
+    '/_main/friends/$userId': {
+      id: '/_main/friends/$userId'
+      path: '/friends/$userId'
+      fullPath: '/friends/$userId'
+      preLoaderRoute: typeof MainFriendsUserIdImport
       parentRoute: typeof MainImport
     }
-    '/_main/connections/another': {
-      id: '/_main/connections/another'
-      path: '/connections/another'
-      fullPath: '/connections/another'
-      preLoaderRoute: typeof MainConnectionsAnotherImport
-      parentRoute: typeof MainImport
-    }
-    '/_admin/admin/': {
-      id: '/_admin/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminAdminIndexImport
-      parentRoute: typeof AdminImport
-    }
-    '/_main/connections/': {
-      id: '/_main/connections/'
-      path: '/connections'
-      fullPath: '/connections'
-      preLoaderRoute: typeof MainConnectionsIndexImport
+    '/_main/friends/': {
+      id: '/_main/friends/'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof MainFriendsIndexImport
       parentRoute: typeof MainImport
     }
   }
@@ -284,13 +271,6 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  AdminRoute: AdminRoute.addChildren({
-    AdminAdminAnalyticsRoute,
-    AdminAdminContentRoute,
-    AdminAdminSettingsRoute,
-    AdminAdminUsersRoute,
-    AdminAdminIndexRoute,
-  }),
   AuthRoute: AuthRoute.addChildren({
     AuthEmailSentSuccessfullyRoute,
     AuthForgotPasswordRoute,
@@ -300,12 +280,18 @@ export const routeTree = rootRoute.addChildren({
     AuthResetPasswordTokenRoute,
   }),
   MainRoute: MainRoute.addChildren({
+    MainNotificationsRoute,
     MainSettingsRoute,
     MainIndexRoute,
     MainUsernameProfileRoute,
-    MainConnectionsUserIdRoute,
-    MainConnectionsAnotherRoute,
-    MainConnectionsIndexRoute,
+    MainFriendsUserIdRoute,
+    MainFriendsIndexRoute,
+  }),
+  AdminRoute: AdminRoute.addChildren({
+    AdminContentRoute,
+    AdminDashboardRoute,
+    AdminUsersRoute,
+    AdminIndexRoute,
   }),
 })
 
@@ -317,19 +303,9 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_admin",
         "/_auth",
-        "/_main"
-      ]
-    },
-    "/_admin": {
-      "filePath": "_admin.tsx",
-      "children": [
-        "/_admin/admin/analytics",
-        "/_admin/admin/content",
-        "/_admin/admin/settings",
-        "/_admin/admin/users",
-        "/_admin/admin/"
+        "/_main",
+        "/admin"
       ]
     },
     "/_auth": {
@@ -346,12 +322,21 @@ export const routeTree = rootRoute.addChildren({
     "/_main": {
       "filePath": "_main.tsx",
       "children": [
+        "/_main/notifications",
         "/_main/settings",
         "/_main/",
         "/_main/$username/profile",
-        "/_main/connections/$userId",
-        "/_main/connections/another",
-        "/_main/connections/"
+        "/_main/friends/$userId",
+        "/_main/friends/"
+      ]
+    },
+    "/admin": {
+      "filePath": "admin.tsx",
+      "children": [
+        "/admin/content",
+        "/admin/dashboard",
+        "/admin/users",
+        "/admin/"
       ]
     },
     "/_auth/email-sent-successfully": {
@@ -374,29 +359,33 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_auth/signup.tsx",
       "parent": "/_auth"
     },
+    "/_main/notifications": {
+      "filePath": "_main/notifications.tsx",
+      "parent": "/_main"
+    },
     "/_main/settings": {
       "filePath": "_main/settings.tsx",
       "parent": "/_main"
+    },
+    "/admin/content": {
+      "filePath": "admin/content.tsx",
+      "parent": "/admin"
+    },
+    "/admin/dashboard": {
+      "filePath": "admin/dashboard.tsx",
+      "parent": "/admin"
+    },
+    "/admin/users": {
+      "filePath": "admin/users.tsx",
+      "parent": "/admin"
     },
     "/_main/": {
       "filePath": "_main/index.tsx",
       "parent": "/_main"
     },
-    "/_admin/admin/analytics": {
-      "filePath": "_admin.admin/analytics.tsx",
-      "parent": "/_admin"
-    },
-    "/_admin/admin/content": {
-      "filePath": "_admin.admin/content.tsx",
-      "parent": "/_admin"
-    },
-    "/_admin/admin/settings": {
-      "filePath": "_admin.admin/settings.tsx",
-      "parent": "/_admin"
-    },
-    "/_admin/admin/users": {
-      "filePath": "_admin.admin/users.tsx",
-      "parent": "/_admin"
+    "/admin/": {
+      "filePath": "admin/index.tsx",
+      "parent": "/admin"
     },
     "/_auth/reset-password/$token": {
       "filePath": "_auth/reset-password.$token.tsx",
@@ -406,20 +395,12 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_main/$username.profile.tsx",
       "parent": "/_main"
     },
-    "/_main/connections/$userId": {
-      "filePath": "_main/connections/$userId.tsx",
+    "/_main/friends/$userId": {
+      "filePath": "_main/friends/$userId.tsx",
       "parent": "/_main"
     },
-    "/_main/connections/another": {
-      "filePath": "_main/connections/another.tsx",
-      "parent": "/_main"
-    },
-    "/_admin/admin/": {
-      "filePath": "_admin.admin/index.tsx",
-      "parent": "/_admin"
-    },
-    "/_main/connections/": {
-      "filePath": "_main/connections/index.tsx",
+    "/_main/friends/": {
+      "filePath": "_main/friends/index.tsx",
       "parent": "/_main"
     }
   }

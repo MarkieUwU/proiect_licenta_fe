@@ -19,6 +19,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { DeleteDialog } from '@/components/ui/DeleteDialog';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/core/auth/AuthContext';
+import { ReportDialog } from '@/components/ui/ReportDialog';
+import { reportComment } from '../apis/report.api';
 
 interface CommentProps {
   comment: UserComment;
@@ -38,6 +40,7 @@ export const CommentCard: React.FC<CommentProps> = ({
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const {
     register,
@@ -89,6 +92,19 @@ export const CommentCard: React.FC<CommentProps> = ({
 
   const handleDeleteComment = () => {
     deleteCommentMutation.mutate(comment.id);
+  };
+
+  const handleReport = async (reason: string) => {
+    setLoading(true);
+    try {
+      await reportComment(comment.id, reason);
+      toast.success('Report submitted');
+      setReportOpen(false);
+    } catch {
+      toast.error('Failed to submit report');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -157,6 +173,11 @@ export const CommentCard: React.FC<CommentProps> = ({
                 </Button>
               </div>
             ))}
+          {user && user.id !== comment.userId && (
+            <Button variant="ghost" size="sm" onClick={() => setReportOpen(true)}>
+              Report
+            </Button>
+          )}
         </CardFooter>
       </Card>
       <DeleteDialog
@@ -167,6 +188,12 @@ export const CommentCard: React.FC<CommentProps> = ({
         onDelete={handleDeleteComment}
         onOpenChange={(value) => setDeleteModalOpened(value)}
       ></DeleteDialog>
+      <ReportDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        onSubmit={handleReport}
+        loading={loading}
+      />
     </>
   );
 };

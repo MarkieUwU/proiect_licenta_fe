@@ -154,7 +154,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       ) : (
         <div className='flex justify-center w-full'>
           <div className='flex justify-center items-center w-[300px] h-[300px] rounded-full border cursor-pointer'>
-            {t('Components.UpdateUserModal.ChooseAFile')}
+            {t('Components.UpdateUserModal.ChoosePhoto')}
           </div>
         </div>
       )}
@@ -167,7 +167,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       <form className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <Label htmlFor='picture'>
-            {t('Components.UpdateUserModal.Picture')}
+            {t('Components.UpdateUserModal.ProfilePicture')}
           </Label>
           {dropZone}
         </div>

@@ -17,40 +17,54 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ChevronDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { getAdminComments, updateCommentStatus } from '../../apis/admin.api';
 import { toast } from 'sonner';
 import { AdminComment } from '../../models/comments.models';
-import { CommentStatus } from '@/modules/Posts/models/comment.models';
+import { ContentStatus } from '@/core/models/content-status.enum';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { deleteComment } from '@/modules/Posts/apis/comment.api';
 import { useTranslation } from 'react-i18next';
+import { TablePagination } from '@/components/ui/table-pagination';
 
-const PAGE_SIZE = 10;
+type CommentSortField = 'id' | 'text' | 'status' | 'createdAt' | 'postId';
 
 export default function AdminComments() {
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<CommentStatus>(CommentStatus.ALL);
+  const [status, setStatus] = useState<ContentStatus>(ContentStatus.ALL);
+  const [sortField, setSortField] = useState<CommentSortField>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['adminComments', { search, status, page }],
+    queryKey: ['adminComments', { search, status, sortField, sortOrder, page, pageSize }],
     queryFn: () =>
       getAdminComments({
         search,
         status,
+        sort: sortField,
+        order: sortOrder,
         page,
-        pageSize: PAGE_SIZE,
+        pageSize,
       }),
   });
 
-  const comments = data || [];
+  const comments = data?.comments || [];
+  const total = data?.total || 0;
 
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: CommentStatus }) =>
+    mutationFn: ({ id, status }: { id: string; status: ContentStatus }) =>
       updateCommentStatus(id, status),
     onSuccess: () => {
       toast.success('Status updated');
@@ -69,69 +83,146 @@ export default function AdminComments() {
       toast.error(t('PostsFeed.PostCard.CommentCard.DeleteErrorMessage')),
   });
 
+  const handleSort = (field: CommentSortField) => {
+    if (sortField === field) {
+      if (sortOrder === 'asc') {
+        setSortOrder('desc');
+      } else if (sortOrder === 'desc') {
+        setSortField('createdAt');
+        setSortOrder('desc');
+      }
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+    setPage(1);
+  };
+
+  const getSortIcon = (field: CommentSortField) => {
+    if (sortField !== field) {
+      return null;
+    }
+    return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handleStatusChange = (value: ContentStatus) => {
+    setStatus(value);
+    setPage(1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
+  };
+
   return (
     <div>
       <div className='flex flex-wrap items-center gap-2 mb-4'>
         <Input
           placeholder='Search comments...'
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className='w-64'
         />
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as CommentStatus)}
-          className='border rounded px-2 py-1'
-        >
-          <option value={CommentStatus.ALL}>All Statuses</option>
-          <option value={CommentStatus.ACTIVE}>Active</option>
-          <option value={CommentStatus.ARCHIVED}>Archived</option>
-          <option value={CommentStatus.REPORTED}>Reported</option>
-        </select>
+        <Select value={status} onValueChange={(value) => handleStatusChange(value as ContentStatus)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ContentStatus.ALL}>{t('Enums.ContentStatus.ALL')}</SelectItem>
+            <SelectItem value={ContentStatus.ACTIVE}>{t('Enums.ContentStatus.ACTIVE')}</SelectItem>
+            <SelectItem value={ContentStatus.ARCHIVED}>{t('Enums.ContentStatus.ARCHIVED')}</SelectItem>
+            <SelectItem value={ContentStatus.REPORTED}>{t('Enums.ContentStatus.REPORTED')}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Content</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>Post</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead>Reports</TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('id')}
+            >
+              <div className='flex items-center gap-1'>
+                ID
+                {getSortIcon('id')}
+              </div>
+            </TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('text')}
+            >
+              <div className='flex items-center gap-1'>
+                Text
+                {getSortIcon('text')}
+              </div>
+            </TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('status')}
+            >
+              <div className='flex items-center gap-1'>
+                Status
+                {getSortIcon('status')}
+              </div>
+            </TableHead>
+            <TableHead>Author</TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('postId')}
+            >
+              <div className='flex items-center gap-1'>
+                Post ID
+                {getSortIcon('postId')}
+              </div>
+            </TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('createdAt')}
+            >
+              <div className='flex items-center gap-1'>
+                Created
+                {getSortIcon('createdAt')}
+              </div>
+            </TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={8}>Loading...</TableCell>
+              <TableCell colSpan={7}>Loading...</TableCell>
             </TableRow>
-          ) : comments.length ? (
+          ) : total > 0 ? (
             comments.map((comment: AdminComment) => (
               <TableRow key={comment.id}>
                 <TableCell>{comment.id}</TableCell>
                 <TableCell className='max-w-xs truncate'>
-                  {comment.content}
+                  {comment.text}
                 </TableCell>
                 <TableCell>
                   <Badge
                     variant={
-                      comment.status === CommentStatus.ACTIVE
+                      comment.status === ContentStatus.ACTIVE
                         ? 'default'
-                        : comment.status === CommentStatus.ARCHIVED
+                        : comment.status === ContentStatus.ARCHIVED
                           ? 'secondary'
-                          : comment.status === CommentStatus.REPORTED
+                          : comment.status === ContentStatus.REPORTED
                             ? 'destructive'
                             : 'outline'
                     }
                   >
-                    {comment.status}
+                    {t(`Enums.ContentStatus.${comment.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-2'>
-                    <Avatar className='w-8 h-8'>
+                    <Avatar className='w-8 h-8 me-1'>
                       {comment.user.profileImage ? (
                         <AvatarImage
                           src={comment.user.profileImage}
@@ -147,21 +238,10 @@ export default function AdminComments() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className='truncate max-w-xs block'>
-                    {comment.post.title}
-                  </span>
+                  {comment.post.id}
                 </TableCell>
                 <TableCell>
                   {new Date(comment.createdAt).toLocaleString()}
-                </TableCell>
-                <TableCell>
-                  {comment.reports.length > 0 ? (
-                    <Badge variant='destructive'>
-                      {comment.reports.length} report(s)
-                    </Badge>
-                  ) : (
-                    <Badge variant='outline'>0</Badge>
-                  )}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -171,24 +251,24 @@ export default function AdminComments() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      {comment.status !== CommentStatus.ACTIVE && (
+                      {comment.status !== ContentStatus.ACTIVE && (
                         <DropdownMenuItem
                           onClick={() =>
                             updateStatus.mutate({
                               id: comment.id,
-                              status: CommentStatus.ACTIVE,
+                              status: ContentStatus.ACTIVE,
                             })
                           }
                         >
                           Approve
                         </DropdownMenuItem>
                       )}
-                      {comment.status !== CommentStatus.ARCHIVED && (
+                      {comment.status !== ContentStatus.ARCHIVED && (
                         <DropdownMenuItem
                           onClick={() =>
                             updateStatus.mutate({
                               id: comment.id,
-                              status: CommentStatus.ARCHIVED,
+                              status: ContentStatus.ARCHIVED,
                             })
                           }
                         >
@@ -208,31 +288,21 @@ export default function AdminComments() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={8}>No comments found.</TableCell>
+              <TableCell colSpan={7}>No comments found.</TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className='flex items-center justify-between mt-4'>
-        <span>Page {page}</span>
-        <div className='space-x-2'>
-          <Button
-            size='sm'
-            variant='outline'
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Previous
-          </Button>
-          <Button
-            size='sm'
-            variant='outline'
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      {data && (
+        <TablePagination
+          currentPage={page}
+          totalPages={Math.ceil(total / pageSize)}
+          pageSize={pageSize}
+          totalItems={total}
+          onPageChange={setPage}
+          onPageSizeChange={handlePageSizeChange}
+        />
+      )}
     </div>
   );
 }

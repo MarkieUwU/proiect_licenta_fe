@@ -6,7 +6,8 @@
     "Edit": "Edit",
     "Cancel": "Cancel",
     "Accept": "Accept",
-    "Decline": "Decline"
+    "Decline": "Decline",
+    "Submit": "Submit"
   },
   "Enums": {
     "Language": {
@@ -23,8 +24,14 @@
     },
     "PrivacyOptions": {
       "Public": "Public",
-      "Connections": "Connections only",
+      "Connections": "Friends only",
       "Private": "Private"
+    },
+    "ContentStatus": {
+      "ALL": "All Statuses",
+      "ACTIVE": "Active",
+      "ARCHIVED": "Archived",
+      "REPORTED": "Reported"
     }
   },
   "ValidationErrors": {
@@ -80,8 +87,8 @@
     },
     "EmailSentSuccessfullyPage": {
       "Title": "Request sent successfully",
-      "Paragraph1": "We received your request for resetting the password.",
-      "Paragraph2": "We've sent you an email that contains a link to a page where you can reset your password. The link is available for 1h."
+      "Paragraph1": "You will receive an email with a link to reset your password.",
+      "Paragraph2": "The link is available for 1h."
     },
     "ResetPasswordPage": {
       "Title": "Reset password",
@@ -98,7 +105,8 @@
         "SuccessMessage": "Post deleted successfully",
         "DropDown": {
           "Edit": "Edit",
-          "Delete": "Delete"
+          "Delete": "Delete",
+          "Report": "Report"
         },
         "DeleteDialog": {
           "Title": "Are you sure?",
@@ -121,29 +129,23 @@
         "TextareaPlaceholder": "Add a comment...",
         "TextareaError": "You have to type in something",
         "Post": "Post"
+      },
+      "ReportDialog": {
+        "Title": "Report content",
+        "Description": "Describe the issue..."
       }
     },
     "ConnectionsPage": {
-      "Connections": "Connections",
+      "Connections": "Friends",
       "Suggestions": "Suggestions",
       "ConnectionsTab": {
         "ConnectionRequestList": {
-          "Title": "Connection Requests"
+          "Title": "Friend Requests"
         },
         "ConnectionsList": {
           "SearchPlaceholder": "Search...",
           "NoRecords": {
-            "Title": "No connections found"
-          },
-          "ConnectionCard": {
-            "Connection": "{{count}} connection",
-            "Connections": "{{count}} connections",
-            "Post": "{{count}} post",
-            "Posts": "{{count}} posts",
-            "Add": "Add connection",
-            "Cancel": "Cancel connection",
-            "Accept": "Accept",
-            "Reject": "Reject"
+            "Title": "No friends found"
           }
         }
       },
@@ -155,13 +157,13 @@
       }
     },
     "ProfilePage": {
-      "AddConnection": "Add connection",
-      "CancelConnection": "Cancel connection",
-      "RemoveConnection": "Remove connection",
-      "AcceptConnection": "Accept connection",
-      "RejectConnection": "Reject connection",
-      "Connection": "{{count}} connection",
-      "Connections": "{{count}} connections",
+      "AddConnection": "Add friend",
+      "CancelConnection": "Cancel request",
+      "RemoveConnection": "Remove friend",
+      "AcceptConnection": "Accept request",
+      "RejectConnection": "Reject request",
+      "Connection": "{{count}} friend",
+      "Connections": "{{count}} friends",
       "Post": "{{count}} post",
       "Posts": "{{count}} posts",
       "EditProfile": "Edit profile",
@@ -174,13 +176,13 @@
         "Bio": "Bio"
       },
       "UserConnections": {
-        "Title": "Connections",
+        "Title": "Friends",
         "ViewMore": "View more",
         "NoRecords": {
-          "Title": "No connections found",
-          "Text": "You didn't make any connections"
+          "Title": "No friends found",
+          "Text": "You didn't make any friends"
         },
-        "ConnectionSuggestions": "Connection Suggestions"
+        "ConnectionSuggestions": "Friend Suggestions"
       },
       "ErrorPage": {
         "Title": "No user found",
@@ -198,7 +200,7 @@
       "PrivacySettings": {
         "Title": "Privacy",
         "ProfileDetails": "Profile Details",
-        "Connections": "Connections",
+        "Connections": "Friends",
         "Posts": "Posts"
       }
     },
@@ -207,12 +209,12 @@
       "Posts": "Posts",
       "Comments": "Comments",
       "Likes": "Likes",
-      "Connections": "Connections",
+      "Connections": "Friends",
       "Male": "Male",
       "Female": "Female",
       "Undeclared": "Undeclared",
       "NrOfUsers": "nr of users",
-      "UsersByConnectionsTitle": "Top 5 users by connections number",
+      "UsersByConnectionsTitle": "Top 5 users by friends number",
       "UsersByPostsTitle": "Top 5 users by posts number",
       "UsersGenderTitle": "User gender ratio",
       "PostsByLikes": "Top 5 posts by likes number"
@@ -221,9 +223,10 @@
   "Components": {
     "Header": {
       "Home": "Home",
-      "Connections": "Connections",
+      "Friends": "Friends",
       "MyAccountMenu": {
         "MyAccount": "My Account",
+        "Home": "Home",
         "Profile": "Profile",
         "Settings": "Settings",
         "Admin": "Admin",
@@ -231,7 +234,7 @@
       }
     },
     "SuggestionsSidebar": {
-      "Title": "Connection Suggestions",
+      "Title": "Friend Suggestions",
       "NoRecords": "No suggestions found",
       "ViewMore": "View more"
     },
@@ -247,8 +250,8 @@
     },
     "UpdateUserModal": {
       "Title": "Update Profile",
-      "Picture": "Picture",
-      "ChooseAFile": "Choose a file",
+      "ProfilePicture": "Profile Picture",
+      "ChoosePhoto": "Choose a photo",
       "FullName": "Full Name",
       "Email": "Email",
       "Gender": "Gender",
@@ -263,5 +266,8 @@
     "NoRecordFound": {
       "Title": "No records found"
     }
+  },
+  "Common": {
+    "Back": "Back"
   }
 }

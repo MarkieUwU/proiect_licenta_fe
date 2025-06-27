@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import AdminPosts from '../components/content-management/AdminPosts';
 import AdminComments from '../components/content-management/AdminComments';
+import AdminReports from './AdminReports';
 
 export default function ContentManagement() {
   const [tab, setTab] = useState('posts');
@@ -22,9 +23,9 @@ export default function ContentManagement() {
           <TabsContent value="comments">
             <AdminComments />
           </TabsContent>
-          {/* <TabsContent value="reports">
+          <TabsContent value="reports">
             <AdminReports />
-          </TabsContent> */}
+          </TabsContent>
         </div>
       </Tabs>
     </div>

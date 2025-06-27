@@ -49,7 +49,6 @@ const SuggestionsTab: React.FC = () => {
       return (
         <NoRecordsFound
           title={t('NoRecords.Title')}
-          text={t('NoRecords.Text')}
         />
       );
     }
@@ -72,7 +71,7 @@ const SuggestionsTab: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col items-center py-2 px-4 md:px-2 w-screen lg:max-w-[1270px] h-full'>
+    <div className='flex flex-col items-center py-2 px-4 md:px-2 w-full lg:max-w-[1270px] h-full'>
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}

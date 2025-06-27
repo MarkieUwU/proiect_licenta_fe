@@ -10,11 +10,11 @@ export const EmailSentSuccessfullyPage: React.FC = () => {
   return (
     <Card className='w-full max-w-[500px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
       <CardHeader>
-        <CardTitle className='text-2xl'>{t('Title')}</CardTitle>
+        <CardTitle className='text-2xl text-center'>{t('Title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="mb-4 text-justify">{t('Paragraph1')}</p>
-        <p className="text-justify">{t('Paragraph2')}</p>
+        <p className="mb-4 text-center">{t('Paragraph1')}</p>
+        <p className="text-center">{t('Paragraph2')}</p>
       </CardContent>
     </Card>
   );

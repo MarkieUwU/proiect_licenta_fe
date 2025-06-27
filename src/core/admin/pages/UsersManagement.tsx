@@ -29,23 +29,26 @@ import { Role } from "@/modules/Profile/models/role.enum"
 import { format } from "date-fns"
 import { AdminUser } from "../models/user.models"
 import { toast } from "sonner"
+import { LoadingPage } from "@/core/pages/LoadingPage"
+import { TablePagination } from "@/components/ui/table-pagination"
 
 export const UsersManagement = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-users', page, search],
-    queryFn: () => getUsers({ page, limit: 10, search })
+    queryKey: ['admin-users', page, pageSize, search],
+    queryFn: () => getUsers({ page, limit: pageSize, search })
   });
 
   const roleUpdateMutation = useMutation({
     mutationFn: updateUserRole,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['admin-users', page, search],
+        queryKey: ['admin-users', page, pageSize, search],
       });
       toast.success("User role updated successfully");
     }
@@ -55,28 +58,39 @@ export const UsersManagement = () => {
     roleUpdateMutation.mutate({ userId, role });
   }
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1); // Reset to first page when searching
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1); // Reset to first page when changing page size
+  };
+
   if (isLoading) {
-    return <div>Loading...</div>
+    return <LoadingPage />
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Users Management</h1>
-        <div className="flex items-center gap-2">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-3xl font-bold'>Users Management</h1>
+        <div className='flex items-center gap-2'>
           <Input
-            placeholder="Search users..."
+            placeholder='Search users...'
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-sm"
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className='max-w-sm'
           />
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className='rounded-md border'>
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>ID</TableHead>
               <TableHead>Username</TableHead>
               <TableHead>Full Name</TableHead>
               <TableHead>Email</TableHead>
@@ -90,6 +104,7 @@ export const UsersManagement = () => {
           <TableBody>
             {data?.users.map((user) => (
               <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
@@ -99,13 +114,13 @@ export const UsersManagement = () => {
                   {user._count.follower + user._count.following}
                 </TableCell>
                 <TableCell>
-                  {format(new Date(user.createdAt), "MMM d, yyyy")}
+                  {format(new Date(user.createdAt), 'MMM d, yyyy')}
                 </TableCell>
                 <TableCell>
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button
-                        variant="outline"
+                        variant='outline'
                         onClick={() => setSelectedUser(user)}
                       >
                         Edit
@@ -115,17 +130,17 @@ export const UsersManagement = () => {
                       <DialogHeader>
                         <DialogTitle>Edit User</DialogTitle>
                       </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <div className="space-y-2">
+                      <div className='space-y-4 py-4'>
+                        <div className='space-y-2'>
                           <label>Role</label>
                           <Select
                             defaultValue={user.role}
-                            onValueChange={(value) => 
+                            onValueChange={(value) =>
                               handleRoleUpdate(user.id, value as Role)
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select role" />
+                              <SelectValue placeholder='Select role' />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value={Role.USER}>User</SelectItem>
@@ -141,26 +156,17 @@ export const UsersManagement = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
-
-      <div className="flex items-center justify-end space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(page + 1)}
-          disabled={page >= (data?.pages ?? 1)}
-        >
-          Next
-        </Button>
+        {data && (
+          <TablePagination
+            currentPage={page}
+            totalPages={data.pages}
+            pageSize={pageSize}
+            totalItems={data.total}
+            onPageChange={setPage}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
     </div>
-  )
+  );
 } 

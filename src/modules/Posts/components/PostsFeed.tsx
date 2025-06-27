@@ -45,7 +45,7 @@ export const PostsFeed: React.FC = () => {
   }
   return (
     <>
-      <main className='w-[750px] min-w-[400px] flex flex-col gap-3 mx-auto lg:mx-0'>
+      <main className='w-[800px] min-w-[400px] flex flex-col gap-3 mx-auto lg:mx-0'>
         <Input
           placeholder={t('InputPlaceholder')}
           className='h-14 rounded-xl'

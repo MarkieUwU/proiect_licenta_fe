@@ -43,7 +43,7 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
 
   return (
     <div className='flex flex-col'>
-      <table className='text-md font-semibold mt-1 w-[300px]'>
+      <table className='text-md font-semibold mt-1 w-full'>
         <thead>
           <tr>
             <th
@@ -59,7 +59,7 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
             <td className='py-4 pe-3'>
               {t('Pages.Settings.PreferenceSettings.Theme')}
             </td>
-            <td>
+            <td className='flex justify-end pt-3'>
               <Selector
                 defaultValue={settings.theme}
                 onValueChange={handleThemeChange}
@@ -71,7 +71,7 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
             <td className='py-4 pe-3'>
               {t('Pages.Settings.PreferenceSettings.Language')}
             </td>
-            <td>
+            <td className='flex justify-end pt-3'>
               <Selector
                 defaultValue={settings.language}
                 onValueChange={handleLanguageChange}

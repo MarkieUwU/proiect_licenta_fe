@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AvatarComponent } from './Avatar';
 import { getInitials } from '@/core/utils/utils';
 import MyAccountMenu from './MyAccountMenu';
+import { NotificationBell } from '@/core/components/NotificationBell';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -14,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '@/modules/Profile/apis/user.api';
 import { useAuth } from '@/core/auth/AuthContext';
+import { Role } from '@/modules/Profile/models/role.enum';
 
 const Header: React.FC = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -38,13 +40,22 @@ const Header: React.FC = () => {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link to='/connections' className='[&.active]:font-bold'>
-            <NavigationMenuLink>{t('Connections')}</NavigationMenuLink>
+          <Link to='/friends' className='[&.active]:font-bold'>
+            <NavigationMenuLink>{t('Friends')}</NavigationMenuLink>
           </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link to='/notifications' className='[&.active]:font-bold'>
+            <NavigationMenuLink>Notifications</NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NotificationBell />
         </NavigationMenuItem>
         <NavigationMenuItem>
           <MyAccountMenu
             username={user!.username}
+            containsAdmin={user!.role === Role.ADMIN}
             open={openMenu}
             onOpenChange={handleMenuOpen}
           >

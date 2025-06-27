@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
 import { PrivacyOptions } from '@/core/models/privacy-options.enum';
 import { useAuth } from '@/core/auth/AuthContext';
+import BackButton from '@/components/ui/BackButton';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedUser } = useAuth();
@@ -94,7 +95,7 @@ const ProfilePage: React.FC = () => {
     if (showInformation(user.settings.connectionsPrivacy)) {
       return (
         <UserConnections
-          userId={user.id}
+          userId={user.id.toString()}
           ownConnections={ownProfile}
           userConnections={user.connections}
         />
@@ -214,6 +215,13 @@ const ProfilePage: React.FC = () => {
       style={{ maxHeight: 'var(--app-height)' }}
     >
       <div className='flex flex-col gap-5 w-full lg:max-w-[1100px] px-2 mx-auto'>
+        <div>
+          <BackButton
+            variant='outline'
+            size='sm'
+            className='text-muted-foreground hover:text-foreground'
+          />
+        </div>
         <Card className='px-3'>
           <CardHeader>
             <div className='flex flex-col sm:flex-row items-center gap-5 sm:gap-10 sm:ms-5 text-4xl sm:text-5xl lg:text-6xl'>

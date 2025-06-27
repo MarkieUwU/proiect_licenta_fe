@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 interface TokenData {
@@ -24,9 +24,20 @@ export const getToken = () => {
 };
 
 export const useToken = () => {
-  const [token, setTokenInternal] = useState(() => {
-    return localStorage.getItem('token');
+  const [token, setTokenInternal] = useState<string | null>(() => {
+    return getToken();
   });
+
+  // Sync with localStorage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const currentToken = getToken();
+      setTokenInternal(currentToken);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const isTokenExpired = useCallback((token: string) => {
     try {

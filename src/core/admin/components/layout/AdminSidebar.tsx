@@ -2,11 +2,9 @@ import { Link } from '@tanstack/react-router';
 import { LayoutDashboard, Users, FileText, BarChart2, Settings } from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Content', href: '/admin/content', icon: FileText },
-  { name: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar() {

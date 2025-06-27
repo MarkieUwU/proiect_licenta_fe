@@ -13,11 +13,13 @@ import { useTranslation } from 'react-i18next';
 interface MyAccountMenu {
   children: ReactNode;
   username: string;
+  containsHome?: boolean;
+  containsAdmin?: boolean;
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }
 
-const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, open, onOpenChange }) => {
+const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, containsHome, containsAdmin, open, onOpenChange }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('translation', { keyPrefix: 'Components.Header.MyAccountMenu' })
   return (
@@ -26,6 +28,11 @@ const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, open, onOp
       <DropdownMenuContent align='end'>
         <DropdownMenuLabel>{t('MyAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {containsHome && (
+          <DropdownMenuItem onClick={() => navigate({ to: '/' })}>
+            {t('Home')}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           onClick={() =>
             navigate({ to: '/$username/profile', params: { username } })
@@ -36,10 +43,14 @@ const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, open, onOp
         <DropdownMenuItem onClick={() => navigate({ to: '/settings' })}>
           {t('Settings')}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate({ to: '/admin' })}>
-          {t('Admin')}
-        </DropdownMenuItem>
+        {containsAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate({ to: '/admin/dashboard' })}>
+              {t('Admin')}
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate({ to: '/logout' })}>
           {t('LogOut')}

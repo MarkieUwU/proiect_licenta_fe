@@ -1,48 +1,71 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Table, TableHeader, TableRow, TableCell, TableBody
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableHead,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { getAdminPosts, updatePostStatus } from '../../apis/admin.api';
 import { toast } from 'sonner';
-import { AdminPost, PostStatus } from '@/modules/Posts/models/post.models';
+import { AdminPost } from '@/modules/Posts/models/post.models';
+import { ContentStatus } from '@/core/models/content-status.enum';
 import { deletePost } from '@/modules/Posts/apis/post.api';
-import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { useTranslation } from 'react-i18next';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { TablePagination } from '@/components/ui/table-pagination';
 
-const PAGE_SIZE = 10;
+type SortField = 'id' | 'title' | 'status' | 'createdAt' | 'updatedAt';
 
 export default function AdminPosts() {
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<PostStatus>(PostStatus.ALL);
-  const [sort, setSort] = useState('createdAt');
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [status, setStatus] = useState<ContentStatus>(ContentStatus.ALL);
+  const [sortField, setSortField] = useState<SortField>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['adminPosts', { search, status, sort, order, page }],
+    queryKey: ['adminPosts', { search, status, sortField, sortOrder, page, pageSize }],
     queryFn: () =>
       getAdminPosts({
         search,
         status,
-        sort,
-        order,
+        sort: sortField,
+        order: sortOrder,
         page,
-        limit: PAGE_SIZE,
+        limit: pageSize,
       }),
   });
 
+  const posts = data?.posts || [];
+  const total = data?.total || 0;
+
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: string }) => updatePostStatus(id, status),
+    mutationFn: ({ id, status }: { id: number; status: string }) =>
+      updatePostStatus(id, status),
     onSuccess: () => {
       toast.success('Status updated');
       queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
@@ -59,8 +82,44 @@ export default function AdminPosts() {
     onError: () => toast.error('Failed to delete post'),
   });
 
-  const total = data?.total || 0;
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (sortOrder === 'asc') {
+        setSortOrder('desc');
+      } else if (sortField === 'createdAt') {
+        setSortOrder('asc');
+      } else if (sortOrder === 'desc') {
+        setSortField('createdAt');
+        setSortOrder('desc');
+      }
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+    setPage(1);
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return null;
+    }
+    return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handleStatusChange = (value: ContentStatus) => {
+    setStatus(value);
+    setPage(1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
+  };
 
   return (
     <div>
@@ -68,50 +127,76 @@ export default function AdminPosts() {
         <Input
           placeholder='Search posts...'
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className='w-64'
         />
-        <select
+        <Select
           value={status}
-          onChange={(e) => setStatus(e.target.value as PostStatus)}
-          className='border rounded px-2 py-1'
+          onValueChange={(value) => handleStatusChange(value as ContentStatus)}
         >
-          <option value={PostStatus.ALL}>All Statuses</option>
-          <option value={PostStatus.ACTIVE}>Active</option>
-          <option value={PostStatus.ARCHIVED}>Archived</option>
-          <option value={PostStatus.REPORTED}>Reported</option>
-        </select>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className='border rounded px-2 py-1'
-        >
-          <option value='createdAt'>Created</option>
-          <option value='title'>Title</option>
-          <option value='status'>Status</option>
-        </select>
-        <select
-          value={order}
-          onChange={(e) => setOrder(e.target.value as 'asc' | 'desc')}
-          className='border rounded px-2 py-1'
-        >
-          <option value='desc'>Desc</option>
-          <option value='asc'>Asc</option>
-        </select>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Select status' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ContentStatus.ALL}>{t('Enums.ContentStatus.ALL')}</SelectItem>
+            <SelectItem value={ContentStatus.ACTIVE}>{t('Enums.ContentStatus.ACTIVE')}</SelectItem>
+            <SelectItem value={ContentStatus.ARCHIVED}>{t('Enums.ContentStatus.ARCHIVED')}</SelectItem>
+            <SelectItem value={ContentStatus.REPORTED}>{t('Enums.ContentStatus.REPORTED')}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Title</TableCell>
-            <TableCell>Content</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Author</TableCell>
-            <TableCell>Created</TableCell>
-            <TableCell>Updated</TableCell>
-            <TableCell>Comments</TableCell>
-            <TableCell>Likes</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableHead
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('id')}
+            >
+              <div className='flex items-center gap-1'>
+                ID
+                {getSortIcon('id')}
+              </div>
+            </TableHead>
+            <TableHead
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('title')}
+            >
+              <div className='flex items-center gap-1'>
+                Title
+                {getSortIcon('title')}
+              </div>
+            </TableHead>
+            <TableHead
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('status')}
+            >
+              <div className='flex items-center gap-1'>
+                Status
+                {getSortIcon('status')}
+              </div>
+            </TableHead>
+            <TableHead>Author</TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('createdAt')}
+            >
+              <div className='flex items-center gap-1'>
+                Created
+                {getSortIcon('createdAt')}
+              </div>
+            </TableHead>
+            <TableHead 
+              className='cursor-pointer hover:bg-muted/50 transition-colors'
+              onClick={() => handleSort('updatedAt')}
+            >
+              <div className='flex items-center gap-1'>
+                Updated
+                {getSortIcon('updatedAt')}
+              </div>
+            </TableHead>
+            <TableHead>Comments</TableHead>
+            <TableHead>Likes</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -119,30 +204,41 @@ export default function AdminPosts() {
             <TableRow>
               <TableCell colSpan={10}>Loading...</TableCell>
             </TableRow>
-          ) : data?.posts?.length ? (
-            (data.posts as AdminPost[]).map((post) => (
+          ) : total > 0 ? (
+            (posts as AdminPost[]).map((post) => (
               <TableRow key={post.id}>
                 <TableCell>{post.id}</TableCell>
                 <TableCell>{post.title}</TableCell>
-                <TableCell className='max-w-xs truncate'>
-                  {post.content}
-                </TableCell>
                 <TableCell>
-                  <span
-                    className={
-                      post.status === PostStatus.ACTIVE
-                        ? 'text-green-600'
-                        : post.status === PostStatus.ARCHIVED
-                          ? 'text-gray-500'
-                          : post.status === PostStatus.REPORTED
-                            ? 'text-yellow-600'
-                            : ''
+                  <Badge
+                    variant={
+                      post.status === ContentStatus.ACTIVE
+                        ? 'default'
+                        : post.status === ContentStatus.ARCHIVED
+                          ? 'secondary'
+                          : post.status === ContentStatus.REPORTED
+                            ? 'destructive'
+                            : 'outline'
                     }
                   >
-                    {post.status}
-                  </span>
+                    {t(`Enums.ContentStatus.${post.status}`)}
+                  </Badge>
                 </TableCell>
-                <TableCell>{post.user?.fullName || 'Unknown'}</TableCell>
+                <TableCell>
+                  <div className='flex items-center gap-2'>
+                    <Avatar className='w-8 h-8 me-1'>
+                      {post.user.profileImage ? (
+                        <AvatarImage
+                          src={post.user.profileImage}
+                          alt={post.user.username}
+                        />
+                      ) : (
+                        <AvatarFallback>{post.user.username}</AvatarFallback>
+                      )}
+                    </Avatar>
+                    <span>{post.user?.username}</span>
+                  </div>
+                </TableCell>
                 <TableCell>
                   {new Date(post.createdAt).toLocaleString()}
                 </TableCell>
@@ -159,24 +255,24 @@ export default function AdminPosts() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      {post.status !== PostStatus.ACTIVE && (
+                      {post.status !== ContentStatus.ACTIVE && (
                         <DropdownMenuItem
                           onClick={() =>
                             updateStatus.mutate({
                               id: post.id,
-                              status: PostStatus.ACTIVE,
+                              status: ContentStatus.ACTIVE,
                             })
                           }
                         >
                           Approve
                         </DropdownMenuItem>
                       )}
-                      {post.status !== PostStatus.ARCHIVED && (
+                      {post.status !== ContentStatus.ARCHIVED && (
                         <DropdownMenuItem
                           onClick={() =>
                             updateStatus.mutate({
                               id: post.id,
-                              status: PostStatus.ARCHIVED,
+                              status: ContentStatus.ARCHIVED,
                             })
                           }
                         >
@@ -201,29 +297,16 @@ export default function AdminPosts() {
           )}
         </TableBody>
       </Table>
-      <div className='flex items-center justify-between mt-4'>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <div className='space-x-2'>
-          <Button
-            size='sm'
-            variant='outline'
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Previous
-          </Button>
-          <Button
-            size='sm'
-            variant='outline'
-            disabled={page === totalPages || totalPages === 0}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      {data && (
+        <TablePagination
+          currentPage={page}
+          totalPages={data.pages}
+          pageSize={pageSize}
+          totalItems={total}
+          onPageChange={setPage}
+          onPageSizeChange={handlePageSizeChange}
+        />
+      )}
     </div>
   );
-} 
+}

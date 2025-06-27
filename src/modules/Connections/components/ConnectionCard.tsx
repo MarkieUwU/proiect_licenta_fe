@@ -24,7 +24,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   const initials = getInitials(user.username);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage.ConnectionsTab.ConnectionsList.ConnectionCard'});
+  const { t } = useTranslation();
 
   const requestConnectionMutation = useMutation({
     mutationFn: requestConnection,
@@ -102,7 +102,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
             onClick={handleRequestConnection}
           >
             <i className='ri-user-add-line' />
-            {t('Add')}
+            {t('Pages.ProfilePage.AddConnection')}
           </Button>
         );
         break;
@@ -115,7 +115,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
             onClick={handleRemoveConnection}
           >
             <i className='ri-user-unfollow-fill' />
-            {t('Cancel')}
+            {t('Pages.ProfilePage.CancelConnection')}
           </Button>
         );
         break;
@@ -126,14 +126,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
               loading={acceptConnectionMutation.isPending}
               onClick={handleAcceptConnection}
             >
-              {t('Accept')}
+              {t('Actions.Accept')}
             </Button>
             <Button
               variant='destructive'
               loading={removeConnectionMutation.isPending}
               onClick={handleRejectConnection}
             >
-              {t('Reject')}
+              {t('Actions.Decline')}
             </Button>
           </div>
         );

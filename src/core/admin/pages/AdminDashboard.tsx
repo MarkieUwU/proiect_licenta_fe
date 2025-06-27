@@ -19,33 +19,24 @@ export const AdminDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center gap-2">
-          {/* Add date range picker here if needed */}
-        </div>
+    <div className='space-y-6'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-3xl font-bold'>Dashboard</h1>
       </div>
 
       <DashboardStats stats={stats} />
-      
-      <div className="grid gap-4 md:grid-cols-2">
+
+      <div className='grid gap-4 md:grid-cols-2'>
         <UserGrowthChart />
         <ContentDistributionChart />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <RecentActivity 
-          recentUsers={stats.recentUsers} 
-          title="Recent Users" 
-        />
-        <RecentActivity 
-          recentPosts={stats.recentPosts} 
-          title="Recent Posts" 
-        />
+      <div className='grid gap-4 lg:grid-cols-2'>
+        <RecentActivity recentUsers={stats.recentUsers} title='Recent Users' />
+        <RecentActivity recentPosts={stats.recentPosts} title='Recent Posts' />
       </div>
     </div>
-  )
+  );
 }
 
 const DashboardSkeleton = () => (

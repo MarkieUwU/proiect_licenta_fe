@@ -29,6 +29,8 @@ import { deletePost } from '../apis/post.api';
 import { DeleteDialog } from '@/components/ui/DeleteDialog';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from '@tanstack/react-router';
+import { ReportDialog } from '@/components/ui/ReportDialog';
+import { reportPost } from '../apis/report.api';
 
 interface PostProps {
   post: Post;
@@ -45,9 +47,13 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
   const [alreadyLiked, setAlreadyLiked] = useState(getIfLiked);
   const [editModalOpened, setEditModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed.PostCard' });
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'Pages.PostsFeed.PostCard',
+  });
   const navigate = useNavigate();
   const ownPost = user!.id === post.userId;
+  const [reportOpen, setReportOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const likeMutation = useMutation({
     mutationFn: likeAPost,
@@ -100,8 +106,21 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
   };
 
   const navigateToProfile = () => {
-    navigate({ to: `/${post.user.username}/profile` })
-  }
+    navigate({ to: `/${post.user.username}/profile` });
+  };
+
+  const handleReport = async (reason: string) => {
+    setLoading(true);
+    try {
+      await reportPost(post.id, reason);
+      toast.success('Report submitted');
+      setReportOpen(false);
+    } catch {
+      toast.error('Failed to submit report');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -113,7 +132,10 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
                 className='flex items-center gap-3 mb-2 cursor-pointer'
                 onClick={navigateToProfile}
               >
-                <AvatarComponent initials={initials} image={post.user.profileImage}></AvatarComponent>
+                <AvatarComponent
+                  initials={initials}
+                  image={post.user.profileImage}
+                ></AvatarComponent>
                 <div className='flex flex-col'>
                   <span className='text-lg'>{post.user.fullName}</span>
                   <span className='text-xs text-gray-500'>
@@ -121,29 +143,37 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
                   </span>
                 </div>
               </div>
-              {ownPost && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='text-xl rounded-full'
-                    >
-                      <i className='ri-more-fill'></i>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align='end'>
-                    <DropdownMenuItem onClick={() => setEditModalOpened(true)}>
-                      {t('DropDown.Edit')}
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='text-xl rounded-full'
+                  >
+                    <i className='ri-more-fill'></i>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  {ownPost ? (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => setEditModalOpened(true)}
+                      >
+                        {t('DropDown.Edit')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setDeleteModalOpened(true)}
+                      >
+                        {t('DropDown.Delete')}
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem onClick={() => setReportOpen(true)}>
+                      {t('DropDown.Report')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setDeleteModalOpened(true)}
-                    >
-                      {t('DropDown.Delete')}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </CardTitle>
         </CardHeader>
@@ -215,6 +245,12 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
         loading={deletePostMutation.isPending}
         onDelete={handleDeletePost}
         onOpenChange={(value) => setDeleteModalOpened(value)}
+      />
+      <ReportDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        onSubmit={handleReport}
+        loading={loading}
       />
     </>
   );

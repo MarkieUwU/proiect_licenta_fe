@@ -6,7 +6,8 @@
     "Edit": "Editează",
     "Cancel": "Anulează",
     "Accept": "Acceptă",
-    "Decline": "Respinge"
+    "Decline": "Respinge",
+    "Submit": "Trimite"
   },
   "Enums": {
     "Language": {
@@ -23,8 +24,14 @@
     },
     "PrivacyOptions": {
       "Public": "Public",
-      "Connections": "Numai conexiuni",
+      "Connections": "Numai prieteni",
       "Private": "Privat"
+    },
+    "ContentStatus": {
+      "ALL": "Toate statusurile",
+      "ACTIVE": "Activ",
+      "ARCHIVED": "Arhivat",
+      "REPORTED": "Raportat"
     }
   },
   "ValidationErrors": {
@@ -79,8 +86,8 @@
     },
     "EmailSentSuccessfullyPage": {
       "Title": "Cererea resetare parolă",
-      "Paragraph1": "În câteva momente vei primi un email cu linkul pentru resetarea parolei. Linkul este disponibil timp de o oră.",
-      "Paragraph2": "Poți închide această pagină."
+      "Paragraph1": "Ve-ți primi un email cu linkul pentru resetarea parolei.",
+      "Paragraph2": "Linkul este disponibil timp de o oră."
     },
     "ResetPasswordPage": {
       "Title": "Reset password",
@@ -97,7 +104,8 @@
         "SuccessMessage": "Postare ștearsă cu succes",
         "DropDown": {
           "Edit": "Editează",
-          "Delete": "Șterge"
+          "Delete": "Șterge",
+          "Report": "Raportează"
         },
         "DeleteDialog": {
           "Title": "Ești sigur?",
@@ -120,48 +128,41 @@
         "TextareaPlaceholder": "Adaugă un comentariu...",
         "TextareaError": "Trebuie să scrii ceva",
         "Post": "Postează"
+      },
+      "ReportDialog": {
+        "Title": "Raportează conținutul",
+        "Description": "Descrie problema..."
       }
     },
     "ConnectionsPage": {
-      "Connections": "Conexiuni",
+      "Connections": "Prieteni",
       "Suggestions": "Sugestii",
       "ConnectionsTab": {
         "ConnectionRequestList": {
-          "Title": "Cereri de conectare"
+          "Title": "Cereri de prietenie"
         },
         "ConnectionsList": {
           "SearchPlaceholder": "Caută...",
           "NoRecords": {
-            "Title": "Nici-o conectare găsită"
-          },
-          "ConnectionCard": {
-            "Connection": "{{count}} conexiune",
-            "Connections": "{{count}} conexiuni",
-            "Post": "{{count}} postare",
-            "Posts": "{{count}} postări",
-            "Add": "Adaugă conexiune",
-            "Cancel": "Anulează conexiune",
-            "Accept": "Acceptă",
-            "Reject": "Respinge"
+            "Title": "Nu s-au găsit prieteni"
           }
         }
       },
       "SuggestionsTab": {
         "SearchPlaceholder": "Caută...",
         "NoRecords": {
-          "Title": "Nici-o sugestie găsită",
-          "Text": "În acest moment nu există sugestii de conectare"
+          "Title": "Nici-o sugestie găsită"
         }
       }
     },
     "ProfilePage": {
-      "AddConnection": "Adaugă conexiune",
-      "CancelConnection": "Anulează conexiune",
-      "RemoveConnection": "Eliminați conexiune",
-      "AcceptConnection": "Acceptă conexiunea",
-      "RejectConnection": "Respinge conexiunea",
-      "Connection": "{{count}} conexiune",
-      "Connections": "{{count}} conexiuni",
+      "AddConnection": "Adaugă prietenie",
+      "CancelConnection": "Anulează cererea",
+      "RemoveConnection": "Elimină prieten",
+      "AcceptConnection": "Acceptă cererea",
+      "RejectConnection": "Respinge cererea",
+      "Connection": "{{count}} prieten",
+      "Connections": "{{count}} prieteni",
       "Post": "{{count}} postare",
       "Posts": "{{count}} postări",
       "EditProfile": "Editează profil",
@@ -174,13 +175,13 @@
         "Bio": "Biografie"
       },
       "UserConnections": {
-        "Title": "Conexiuni",
+        "Title": "Prieteni",
         "ViewMore": "Arată mai multe",
         "NoRecords": {
-          "Title": "Nici-o conexiune găsită",
-          "Text": "Nu ți-ai făcut conexiuni"
+          "Title": "Nu s-au găsit prieteni",
+          "Text": "Nu ți-ai făcut nici-o prietenie"
         },
-        "ConnectionSuggestions": "Sugestii de conectare"
+        "ConnectionSuggestions": "Sugestii de prietenie"
       },
       "ErrorPage": {
         "Title": "Utilizator inexistent",
@@ -198,7 +199,7 @@
       "PrivacySettings": {
         "Title": "Confidențialitate",
         "ProfileDetails": "Informații profil",
-        "Connections": "Conexiuni",
+        "Connections": "Prieteni",
         "Posts": "Postări"
       }
     },
@@ -207,12 +208,12 @@
       "Posts": "Postări",
       "Comments": "Comentarii",
       "Likes": "Aprecieri",
-      "Connections": "Conexiuni",
+      "Connections": "Prieteni",
       "Male": "Masculin",
       "Female": "Feminin",
       "Undeclared": "Nedeclarat",
       "NrOfUsers": "nr de utilizatori",
-      "UsersByConnectionsTitle": "Top 5 utilizatori după numărul de conexiuni",
+      "UsersByConnectionsTitle": "Top 5 utilizatori după numărul de prieteni",
       "UsersByPostsTitle": "Top 5 utilizatori după numărul de postări",
       "UsersGenderTitle": "Procentaj pe sexe al utilizatorilor",
       "PostsByLikes": "Top 5 cele mai apreciate postări"
@@ -221,7 +222,7 @@
   "Components": {
     "Header": {
       "Home": "Postări",
-      "Connections": "Conexiuni",
+      "Friends": "Prieteni",
       "MyAccountMenu": {
         "MyAccount": "Contul meu",
         "Profile": "Profil",
@@ -231,7 +232,7 @@
       }
     },
     "SuggestionsSidebar": {
-      "Title": "Sugestii de conectare",
+      "Title": "Sugestii de prietenie",
       "NoRecords": "Nici-o sugestie găsită",
       "ViewMore": "Arată mai multe"
     },
@@ -247,8 +248,8 @@
     },
     "UpdateUserModal": {
       "Title": "Editare profil",
-      "Picture": "Poză",
-      "ChooseAFile": "Alege un fișier",
+      "ProfilePicture": "Poză de profil",
+      "ChoosePhoto": "Alege o poză",
       "FullName": "Nume întreg",
       "Email": "Email",
       "Gender": "Sex",
@@ -263,5 +264,8 @@
     "NoRecordFound": {
       "Title": "Nu au fost găsite date"
     }
+  },
+  "Common": {
+    "Back": "Înapoi"
   }
 }

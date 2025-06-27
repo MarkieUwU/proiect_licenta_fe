@@ -52,14 +52,14 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({
     mutationFn: resetPassword,
     onSuccess: () => {
       setLoading(false);
-      navigate({ to: '/login' });
+      navigate({ to: '/login', replace: true });
     },
     onError: () => {
       setLoading(false);
     },
   });
 
-  const onSubmit = handleSubmit(() => {
+  const onSubmit = () => {
     setLoading(true);
 
     const request: ResetPasswordRequest = {
@@ -68,7 +68,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({
       confirmPassword,
     };
     resetPasswordMutation.mutate(request);
-  });
+  };
 
   return (
     <Card className='w-full max-w-[500px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
@@ -79,7 +79,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className='flex flex-col gap-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
           <div className='flex flex-col gap-3'>
             <Label htmlFor='password'>
               {t('Pages.ResetPasswordPage.Password')}
@@ -107,7 +107,6 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({
             />
           </div>
           <Button
-            type='submit'
             className='w-full mt-2'
             disabled={!isValid}
             loading={loading}

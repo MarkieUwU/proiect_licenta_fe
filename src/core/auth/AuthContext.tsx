@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useToken } from '../hooks/useToken';
 import { LoggedUser } from '@/modules/Profile/models/user.models';
 import { decodeToken } from '../utils/utils';
@@ -20,7 +20,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const { token, setToken, removeToken, getToken } = useToken();
   const navigate = useNavigate();
+  const shouldNavigateToLogin = useRef(false);
 
+  // Initialize authentication state
   useEffect(() => {
     const initializeAuth = () => {
       const currentToken = getToken();
@@ -30,13 +32,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(decodedUser);
         } catch {
           removeToken();
+          setUser(null);
         }
+      } else {
+        setUser(null);
       }
       setIsLoading(false);
     };
 
     initializeAuth();
   }, [getToken, removeToken]);
+
+  // Sync user state with token changes
+  useEffect(() => {
+    if (!token && user) {
+      // Token was removed but user state still exists
+      setUser(null);
+    } else if (token && !user) { 
+      // Token exists but no user state, try to decode
+      try {
+        const decodedUser = decodeToken(token);
+        setUser(decodedUser);
+      } catch {
+        removeToken();
+        setUser(null);
+      }
+    }
+  }, [token, user, removeToken]);
+
+  // Handle navigation to login after logout
+  useEffect(() => {
+    if (shouldNavigateToLogin.current) {
+      navigate({ to: '/login', replace: true });
+      shouldNavigateToLogin.current = false;
+    }
+  }, [user, navigate]);
 
   const login = (newToken: string, userData: LoggedUser) => {
     setToken(newToken);
@@ -46,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     removeToken();
     setUser(null);
-    navigate({ to: '/login' });
+    shouldNavigateToLogin.current = true;
   };
 
   const updateUser = (updatedUser: LoggedUser) => {
@@ -57,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user && !!token,
         isLoading,
         login,
         logout,

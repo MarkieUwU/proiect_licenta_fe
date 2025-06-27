@@ -32,6 +32,18 @@
       "ACTIVE": "Activ",
       "ARCHIVED": "Arhivat",
       "REPORTED": "Raportat"
+    },
+    "NotificationType": {
+      "POST_LIKED": "Postare apreciată",
+      "POST_COMMENTED": "Postare comentată",
+      "POST_REPORTED": "Postare raportată",
+      "POST_ARCHIVED": "Postare arhivată",
+      "POST_APPROVED": "Postare aprobată",
+      "NEW_FOLLOWER": "Urmăritor nou",
+      "MENTIONED_IN_COMMENT": "Menționat în comentariu",
+      "MENTIONED_IN_POST": "Menționat în postare",
+      "SYSTEM_ANNOUNCEMENT": "Anunț sistem",
+      "ACCOUNT_WARNING": "Avertisment cont"
     }
   },
   "ValidationErrors": {
@@ -215,8 +227,20 @@
       "NrOfUsers": "nr de utilizatori",
       "UsersByConnectionsTitle": "Top 5 utilizatori după numărul de prieteni",
       "UsersByPostsTitle": "Top 5 utilizatori după numărul de postări",
-      "UsersGenderTitle": "Procentaj pe sexe al utilizatorilor",
-      "PostsByLikes": "Top 5 cele mai apreciate postări"
+      "UsersGenderTitle": "Raportul de gen al utilizatorilor",
+      "PostsByLikes": "Top 5 postări după numărul de aprecieri"
+    },
+    "NotificationsPage": {
+      "Title": "Notificări",
+      "UnreadCount": "{{count}} necitite",
+      "TotalCount": "{{count}} total",
+      "MarkAllAsRead": "Marchează toate ca citite",
+      "MarkRead": "Marchează ca citită",
+      "NoNotifications": "Nici-o notificare",
+      "NoNotificationsDescription": "Ești la zi! Revino mai târziu pentru actualizări noi.",
+      "Previous": "Anterior",
+      "Next": "Următor",
+      "Page": "Pagina {{current}} din {{total}}"
     }
   },
   "Components": {
@@ -262,7 +286,12 @@
       "Text": "Ne cerem scuze! Ceva neașteptat s-a întâmplat. Te rog să mai încerci."
     },
     "NoRecordFound": {
-      "Title": "Nu au fost găsite date"
+      "Title": "Nu s-au găsit înregistrări"
+    },
+    "NotificationBell": {
+      "Notifications": "Notificări",
+      "NoNotifications": "Nici-o notificare",
+      "MarkAllRead": "Marchează toate ca citite"
     }
   },
   "Common": {

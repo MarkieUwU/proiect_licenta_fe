@@ -8,8 +8,8 @@ export default function ContentManagement() {
   const [tab, setTab] = useState('posts');
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Content Management</h1>
+    <div className="space-y-4">
+      <h1 className="text-3xl font-bold mb-6">Content Management</h1>
       <Tabs value={tab} onValueChange={setTab} className="w-full">
         <TabsList>
           <TabsTrigger value="posts">Posts</TabsTrigger>

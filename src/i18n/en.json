@@ -32,6 +32,18 @@
       "ACTIVE": "Active",
       "ARCHIVED": "Archived",
       "REPORTED": "Reported"
+    },
+    "NotificationType": {
+      "POST_LIKED": "Post Liked",
+      "POST_COMMENTED": "Post Commented",
+      "POST_REPORTED": "Post Reported",
+      "POST_ARCHIVED": "Post Archived",
+      "POST_APPROVED": "Post Approved",
+      "NEW_FOLLOWER": "New Follower",
+      "MENTIONED_IN_COMMENT": "Mentioned in Comment",
+      "MENTIONED_IN_POST": "Mentioned in Post",
+      "SYSTEM_ANNOUNCEMENT": "System Announcement",
+      "ACCOUNT_WARNING": "Account Warning"
     }
   },
   "ValidationErrors": {
@@ -218,6 +230,18 @@
       "UsersByPostsTitle": "Top 5 users by posts number",
       "UsersGenderTitle": "User gender ratio",
       "PostsByLikes": "Top 5 posts by likes number"
+    },
+    "NotificationsPage": {
+      "Title": "Notifications",
+      "UnreadCount": "{{count}} unread",
+      "TotalCount": "{{count}} total",
+      "MarkAllAsRead": "Mark all as read",
+      "MarkRead": "Mark read",
+      "NoNotifications": "No notifications",
+      "NoNotificationsDescription": "You're all caught up! Check back later for new updates.",
+      "Previous": "Previous",
+      "Next": "Next",
+      "Page": "Page {{current}} of {{total}}"
     }
   },
   "Components": {
@@ -265,6 +289,11 @@
     },
     "NoRecordFound": {
       "Title": "No records found"
+    },
+    "NotificationBell": {
+      "Notifications": "Notifications",
+      "NoNotifications": "No notifications",
+      "MarkAllRead": "Mark all read"
     }
   },
   "Common": {

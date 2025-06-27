@@ -1,19 +1,19 @@
-import { useState } from 'react';
 import { Notification } from '@/core/models/notification.models';
 import { markNotificationAsRead, markAllNotificationsAsRead } from '@/core/apis/notification.api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Check, CheckCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface NotificationListProps {
   notifications: Notification[];
   onClose: () => void;
 }
 
-export function NotificationList({ notifications, onClose }: NotificationListProps) {
+export function NotificationList({ notifications }: NotificationListProps) {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('translation', { keyPrefix: 'Components.NotificationBell' });
 
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: number) => markNotificationAsRead(notificationId),
@@ -67,21 +67,6 @@ export function NotificationList({ notifications, onClose }: NotificationListPro
     }
   };
 
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case 'POST_REPORTED':
-      case 'ACCOUNT_WARNING':
-        return 'destructive';
-      case 'POST_APPROVED':
-      case 'NEW_FOLLOWER':
-        return 'default';
-      case 'SYSTEM_ANNOUNCEMENT':
-        return 'secondary';
-      default:
-        return 'outline';
-    }
-  };
-
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -97,13 +82,13 @@ export function NotificationList({ notifications, onClose }: NotificationListPro
   if (notifications.length === 0) {
     return (
       <div className="p-4 text-center text-muted-foreground">
-        <p>No notifications</p>
+        <p>{t('NoNotifications')}</p>
       </div>
     );
   }
 
   return (
-    <div className="max-h-96">
+    <div className="max-h-[496px]">
       <div className="p-4 border-b flex justify-between items-center">
         <span className="text-sm font-medium">
           {notifications.filter(n => !n.read).length} unread
@@ -115,11 +100,11 @@ export function NotificationList({ notifications, onClose }: NotificationListPro
           disabled={markAllAsReadMutation.isPending}
         >
           <CheckCheck className="h-4 w-4 mr-1" />
-          Mark all read
+          {t('MarkAllRead')}
         </Button>
       </div>
       
-      <div className="max-h-80 overflow-y-auto">
+      <div className="max-h-[400px] overflow-y-auto">
         <div className="p-2">
           {notifications.map((notification) => (
             <div key={notification.id} className="mb-2">
@@ -140,14 +125,8 @@ export function NotificationList({ notifications, onClose }: NotificationListPro
                       <p className="text-sm font-medium leading-tight">
                         {notification.message}
                       </p>
-                      {!notification.read && (
-                        <Badge variant="destructive" className="h-2 w-2 rounded-full p-0" />
-                      )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <Badge variant={getNotificationColor(notification.type)} className="text-xs">
-                        {notification.type.replace(/_/g, ' ')}
-                      </Badge>
                       <span className="text-xs text-muted-foreground">
                         {formatTimeAgo(notification.createdAt)}
                       </span>

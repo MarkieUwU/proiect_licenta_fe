@@ -18,4 +18,9 @@ export const markNotificationAsRead = apiErrorHandler<Notification>(async (notif
 export const markAllNotificationsAsRead = apiErrorHandler<{ success: boolean }>(async () => {
   const { data } = await apiClient.patch('/notifications/read-all');
   return data;
+});
+
+export const deleteNotification = apiErrorHandler<{ success: boolean }>(async (notificationId: number) => {
+  const { data } = await apiClient.delete(`/notifications/${notificationId}`);
+  return data;
 }); 

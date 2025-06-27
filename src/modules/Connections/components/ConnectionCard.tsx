@@ -159,19 +159,25 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
               {user.fullName}
             </span>
             {type === UserCardType.suggestion && (
-              <div className='flex justify-center gap-4 font-bold'>{connectionButton}</div>
+              <div className='flex justify-center gap-4 font-bold'>
+                {connectionButton}
+              </div>
             )}
             {type === UserCardType.connection && (
               <div className='flex justify-center gap-2 md:gap-4'>
                 <Badge>
                   {user.connectionCount === 1
-                    ? t('Connection', { count: user.connectionCount })
-                    : t('Connections', { count: user.connectionCount })}
+                    ? t('Pages.ProfilePage.Connection', {
+                        count: user.connectionCount,
+                      })
+                    : t('Pages.ProfilePage.Connections', {
+                        count: user.connectionCount,
+                      })}
                 </Badge>
                 <Badge>
                   {user.postsCount === 1
-                    ? t('Post', { count: user.postsCount })
-                    : t('Posts', { count: user.postsCount })}
+                    ? t('Pages.ProfilePage.Post', { count: user.postsCount })
+                    : t('Pages.ProfilePage.Posts', { count: user.postsCount })}
                 </Badge>
               </div>
             )}

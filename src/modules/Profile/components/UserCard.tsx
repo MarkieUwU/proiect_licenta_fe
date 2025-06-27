@@ -19,7 +19,7 @@ export const UserCard: React.FC<UserProps> = ({ user }) => {
 
   return (
     <Card
-      className="p-3 ps-4 w-full max-w-[400px] sm:w-[300px] lg:w-auto"
+      className="p-3 ps-4 w-full max-w-[400px] sm:w-[300px] lg:w-full"
       hover={true}
       onClick={navigateToProfile}
     >

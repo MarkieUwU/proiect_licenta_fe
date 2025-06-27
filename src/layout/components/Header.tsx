@@ -45,11 +45,6 @@ const Header: React.FC = () => {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link to='/notifications' className='[&.active]:font-bold'>
-            <NavigationMenuLink>Notifications</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
           <NotificationBell />
         </NavigationMenuItem>
         <NavigationMenuItem>

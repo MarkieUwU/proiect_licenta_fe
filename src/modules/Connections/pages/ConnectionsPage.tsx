@@ -13,7 +13,7 @@ const FriendsPage: React.FC<FriendsPageProps> = ({ showSuggestions }) => {
 
   return (
     <div className='overflow-y-auto pt-6 pb-3' style={{ maxHeight: 'var(--app-height)' }}>
-      <div className='flex flex-col gap-5 w-full lg:max-w-[1300px] px-2 mx-auto'>
+      <div className='flex flex-col gap-5 w-full lg:max-w-[1400px] px-2 mx-auto'>
         <div>
           <BackButton
             variant='outline'

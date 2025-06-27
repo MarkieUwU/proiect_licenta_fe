@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 import { getAdminPosts, updatePostStatus } from '../../apis/admin.api';
 import { toast } from 'sonner';
 import { AdminPost } from '@/modules/Posts/models/post.models';
@@ -138,165 +138,175 @@ export default function AdminPosts() {
             <SelectValue placeholder='Select status' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={ContentStatus.ALL}>{t('Enums.ContentStatus.ALL')}</SelectItem>
-            <SelectItem value={ContentStatus.ACTIVE}>{t('Enums.ContentStatus.ACTIVE')}</SelectItem>
-            <SelectItem value={ContentStatus.ARCHIVED}>{t('Enums.ContentStatus.ARCHIVED')}</SelectItem>
-            <SelectItem value={ContentStatus.REPORTED}>{t('Enums.ContentStatus.REPORTED')}</SelectItem>
+            <SelectItem value={ContentStatus.ALL}>
+              {t('Enums.ContentStatus.ALL')}
+            </SelectItem>
+            <SelectItem value={ContentStatus.ACTIVE}>
+              {t('Enums.ContentStatus.ACTIVE')}
+            </SelectItem>
+            <SelectItem value={ContentStatus.ARCHIVED}>
+              {t('Enums.ContentStatus.ARCHIVED')}
+            </SelectItem>
+            <SelectItem value={ContentStatus.REPORTED}>
+              {t('Enums.ContentStatus.REPORTED')}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead
-              className='cursor-pointer hover:bg-muted/50 transition-colors'
-              onClick={() => handleSort('id')}
-            >
-              <div className='flex items-center gap-1'>
-                ID
-                {getSortIcon('id')}
-              </div>
-            </TableHead>
-            <TableHead
-              className='cursor-pointer hover:bg-muted/50 transition-colors'
-              onClick={() => handleSort('title')}
-            >
-              <div className='flex items-center gap-1'>
-                Title
-                {getSortIcon('title')}
-              </div>
-            </TableHead>
-            <TableHead
-              className='cursor-pointer hover:bg-muted/50 transition-colors'
-              onClick={() => handleSort('status')}
-            >
-              <div className='flex items-center gap-1'>
-                Status
-                {getSortIcon('status')}
-              </div>
-            </TableHead>
-            <TableHead>Author</TableHead>
-            <TableHead 
-              className='cursor-pointer hover:bg-muted/50 transition-colors'
-              onClick={() => handleSort('createdAt')}
-            >
-              <div className='flex items-center gap-1'>
-                Created
-                {getSortIcon('createdAt')}
-              </div>
-            </TableHead>
-            <TableHead 
-              className='cursor-pointer hover:bg-muted/50 transition-colors'
-              onClick={() => handleSort('updatedAt')}
-            >
-              <div className='flex items-center gap-1'>
-                Updated
-                {getSortIcon('updatedAt')}
-              </div>
-            </TableHead>
-            <TableHead>Comments</TableHead>
-            <TableHead>Likes</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
+      <div className='rounded-md border'>
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={10}>Loading...</TableCell>
+              <TableHead
+                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                onClick={() => handleSort('id')}
+              >
+                <div className='flex items-center gap-1'>
+                  ID
+                  {getSortIcon('id')}
+                </div>
+              </TableHead>
+              <TableHead
+                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                onClick={() => handleSort('title')}
+              >
+                <div className='flex items-center gap-1'>
+                  Title
+                  {getSortIcon('title')}
+                </div>
+              </TableHead>
+              <TableHead
+                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                onClick={() => handleSort('status')}
+              >
+                <div className='flex items-center gap-1'>
+                  Status
+                  {getSortIcon('status')}
+                </div>
+              </TableHead>
+              <TableHead>Author</TableHead>
+              <TableHead
+                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                onClick={() => handleSort('createdAt')}
+              >
+                <div className='flex items-center gap-1'>
+                  Created
+                  {getSortIcon('createdAt')}
+                </div>
+              </TableHead>
+              <TableHead
+                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                onClick={() => handleSort('updatedAt')}
+              >
+                <div className='flex items-center gap-1'>
+                  Updated
+                  {getSortIcon('updatedAt')}
+                </div>
+              </TableHead>
+              <TableHead>Comments</TableHead>
+              <TableHead>Likes</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ) : total > 0 ? (
-            (posts as AdminPost[]).map((post) => (
-              <TableRow key={post.id}>
-                <TableCell>{post.id}</TableCell>
-                <TableCell>{post.title}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      post.status === ContentStatus.ACTIVE
-                        ? 'default'
-                        : post.status === ContentStatus.ARCHIVED
-                          ? 'secondary'
-                          : post.status === ContentStatus.REPORTED
-                            ? 'destructive'
-                            : 'outline'
-                    }
-                  >
-                    {t(`Enums.ContentStatus.${post.status}`)}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <div className='flex items-center gap-2'>
-                    <Avatar className='w-8 h-8 me-1'>
-                      {post.user.profileImage ? (
-                        <AvatarImage
-                          src={post.user.profileImage}
-                          alt={post.user.username}
-                        />
-                      ) : (
-                        <AvatarFallback>{post.user.username}</AvatarFallback>
-                      )}
-                    </Avatar>
-                    <span>{post.user?.username}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {new Date(post.createdAt).toLocaleString()}
-                </TableCell>
-                <TableCell>
-                  {new Date(post.updatedAt).toLocaleString()}
-                </TableCell>
-                <TableCell>{post.comments}</TableCell>
-                <TableCell>{post.likes}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size='icon' variant='ghost'>
-                        <ChevronDown className='w-4 h-4' />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {post.status !== ContentStatus.ACTIVE && (
-                        <DropdownMenuItem
-                          onClick={() =>
-                            updateStatus.mutate({
-                              id: post.id,
-                              status: ContentStatus.ACTIVE,
-                            })
-                          }
-                        >
-                          Approve
-                        </DropdownMenuItem>
-                      )}
-                      {post.status !== ContentStatus.ARCHIVED && (
-                        <DropdownMenuItem
-                          onClick={() =>
-                            updateStatus.mutate({
-                              id: post.id,
-                              status: ContentStatus.ARCHIVED,
-                            })
-                          }
-                        >
-                          Archive
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem
-                        onClick={() => removePost.mutate(post.id)}
-                        className='text-red-600'
-                      >
-                        {t('Actions.Delete')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={10}>Loading...</TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={10}>No posts found.</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ) : total > 0 ? (
+              (posts as AdminPost[]).map((post) => (
+                <TableRow key={post.id}>
+                  <TableCell>{post.id}</TableCell>
+                  <TableCell>{post.title}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        post.status === ContentStatus.ACTIVE
+                          ? 'default'
+                          : post.status === ContentStatus.ARCHIVED
+                            ? 'secondary'
+                            : post.status === ContentStatus.REPORTED
+                              ? 'destructive'
+                              : 'outline'
+                      }
+                    >
+                      {t(`Enums.ContentStatus.${post.status}`)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className='flex items-center gap-2'>
+                      <Avatar className='w-8 h-8 me-1'>
+                        {post.user.profileImage ? (
+                          <AvatarImage
+                            src={post.user.profileImage}
+                            alt={post.user.username}
+                          />
+                        ) : (
+                          <AvatarFallback>{post.user.username}</AvatarFallback>
+                        )}
+                      </Avatar>
+                      <span>{post.user?.username}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(post.createdAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(post.updatedAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell>{post.comments}</TableCell>
+                  <TableCell>{post.likes}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size='icon' variant='ghost'>
+                          <i className='ri-more-fill'></i>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {post.status !== ContentStatus.ACTIVE && (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              updateStatus.mutate({
+                                id: post.id,
+                                status: ContentStatus.ACTIVE,
+                              })
+                            }
+                          >
+                            Approve
+                          </DropdownMenuItem>
+                        )}
+                        {post.status !== ContentStatus.ARCHIVED && (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              updateStatus.mutate({
+                                id: post.id,
+                                status: ContentStatus.ARCHIVED,
+                              })
+                            }
+                          >
+                            Archive
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem
+                          onClick={() => removePost.mutate(post.id)}
+                          className='text-red-600'
+                        >
+                          {t('Actions.Delete')}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={10}>No posts found.</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
       {data && (
         <TablePagination
           currentPage={page}

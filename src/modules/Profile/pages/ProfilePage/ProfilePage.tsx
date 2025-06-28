@@ -14,7 +14,7 @@ import {
 import { getInitials } from '@/core/utils/utils';
 import PostCard from '@/modules/Posts/components/PostCard';
 import { Post } from '@/modules/Posts/models/post.models';
-import { Route } from '@/routes/_main/$username.profile';
+import { Route } from '@/routes/_main/profile.$username';
 import { Button } from '@/components/ui/button';
 import UpdateUserModal from '../../components/UpdateUserModal';
 import { ConnectionStateEnum } from '../../models/connection-state.enum';

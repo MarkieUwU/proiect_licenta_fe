@@ -58,7 +58,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   });
 
   const navigateToProfile = () => {
-    navigate({ to: `/${user.username}/profile` });
+    navigate({ to: '/profile/$username', params: { username: user.username } });
   };
 
   const handleRequestConnection = (

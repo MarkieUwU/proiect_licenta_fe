@@ -49,7 +49,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   });
 
   const navigateToProfile = () => {
-    navigate({ to: `/${user.username}/profile` });
+    navigate({ to: '/profile/$username', params: { username: user.username } });
   };
 
   const handleRequestConnection = (

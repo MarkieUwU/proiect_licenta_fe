@@ -14,7 +14,7 @@ export const UserCard: React.FC<UserProps> = ({ user }) => {
   const navigate = useNavigate();
 
   const navigateToProfile = () => {
-    navigate({ to: `/${user.username}/profile` });
+    navigate({ to: '/profile/$username', params: { username: user.username } });
   };
 
   return (

@@ -1,14 +1,18 @@
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/core/components/ThemeProvider';
 import { Toaster as Sonner } from 'sonner';
+import { Theme } from '@/core/models/theme.enum';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = 'system' } = useTheme();
+  const { theme } = useTheme();
+
+  // Map our theme enum to sonner's expected theme values
+  const sonnerTheme = theme === Theme.dark ? 'dark' : 'light';
 
   return (
     <Sonner
-      theme={theme as ToasterProps['theme']}
+      theme={sonnerTheme as ToasterProps['theme']}
       className="toaster group"
       toastOptions={{
         classNames: {

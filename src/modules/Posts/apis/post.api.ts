@@ -9,7 +9,7 @@ export const getAllPosts = apiErrorHandler<Post[]>(async () => {
 
 export const getFilteredPosts = apiErrorHandler<Post[]>(
   async ({sortCriteria, userId}: { sortCriteria: PostSortCriteria | PostSortCriteria[], userId: number}) => {
-    const { data } = await apiClient.post('/post/filter', { sortCriteria, userId});
+    const { data } = await apiClient.post('/post/filter', { sortCriterias: sortCriteria, userId});
     return data;
   }
 );

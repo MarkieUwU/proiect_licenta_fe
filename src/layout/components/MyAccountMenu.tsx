@@ -35,7 +35,7 @@ const MyAccountMenu: React.FC<MyAccountMenu> = ({ children, username, containsHo
         )}
         <DropdownMenuItem
           onClick={() =>
-            navigate({ to: '/$username/profile', params: { username } })
+            navigate({ to: '/profile/$username', params: { username } })
           }
         >
           {t('Profile')}

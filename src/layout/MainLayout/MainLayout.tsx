@@ -13,9 +13,11 @@ const MainLayout: React.FC = () => {
   const { user: loggedUser } = useAuth();
 
   useEffect(() => {
-    setTheme(loggedUser!.theme);
-    i18n.changeLanguage(loggedUser!.language);
-  }, [loggedUser, theme]);
+    if (loggedUser) {
+      setTheme(loggedUser.theme);
+      i18n.changeLanguage(loggedUser.language);
+    }
+  }, [loggedUser]);
 
   const isDarkTheme = theme === Theme.dark;
 

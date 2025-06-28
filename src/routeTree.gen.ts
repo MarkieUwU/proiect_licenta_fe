@@ -27,8 +27,8 @@ import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordImport } from './routes/_auth/forgot-password'
 import { Route as AuthEmailSentSuccessfullyImport } from './routes/_auth/email-sent-successfully'
 import { Route as MainFriendsIndexImport } from './routes/_main/friends/index'
+import { Route as MainProfileUsernameImport } from './routes/_main/profile.$username'
 import { Route as MainFriendsUserIdImport } from './routes/_main/friends/$userId'
-import { Route as MainUsernameProfileImport } from './routes/_main/$username.profile'
 import { Route as AuthResetPasswordTokenImport } from './routes/_auth/reset-password.$token'
 
 // Create/Update Routes
@@ -113,13 +113,13 @@ const MainFriendsIndexRoute = MainFriendsIndexImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 
-const MainFriendsUserIdRoute = MainFriendsUserIdImport.update({
-  path: '/friends/$userId',
+const MainProfileUsernameRoute = MainProfileUsernameImport.update({
+  path: '/profile/$username',
   getParentRoute: () => MainRoute,
 } as any)
 
-const MainUsernameProfileRoute = MainUsernameProfileImport.update({
-  path: '/$username/profile',
+const MainFriendsUserIdRoute = MainFriendsUserIdImport.update({
+  path: '/friends/$userId',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -244,18 +244,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthResetPasswordTokenImport
       parentRoute: typeof AuthImport
     }
-    '/_main/$username/profile': {
-      id: '/_main/$username/profile'
-      path: '/$username/profile'
-      fullPath: '/$username/profile'
-      preLoaderRoute: typeof MainUsernameProfileImport
-      parentRoute: typeof MainImport
-    }
     '/_main/friends/$userId': {
       id: '/_main/friends/$userId'
       path: '/friends/$userId'
       fullPath: '/friends/$userId'
       preLoaderRoute: typeof MainFriendsUserIdImport
+      parentRoute: typeof MainImport
+    }
+    '/_main/profile/$username': {
+      id: '/_main/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof MainProfileUsernameImport
       parentRoute: typeof MainImport
     }
     '/_main/friends/': {
@@ -283,8 +283,8 @@ export const routeTree = rootRoute.addChildren({
     MainNotificationsRoute,
     MainSettingsRoute,
     MainIndexRoute,
-    MainUsernameProfileRoute,
     MainFriendsUserIdRoute,
+    MainProfileUsernameRoute,
     MainFriendsIndexRoute,
   }),
   AdminRoute: AdminRoute.addChildren({
@@ -325,8 +325,8 @@ export const routeTree = rootRoute.addChildren({
         "/_main/notifications",
         "/_main/settings",
         "/_main/",
-        "/_main/$username/profile",
         "/_main/friends/$userId",
+        "/_main/profile/$username",
         "/_main/friends/"
       ]
     },
@@ -391,12 +391,12 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_auth/reset-password.$token.tsx",
       "parent": "/_auth"
     },
-    "/_main/$username/profile": {
-      "filePath": "_main/$username.profile.tsx",
-      "parent": "/_main"
-    },
     "/_main/friends/$userId": {
       "filePath": "_main/friends/$userId.tsx",
+      "parent": "/_main"
+    },
+    "/_main/profile/$username": {
+      "filePath": "_main/profile.$username.tsx",
       "parent": "/_main"
     },
     "/_main/friends/": {

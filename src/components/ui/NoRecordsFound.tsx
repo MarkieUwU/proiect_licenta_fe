@@ -1,5 +1,5 @@
 import { Theme } from '@/core/models/theme.enum';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/core/components/ThemeProvider';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

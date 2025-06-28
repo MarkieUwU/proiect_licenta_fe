@@ -23,19 +23,21 @@ export function AdminHeader() {
     <header className='h-16 border-b bg-card'>
       <div className='flex items-center justify-between h-full px-6'>
         <h1 className='text-xl font-semibold'>Admin Panel</h1>
-        <MyAccountMenu
-          username={user!.username}
-          containsHome={true}
-          open={openMenu}
-          onOpenChange={handleMenuOpen}
-        >
-          <div className='cursor-pointer' onClick={() => setOpenMenu(true)}>
-            <AvatarComponent
-              initials={getInitials(user!.username)}
-              image={userResponse.data?.profileImage}
-            ></AvatarComponent>
-          </div>
-        </MyAccountMenu>
+        <div className='me-4'>
+          <MyAccountMenu
+            username={user!.username}
+            containsHome={true}
+            open={openMenu}
+            onOpenChange={handleMenuOpen}
+          >
+            <div className='cursor-pointer' onClick={() => setOpenMenu(true)}>
+              <AvatarComponent
+                initials={getInitials(user!.username)}
+                image={userResponse.data?.profileImage}
+              ></AvatarComponent>
+            </div>
+          </MyAccountMenu>
+        </div>
       </div>
     </header>
   );

@@ -24,7 +24,7 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
       description: "Published content"
     },
     {
-      title: "Total Connections",
+      title: "Total Friends",
       value: stats.totalConnections,
       icon: Link2,
       description: "User relationships"

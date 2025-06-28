@@ -47,7 +47,7 @@ const Header: React.FC = () => {
         <NavigationMenuItem>
           <NotificationBell />
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem className='pe-4'>
           <MyAccountMenu
             username={user!.username}
             containsAdmin={user!.role === Role.ADMIN}

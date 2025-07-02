@@ -37,6 +37,8 @@ import { TablePagination } from '@/components/ui/table-pagination';
 type SortField = 'id' | 'title' | 'status' | 'createdAt' | 'updatedAt';
 
 export default function AdminPosts() {
+  const [searchInput, setSearchInput] = useState('');
+  const [statusInput, setStatusInput] = useState<ContentStatus>(ContentStatus.ALL);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<ContentStatus>(ContentStatus.ALL);
   const [sortField, setSortField] = useState<SortField>('createdAt');
@@ -106,9 +108,28 @@ export default function AdminPosts() {
     return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
+  const handleSearchInputChange = (value: string) => {
+    setSearchInput(value);
+  };
+
+  const handleStatusInputChange = (value: ContentStatus) => {
+    setStatusInput(value);
+  };
+
+  const handleSearch = () => {
+    setSearch(searchInput);
+    setStatus(statusInput);
     setPage(1);
+  };
+
+  const handleReset = () => {
+    setSearchInput('');
+    setStatusInput(ContentStatus.ALL);
+    setSearch('');
+    setStatus(ContentStatus.ALL);
+    setPage(1);
+    setSortField('createdAt');
+    setSortOrder('desc');
   };
 
   const handleStatusChange = (value: ContentStatus) => {
@@ -122,20 +143,20 @@ export default function AdminPosts() {
   };
 
   return (
-    <div>
-      <div className='flex flex-wrap items-center gap-2 mb-4'>
+    <div className='space-y-4'>
+      <div className='flex items-center gap-2'>
         <Input
           placeholder='Search posts...'
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className='w-64'
+          value={searchInput}
+          onChange={(e) => handleSearchInputChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
+          className='w-[250px]'
         />
-        <Select
-          value={status}
-          onValueChange={(value) => handleStatusChange(value as ContentStatus)}
-        >
+        <Select value={statusInput} onValueChange={handleStatusInputChange}>
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Select status' />
+            <SelectValue placeholder='Status' />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ContentStatus.ALL}>
@@ -144,14 +165,20 @@ export default function AdminPosts() {
             <SelectItem value={ContentStatus.ACTIVE}>
               {t('Enums.ContentStatus.ACTIVE')}
             </SelectItem>
-            <SelectItem value={ContentStatus.ARCHIVED}>
-              {t('Enums.ContentStatus.ARCHIVED')}
-            </SelectItem>
             <SelectItem value={ContentStatus.REPORTED}>
               {t('Enums.ContentStatus.REPORTED')}
             </SelectItem>
+            <SelectItem value={ContentStatus.ARCHIVED}>
+              {t('Enums.ContentStatus.ARCHIVED')}
+            </SelectItem>
           </SelectContent>
         </Select>
+        <Button onClick={handleSearch} variant='default'>
+          Search
+        </Button>
+        <Button onClick={handleReset} variant='outline'>
+          Reset
+        </Button>
       </div>
       <div className='rounded-md border'>
         <Table>

@@ -37,6 +37,8 @@ import { TablePagination } from '@/components/ui/table-pagination';
 type CommentSortField = 'id' | 'text' | 'status' | 'createdAt' | 'postId';
 
 export default function AdminComments() {
+  const [searchInput, setSearchInput] = useState('');
+  const [statusInput, setStatusInput] = useState(ContentStatus.ALL);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<ContentStatus>(ContentStatus.ALL);
   const [sortField, setSortField] = useState<CommentSortField>('createdAt');
@@ -105,13 +107,27 @@ export default function AdminComments() {
     return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
+  const handleSearchInputChange = (value: string) => {
+    setSearchInput(value);
+  };
+
+  const handleStatusInputChange = (value: ContentStatus) => {
+    setStatusInput(value);
+  }
+
+  const handleSearch = () => {
+    setSearch(searchInput);
+    setStatus(statusInput);
     setPage(1);
   };
 
-  const handleStatusChange = (value: ContentStatus) => {
-    setStatus(value);
+  const handleReset = () => {
+    setSearchInput('');
+    setSearch('');
+    setStatus(ContentStatus.ALL);
+    setStatusInput(ContentStatus.ALL);
+    setSortField('createdAt');
+    setSortOrder('desc');
     setPage(1);
   };
 
@@ -121,20 +137,25 @@ export default function AdminComments() {
   };
 
   return (
-    <div>
-      <div className='flex flex-wrap items-center gap-2 mb-4'>
+    <div className='space-y-4'>
+      <div className='flex items-center gap-2'>
         <Input
           placeholder='Search comments...'
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className='w-64'
+          value={searchInput}
+          onChange={(e) => handleSearchInputChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
+          className='w-[250px]'
         />
         <Select
           value={status}
-          onValueChange={(value) => handleStatusChange(value as ContentStatus)}
+          onValueChange={(value) =>
+            handleStatusInputChange(value as ContentStatus)
+          }
         >
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Select status' />
+            <SelectValue placeholder='Status' />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ContentStatus.ALL}>
@@ -151,6 +172,12 @@ export default function AdminComments() {
             </SelectItem>
           </SelectContent>
         </Select>
+        <Button onClick={handleSearch} variant='default'>
+          Search
+        </Button>
+        <Button onClick={handleReset} variant='outline'>
+          Reset
+        </Button>
       </div>
       <div className='rounded-md border'>
         <Table>
@@ -261,7 +288,7 @@ export default function AdminComments() {
                           variant='ghost'
                           className='text-xl rounded-full'
                         >
-                          <i className='ri-more-fill'></i>  
+                          <i className='ri-more-fill'></i>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>

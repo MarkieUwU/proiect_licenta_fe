@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { TablePagination } from '@/components/ui/table-pagination';
+import { Button } from '@/components/ui/button';
 
 type PostReportSortField = 'id' | 'postTitle' | 'postAuthor' | 'reporter' | 'reason' | 'createdAt';
 type CommentReportSortField = 'id' | 'commentText' | 'commentAuthor' | 'reporter' | 'reason' | 'createdAt';
@@ -15,16 +16,16 @@ type CommentReportSortField = 'id' | 'commentText' | 'commentAuthor' | 'reporter
 export default function AdminReports() {
   const [postFilters, setPostFilters] = useState({
     postId: '',
-    reporterId: '',
     postTitle: '',
-    reporterUsername: ''
+    authorId: '',
+    authorUsername: ''
   });
 
   const [commentFilters, setCommentFilters] = useState({
     commentId: '',
-    reporterId: '',
     commentContent: '',
-    reporterUsername: ''
+    authorId: '',
+    authorUsername: ''
   });
 
   const [postSortField, setPostSortField] = useState<PostReportSortField>('createdAt');
@@ -45,9 +46,9 @@ export default function AdminReports() {
     queryKey: ['postReports', postFilters, postSortField, postSortOrder, postPage, postPageSize],
     queryFn: () => getAllPostReports({
       ...(postFilters.postId && { postId: Number(postFilters.postId) }),
-      ...(postFilters.reporterId && { reporterId: Number(postFilters.reporterId) }),
       ...(postFilters.postTitle && { postTitle: postFilters.postTitle }),
-      ...(postFilters.reporterUsername && { reporterUsername: postFilters.reporterUsername }),
+      ...(postFilters.authorId && { authorId: Number(postFilters.authorId) }),
+      ...(postFilters.authorUsername && { authorUsername: postFilters.authorUsername }),
       sort: postSortField,
       order: postSortOrder,
       page: postPage,
@@ -59,9 +60,9 @@ export default function AdminReports() {
     queryKey: ['commentReports', commentFilters, commentSortField, commentSortOrder, commentPage, commentPageSize],
     queryFn: () => getAllCommentReports({
       ...(commentFilters.commentId && { commentId: Number(commentFilters.commentId) }),
-      ...(commentFilters.reporterId && { reporterId: Number(commentFilters.reporterId) }),
       ...(commentFilters.commentContent && { commentContent: commentFilters.commentContent }),
-      ...(commentFilters.reporterUsername && { reporterUsername: commentFilters.reporterUsername }),
+      ...(commentFilters.authorId && { authorId: Number(commentFilters.authorId) }),
+      ...(commentFilters.authorUsername && { authorUsername: commentFilters.authorUsername }),
       sort: commentSortField,
       order: commentSortOrder,
       page: commentPage,
@@ -126,6 +127,42 @@ export default function AdminReports() {
     setCommentPage(1);
   };
 
+  // Add local state for filter inputs
+  const [postFilterInputs, setPostFilterInputs] = useState(postFilters);
+  const [commentFilterInputs, setCommentFilterInputs] = useState(commentFilters);
+
+  // Search/Reset handlers for post reports
+  const handlePostInputChange = (updates: Partial<typeof postFilters>) => {
+    setPostFilterInputs(prev => ({ ...prev, ...updates }));
+  };
+  const handlePostSearch = () => {
+    setPostFilters(postFilterInputs);
+    setPostPage(1);
+  };
+  const handlePostReset = () => {
+    setPostFilterInputs({ postId: '', postTitle: '', authorId: '', authorUsername: '' });
+    setPostFilters({ postId: '', postTitle: '', authorId: '', authorUsername: '' });
+    setPostSortField('createdAt');
+    setPostSortOrder('desc');
+    setPostPage(1);
+  };
+
+  // Search/Reset handlers for comment reports
+  const handleCommentInputChange = (updates: Partial<typeof commentFilters>) => {
+    setCommentFilterInputs(prev => ({ ...prev, ...updates }));
+  };
+  const handleCommentSearch = () => {
+    setCommentFilters(commentFilterInputs);
+    setCommentPage(1);
+  };
+  const handleCommentReset = () => {
+    setCommentFilterInputs({ commentId: '', commentContent: '', authorId: '', authorUsername: '' });
+    setCommentFilters({ commentId: '', commentContent: '', authorId: '', authorUsername: '' });
+    setCommentSortField('createdAt');
+    setCommentSortOrder('desc');
+    setCommentPage(1);
+  };
+
   return (
     <div className='flex flex-col gap-8'>
       <div className='flex flex-col gap-4'>
@@ -138,21 +175,13 @@ export default function AdminReports() {
                 <Input
                   id='postId'
                   placeholder='Enter post ID'
-                  value={postFilters.postId}
+                  value={postFilterInputs.postId}
                   onChange={(e) =>
-                    handlePostFilterChange({ postId: e.target.value })
+                    handlePostInputChange({ postId: e.target.value })
                   }
-                />
-              </div>
-              <div className='flex flex-col gap-2'>
-                <Label htmlFor='reporterId'>Reporter ID</Label>
-                <Input
-                  id='reporterId'
-                  placeholder='Enter reporter ID'
-                  value={postFilters.reporterId}
-                  onChange={(e) =>
-                    handlePostFilterChange({ reporterId: e.target.value })
-                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handlePostSearch();
+                  }}
                 />
               </div>
               <div className='flex flex-col gap-2'>
@@ -160,22 +189,50 @@ export default function AdminReports() {
                 <Input
                   id='postTitle'
                   placeholder='Enter post title'
-                  value={postFilters.postTitle}
+                  value={postFilterInputs.postTitle}
                   onChange={(e) =>
-                    handlePostFilterChange({ postTitle: e.target.value })
+                    handlePostInputChange({ postTitle: e.target.value })
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handlePostSearch();
+                  }}
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='reporterUsername'>Reporter Username</Label>
+                <Label htmlFor='authorId'>Author ID</Label>
                 <Input
-                  id='reporterUsername'
-                  placeholder='Enter reporter username'
-                  value={postFilters.reporterUsername}
+                  id='authorId'
+                  placeholder='Enter author ID'
+                  value={postFilterInputs.authorId}
                   onChange={(e) =>
-                    handlePostFilterChange({ reporterUsername: e.target.value })
+                    handlePostInputChange({ authorId: e.target.value })
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handlePostSearch();
+                  }}
                 />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <Label htmlFor='authorUsername'>Author Username</Label>
+                <Input
+                  id='authorUsername'
+                  placeholder='Enter author username'
+                  value={postFilterInputs.authorUsername}
+                  onChange={(e) =>
+                    handlePostInputChange({ authorUsername: e.target.value })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handlePostSearch();
+                  }}
+                />
+              </div>
+              <div className='flex flex-col justify-end gap-2'>
+                <div className='flex gap-2'>
+                  <Button onClick={handlePostSearch}>Search</Button>
+                  <Button variant='outline' onClick={handlePostReset}>
+                    Reset
+                  </Button>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -187,7 +244,7 @@ export default function AdminReports() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('id')}
                       >
@@ -196,7 +253,7 @@ export default function AdminReports() {
                           {getPostSortIcon('id')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('postTitle')}
                       >
@@ -205,7 +262,7 @@ export default function AdminReports() {
                           {getPostSortIcon('postTitle')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('postAuthor')}
                       >
@@ -214,7 +271,7 @@ export default function AdminReports() {
                           {getPostSortIcon('postAuthor')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('reporter')}
                       >
@@ -223,7 +280,7 @@ export default function AdminReports() {
                           {getPostSortIcon('reporter')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('reason')}
                       >
@@ -232,7 +289,7 @@ export default function AdminReports() {
                           {getPostSortIcon('reason')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handlePostSort('createdAt')}
                       >
@@ -297,21 +354,13 @@ export default function AdminReports() {
                 <Input
                   id='commentId'
                   placeholder='Enter comment ID'
-                  value={commentFilters.commentId}
+                  value={commentFilterInputs.commentId}
                   onChange={(e) =>
-                    handleCommentFilterChange({ commentId: e.target.value })
+                    handleCommentInputChange({ commentId: e.target.value })
                   }
-                />
-              </div>
-              <div className='flex flex-col gap-2'>
-                <Label htmlFor='commentReporterId'>Reporter ID</Label>
-                <Input
-                  id='commentReporterId'
-                  placeholder='Enter reporter ID'
-                  value={commentFilters.reporterId}
-                  onChange={(e) =>
-                    handleCommentFilterChange({ reporterId: e.target.value })
-                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCommentSearch();
+                  }}
                 />
               </div>
               <div className='flex flex-col gap-2'>
@@ -319,24 +368,50 @@ export default function AdminReports() {
                 <Input
                   id='commentContent'
                   placeholder='Enter comment content'
-                  value={commentFilters.commentContent}
+                  value={commentFilterInputs.commentContent}
                   onChange={(e) =>
-                    handleCommentFilterChange({ commentContent: e.target.value })
+                    handleCommentInputChange({ commentContent: e.target.value })
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCommentSearch();
+                  }}
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='commentReporterUsername'>
-                  Reporter Username
-                </Label>
+                <Label htmlFor='authorId'>Author ID</Label>
                 <Input
-                  id='commentReporterUsername'
-                  placeholder='Enter reporter username'
-                  value={commentFilters.reporterUsername}
+                  id='authorId'
+                  placeholder='Enter author ID'
+                  value={commentFilterInputs.authorId}
                   onChange={(e) =>
-                    handleCommentFilterChange({ reporterUsername: e.target.value })
+                    handleCommentInputChange({ authorId: e.target.value })
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCommentSearch();
+                  }}
                 />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <Label htmlFor='authorUsername'>Author Username</Label>
+                <Input
+                  id='authorUsername'
+                  placeholder='Enter author username'
+                  value={commentFilterInputs.authorUsername}
+                  onChange={(e) =>
+                    handleCommentInputChange({ authorUsername: e.target.value })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCommentSearch();
+                  }}
+                />
+              </div>
+              <div className='flex flex-col justify-end gap-2'>
+                <div className='flex gap-2'>
+                  <Button onClick={handleCommentSearch}>Search</Button>
+                  <Button variant='outline' onClick={handleCommentReset}>
+                    Reset
+                  </Button>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -348,7 +423,7 @@ export default function AdminReports() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('id')}
                       >
@@ -357,7 +432,7 @@ export default function AdminReports() {
                           {getCommentSortIcon('id')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('commentText')}
                       >
@@ -366,7 +441,7 @@ export default function AdminReports() {
                           {getCommentSortIcon('commentText')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('commentAuthor')}
                       >
@@ -375,7 +450,7 @@ export default function AdminReports() {
                           {getCommentSortIcon('commentAuthor')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('reporter')}
                       >
@@ -384,7 +459,7 @@ export default function AdminReports() {
                           {getCommentSortIcon('reporter')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('reason')}
                       >
@@ -393,7 +468,7 @@ export default function AdminReports() {
                           {getCommentSortIcon('reason')}
                         </div>
                       </TableHead>
-                      <TableHead 
+                      <TableHead
                         className='cursor-pointer hover:bg-muted/50 transition-colors'
                         onClick={() => handleCommentSort('createdAt')}
                       >
@@ -449,4 +524,4 @@ export default function AdminReports() {
       </div>
     </div>
   );
-} 
+}

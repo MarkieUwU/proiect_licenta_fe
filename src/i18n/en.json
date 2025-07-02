@@ -7,7 +7,8 @@
     "Cancel": "Cancel",
     "Accept": "Accept",
     "Decline": "Decline",
-    "Submit": "Submit"
+    "Submit": "Submit",
+    "Review": "Review"
   },
   "Enums": {
     "Language": {
@@ -39,6 +40,9 @@
       "POST_REPORTED": "Post Reported",
       "POST_ARCHIVED": "Post Archived",
       "POST_APPROVED": "Post Approved",
+      "COMMENT_REPORTED": "Comment Reported",
+      "COMMENT_ARCHIVED": "Comment Archived",
+      "COMMENT_APPROVED": "Comment Approved",
       "NEW_FOLLOWER": "New Follower",
       "MENTIONED_IN_COMMENT": "Mentioned in Comment",
       "MENTIONED_IN_POST": "Mentioned in Post",

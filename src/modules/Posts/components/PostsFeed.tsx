@@ -24,25 +24,32 @@ export const PostsFeed: React.FC = () => {
     postResponse.refetch();
   }, [user!.id])
 
-  let postCards;
+  const renderPostCards = () => {
+    if (postResponse.isPending) {
+      return (
+        <div className='flex justify-center p-4'>
+          <LoaderCircle className='animate-spin' />
+        </div>
+      );
+    }
 
-  if (postResponse.isPending) {
-    postCards = (
-      <div className='flex justify-center p-4'>
-        <LoaderCircle className='animate-spin' />
-      </div>
-    );
-  } else if (!postResponse.data?.length) {
-   postCards = <NoRecordsFound text={t('NoRecords')} />;
-  } else {
-    postCards = (
+    if (!postResponse.data?.length) {
+      return <NoRecordsFound text={t('NoRecords')} />;
+    }
+
+    return (
       <div className='flex flex-col overflow-y-auto h-full gap-2 pb-3'>
         {postResponse.data.map((post: Post) => (
-          <PostCard key={post.id} post={post} requestRefetch={() => postResponse.refetch()} />
+          <PostCard
+            key={post.id}
+            post={post}
+            requestRefetch={() => postResponse.refetch()}
+          />
         ))}
       </div>
     );
   }
+
   return (
     <>
       <main className='w-[800px] min-w-[400px] flex flex-col gap-3 mx-auto lg:mx-0'>
@@ -51,7 +58,7 @@ export const PostsFeed: React.FC = () => {
           className='h-14 rounded-xl'
           onClick={() => setPostModalOpened(true)}
         />
-        {postCards}
+        {renderPostCards()}
       </main>
       <UpsertPostModal
         open={postModalOpened}

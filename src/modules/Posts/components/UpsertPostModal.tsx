@@ -1,5 +1,4 @@
-// src/components/CreatePostModal.tsx
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Post, PostRequest } from '../models/post.models.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { useForm } from 'react-hook-form';
@@ -141,7 +140,7 @@ const UpsertPostModal: React.FC<UpsertPostModalProps> = ({
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       {image?.length ? (
-        <div className='flex justify-center max-h-[590px] w-full'>
+        <div className='flex justify-center max-h-[700px] w-full'>
           <img src={image} className='w-full rounded-lg' />
         </div>
       ) : (

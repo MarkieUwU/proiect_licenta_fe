@@ -33,6 +33,7 @@ import { LoadingPage } from "@/core/pages/LoadingPage"
 import { TablePagination } from "@/components/ui/table-pagination"
 
 export const UsersManagement = () => {
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -56,11 +57,21 @@ export const UsersManagement = () => {
 
   const handleRoleUpdate = async (userId: number, role: Role) => {
     roleUpdateMutation.mutate({ userId, role });
-  }
+  };
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1); // Reset to first page when searching
+  const handleSearchInputChange = (value: string) => {
+    setSearchInput(value);
+  };
+
+  const handleSearch = () => {
+    setSearch(searchInput);
+    setPage(1);
+  };
+
+  const handleReset = () => {
+    setSearchInput("");
+    setSearch("");
+    setPage(1);
   };
 
   const handlePageSizeChange = (size: number) => {
@@ -74,15 +85,18 @@ export const UsersManagement = () => {
 
   return (
     <div className='space-y-4'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-col gap-5'>
         <h1 className='text-3xl font-bold'>Users Management</h1>
         <div className='flex items-center gap-2'>
           <Input
             placeholder='Search users...'
-            value={search}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className='max-w-sm'
+            value={searchInput}
+            onChange={(e) => handleSearchInputChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+            className='w-[250px]'
           />
+          <Button onClick={handleSearch} variant='default'>Search</Button>
+          <Button onClick={handleReset} variant='outline'>Reset</Button>
         </div>
       </div>
 
@@ -169,4 +183,4 @@ export const UsersManagement = () => {
       </div>
     </div>
   );
-} 
+}

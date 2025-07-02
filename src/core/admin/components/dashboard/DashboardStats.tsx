@@ -3,13 +3,20 @@ import { Users, FileText, Link2, TrendingUp } from "lucide-react"
 
 interface DashboardStatsProps {
   stats: {
-    totalUsers: number
-    totalPosts: number
-    totalConnections: number
-  }
+    totalUsers: number;
+    totalPosts: number;
+    totalConnections: number;
+    avgPopularityGrowthRate: number;
+  };
 }
 
 export const DashboardStats = ({ stats }: DashboardStatsProps) => {
+  const getGrowthRate = () => {
+    const rate = stats.avgPopularityGrowthRate;
+    const growthRate = rate > 0 ? '+' + rate.toFixed() : rate.toFixed();
+    return growthRate + '%';
+  }
+
   const statCards = [
     {
       title: "Total Users",
@@ -24,14 +31,14 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
       description: "Published content"
     },
     {
-      title: "Total Friends",
+      title: "Total Connections",
       value: stats.totalConnections,
       icon: Link2,
       description: "User relationships"
     },
     {
       title: "Growth Rate",
-      value: "+12%",
+      value: getGrowthRate(),
       icon: TrendingUp,
       description: "From last month"
     }

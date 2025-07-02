@@ -6,7 +6,7 @@ import { UserGrowthChart } from "@/core/admin/components/dashboard/UserGrowthCha
 import { ContentDistributionChart } from "@/core/admin/components/dashboard/ContentDistributionChart"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DashboardStatsData } from "../models/dashboard.models"
+import { DashboardStatsData, DistributionChartData } from "../models/dashboard.models"
 
 export const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery<DashboardStatsData>({
@@ -18,6 +18,16 @@ export const AdminDashboard = () => {
     return <DashboardSkeleton />
   }
 
+  const getChartData = () => {
+    const chartData: DistributionChartData = {
+      posts: stats.totalPosts,
+      comments: stats.totalComments,
+      likes: stats.totalLikes,
+      reports: stats.totalReports
+    };
+    return chartData;
+  }
+
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
@@ -27,8 +37,8 @@ export const AdminDashboard = () => {
       <DashboardStats stats={stats} />
 
       <div className='grid gap-4 md:grid-cols-2'>
-        <UserGrowthChart />
-        <ContentDistributionChart />
+        <UserGrowthChart userGrowth={stats.userGrowth} />
+        <ContentDistributionChart chartData={getChartData()} />
       </div>
 
       <div className='grid gap-4 lg:grid-cols-2'>

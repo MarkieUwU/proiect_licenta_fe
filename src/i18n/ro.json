@@ -7,7 +7,8 @@
     "Cancel": "Anulează",
     "Accept": "Acceptă",
     "Decline": "Respinge",
-    "Submit": "Trimite"
+    "Submit": "Trimite",
+    "Review": "Recenzie"
   },
   "Enums": {
     "Language": {
@@ -39,6 +40,9 @@
       "POST_REPORTED": "Postare raportată",
       "POST_ARCHIVED": "Postare arhivată",
       "POST_APPROVED": "Postare aprobată",
+      "COMMENT_REPORTED": "Comentariu raportat",
+      "COMMENT_ARCHIVED": "Comentariu arhivat",
+      "COMMENT_APPROVED": "Comentariu aprobat",
       "NEW_FOLLOWER": "Urmăritor nou",
       "MENTIONED_IN_COMMENT": "Menționat în comentariu",
       "MENTIONED_IN_POST": "Menționat în postare",

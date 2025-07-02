@@ -61,9 +61,9 @@ export const updateCommentStatus = apiErrorHandler<any>(
 
 export const getAllPostReports = apiErrorHandler<PostReportsResponse>(async (params?: {
   postId?: number;
-  reporterId?: number;
   postTitle?: string;
-  reporterUsername?: string;
+  authorId?: number;
+  authorUsername?: string;
   page?: number;
   limit?: number;
   sort?: string;
@@ -75,19 +75,14 @@ export const getAllPostReports = apiErrorHandler<PostReportsResponse>(async (par
 
 export const getAllCommentReports = apiErrorHandler<CommentReportsResponse>(async (params?: {
   commentId?: number;
-  reporterId?: number;
   commentContent?: string;
-  reporterUsername?: string;
+  authorId?: number;
+  authorUsername?: string;
   page?: number;
   limit?: number;
   sort?: string;
   order?: 'asc' | 'desc';
 }) => {
   const { data } = await apiClient.get('/admin/reports/comments', { params });
-  return data;
-});
-
-export const getCommentReports = apiErrorHandler(async (commentId: number) => {
-  const { data } = await apiClient.get(`/admin/comments/${commentId}/reports`);
   return data;
 });

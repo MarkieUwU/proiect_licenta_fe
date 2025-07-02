@@ -53,6 +53,12 @@ export function NotificationList({ notifications }: NotificationListProps) {
         return '📁';
       case 'POST_APPROVED':
         return '✅';
+      case 'COMMENT_REPORTED':
+        return '⚠️';
+      case 'COMMENT_ARCHIVED':
+        return '📁';
+      case 'COMMENT_APPROVED':
+        return '✅';
       case 'NEW_FOLLOWER':
         return '👥';
       case 'MENTIONED_IN_COMMENT':

@@ -72,6 +72,12 @@ export default function NotificationsPage() {
         return '📁';
       case 'POST_APPROVED':
         return '✅';
+      case 'COMMENT_REPORTED':
+        return '⚠️';
+      case 'COMMENT_ARCHIVED':
+        return '📁';
+      case 'COMMENT_APPROVED':
+        return '✅';
       case 'NEW_FOLLOWER':
         return '👥';
       case 'MENTIONED_IN_COMMENT':
@@ -89,9 +95,11 @@ export default function NotificationsPage() {
   const getNotificationColor = (type: string) => {
     switch (type) {
       case 'POST_REPORTED':
+      case 'COMMENT_REPORTED':
       case 'ACCOUNT_WARNING':
         return 'destructive';
       case 'POST_APPROVED':
+      case 'COMMENT_APPROVED':
       case 'NEW_FOLLOWER':
         return 'default';
       case 'SYSTEM_ANNOUNCEMENT':

@@ -5,13 +5,14 @@ import { UserGrowth } from "../../models/dashboard.models"
 
 interface UserGrowthChartProps {
   userGrowth: UserGrowth[]
+  title: string
 }
 
-export const UserGrowthChart = ({ userGrowth }: UserGrowthChartProps) => {
+export const UserGrowthChart = ({ userGrowth, title }: UserGrowthChartProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User Growth</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -33,4 +34,4 @@ export const UserGrowthChart = ({ userGrowth }: UserGrowthChartProps) => {
       </CardContent>
     </Card>
   )
-} 
+}

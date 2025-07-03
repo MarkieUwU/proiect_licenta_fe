@@ -40,7 +40,7 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
       title: "Growth Rate",
       value: getGrowthRate(),
       icon: TrendingUp,
-      description: "From last month"
+      description: "For last 3 months"
     }
   ]
 

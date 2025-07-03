@@ -219,21 +219,6 @@
         "Posts": "Postări"
       }
     },
-    "Statistics": {
-      "Users": "Utilizatori",
-      "Posts": "Postări",
-      "Comments": "Comentarii",
-      "Likes": "Aprecieri",
-      "Connections": "Prieteni",
-      "Male": "Masculin",
-      "Female": "Feminin",
-      "Undeclared": "Nedeclarat",
-      "NrOfUsers": "nr de utilizatori",
-      "UsersByConnectionsTitle": "Top 5 utilizatori după numărul de prieteni",
-      "UsersByPostsTitle": "Top 5 utilizatori după numărul de postări",
-      "UsersGenderTitle": "Raportul de gen al utilizatorilor",
-      "PostsByLikes": "Top 5 postări după numărul de aprecieri"
-    },
     "NotificationsPage": {
       "Title": "Notificări",
       "UnreadCount": "{{count}} necitite",
@@ -245,6 +230,122 @@
       "Previous": "Anterior",
       "Next": "Următor",
       "Page": "Pagina {{current}} din {{total}}"
+    },
+    "Admin": {
+      "AdminDashboard": {
+        "Title": "Tablou de bord",
+        "UserGrowth": "Evoluție utilizatori",
+        "RecentUsers": "Utilizatori recenți",
+        "RecentPosts": "Postări recente",
+        "ContentDistribution": {
+          "Title": "Distribuție conținut",
+          "Posts": "Postări",
+          "Comments": "Comentarii",
+          "Likes": "Aprecieri",
+          "Reports": "Rapoarte"
+        }
+      },
+      "UsersManagement": {
+        "Title": "Administrare utilizatori",
+        "SearchPlaceholder": "Caută utilizatori...",
+        "Search": "Caută",
+        "Reset": "Resetează",
+        "Table": {
+          "ID": "ID",
+          "Username": "Nume utilizator",
+          "FullName": "Nume complet",
+          "Email": "Email",
+          "Role": "Rol",
+          "Posts": "Postări",
+          "Connections": "Prieteni",
+          "Joined": "S-a alăturat",
+          "Actions": "Acțiuni"
+        },
+        "EditUserDialog": {
+          "Title": "Editează utilizator",
+          "Role": "Rol",
+          "SelectRole": "Selectează rolul",
+          "User": "Utilizator",
+          "Admin": "Admin"
+        },
+        "Success": {
+          "RoleUpdated": "Rolul utilizatorului a fost actualizat cu succes"
+        }
+      },
+      "ContentManagement": {
+        "Posts": {
+          "Title": "Administrare postări",
+          "SearchPlaceholder": "Caută postări...",
+          "Status": "Status",
+          "SortBy": "Sortează după",
+          "Table": {
+            "ID": "ID",
+            "Title": "Titlu",
+            "Status": "Status",
+            "CreatedAt": "Creat la",
+            "UpdatedAt": "Actualizat la",
+            "Author": "Autor",
+            "Actions": "Acțiuni"
+          },
+          "NoRecords": "Nu există postări de afișat",
+          "DeleteConfirm": {
+            "Title": "Ești sigur?",
+            "Description": "Această acțiune nu poate fi anulată. Postarea va fi ștearsă permanent."
+          },
+          "Success": {
+            "Deleted": "Postare ștearsă cu succes"
+          }
+        },
+        "Comments": {
+          "Title": "Administrare comentarii",
+          "SearchPlaceholder": "Caută comentarii...",
+          "Status": "Status",
+          "SortBy": "Sortează după",
+          "Table": {
+            "ID": "ID",
+            "Text": "Text",
+            "Status": "Status",
+            "CreatedAt": "Creat la",
+            "PostID": "ID postare",
+            "Author": "Autor",
+            "Actions": "Acțiuni"
+          },
+          "NoRecords": "Nu există comentarii de afișat",
+          "DeleteConfirm": {
+            "Title": "Ești sigur?",
+            "Description": "Această acțiune nu poate fi anulată. Comentariul va fi șters permanent."
+          },
+          "Success": {
+            "Deleted": "Comentariu șters cu succes"
+          }
+        }
+      },
+      "AdminReports": {
+        "Title": "Rapoarte conținut",
+        "Posts": {
+          "Title": "Rapoarte postări",
+          "Table": {
+            "ID": "ID",
+            "PostTitle": "Titlu postare",
+            "PostAuthor": "Autor postare",
+            "Reporter": "Raportat de",
+            "Reason": "Motiv",
+            "CreatedAt": "Raportat la"
+          }
+        },
+        "Comments": {
+          "Title": "Rapoarte comentarii",
+          "Table": {
+            "ID": "ID",
+            "CommentText": "Text comentariu",
+            "CommentAuthor": "Autor comentariu",
+            "Reporter": "Raportat de",
+            "Reason": "Motiv",
+            "CreatedAt": "Raportat la"
+          }
+        },
+        "NoRecords": "Nu există rapoarte de afișat"
+      }
     }
   },
   "Components": {

@@ -220,21 +220,6 @@
         "Posts": "Posts"
       }
     },
-    "Statistics": {
-      "Users": "Users",
-      "Posts": "Posts",
-      "Comments": "Comments",
-      "Likes": "Likes",
-      "Connections": "Friends",
-      "Male": "Male",
-      "Female": "Female",
-      "Undeclared": "Undeclared",
-      "NrOfUsers": "nr of users",
-      "UsersByConnectionsTitle": "Top 5 users by friends number",
-      "UsersByPostsTitle": "Top 5 users by posts number",
-      "UsersGenderTitle": "User gender ratio",
-      "PostsByLikes": "Top 5 posts by likes number"
-    },
     "NotificationsPage": {
       "Title": "Notifications",
       "UnreadCount": "{{count}} unread",
@@ -246,6 +231,122 @@
       "Previous": "Previous",
       "Next": "Next",
       "Page": "Page {{current}} of {{total}}"
+    },
+    "Admin": {
+      "AdminDashboard": {
+        "Title": "Dashboard",
+        "UserGrowth": "User Growth",
+        "ContentDistribution": {
+          "Title": "Content Distribution",
+          "Posts": "Posts",
+          "Comments": "Comments",
+          "Likes": "Likes",
+          "Reports": "Reports"
+        },
+        "RecentUsers": "Recent Users",
+        "RecentPosts": "Recent Posts"
+      },
+      "UsersManagement": {
+        "Title": "Users Management",
+        "SearchPlaceholder": "Search users...",
+        "Search": "Search",
+        "Reset": "Reset",
+        "Table": {
+          "ID": "ID",
+          "Username": "Username",
+          "FullName": "Full Name",
+          "Email": "Email",
+          "Role": "Role",
+          "Posts": "Posts",
+          "Connections": "Connections",
+          "Joined": "Joined",
+          "Actions": "Actions"
+        },
+        "EditUserDialog": {
+          "Title": "Edit User",
+          "Role": "Role",
+          "SelectRole": "Select role",
+          "User": "User",
+          "Admin": "Admin"
+        },
+        "Success": {
+          "RoleUpdated": "User role updated successfully"
+        }
+      },
+      "ContentManagement": {
+        "Posts": {
+          "Title": "Posts Management",
+          "SearchPlaceholder": "Search posts...",
+          "Status": "Status",
+          "SortBy": "Sort by",
+          "Table": {
+            "ID": "ID",
+            "Title": "Title",
+            "Status": "Status",
+            "CreatedAt": "Created At",
+            "UpdatedAt": "Updated At",
+            "Author": "Author",
+            "Actions": "Actions"
+          },
+          "NoRecords": "No posts to display",
+          "DeleteConfirm": {
+            "Title": "Are you sure?",
+            "Description": "This action cannot be undone. The post will be permanently deleted."
+          },
+          "Success": {
+            "Deleted": "Post deleted successfully"
+          }
+        },
+        "Comments": {
+          "Title": "Comments Management",
+          "SearchPlaceholder": "Search comments...",
+          "Status": "Status",
+          "SortBy": "Sort by",
+          "Table": {
+            "ID": "ID",
+            "Text": "Text",
+            "Status": "Status",
+            "CreatedAt": "Created At",
+            "PostID": "Post ID",
+            "Author": "Author",
+            "Actions": "Actions"
+          },
+          "NoRecords": "No comments to display",
+          "DeleteConfirm": {
+            "Title": "Are you sure?",
+            "Description": "This action cannot be undone. The comment will be permanently deleted."
+          },
+          "Success": {
+            "Deleted": "Comment deleted successfully"
+          }
+        }
+      },
+      "AdminReports": {
+        "Title": "Content Reports",
+        "Posts": {
+          "Title": "Post Reports",
+          "Table": {
+            "ID": "ID",
+            "PostTitle": "Post Title",
+            "PostAuthor": "Post Author",
+            "Reporter": "Reported By",
+            "Reason": "Reason",
+            "CreatedAt": "Reported At"
+          }
+        },
+        "Comments": {
+          "Title": "Comment Reports",
+          "Table": {
+            "ID": "ID",
+            "CommentText": "Comment Text",
+            "CommentAuthor": "Comment Author",
+            "Reporter": "Reported By",
+            "Reason": "Reason",
+            "CreatedAt": "Reported At"
+          }
+        },
+        "NoRecords": "No reports to display"
+      }
     }
   },
   "Components": {

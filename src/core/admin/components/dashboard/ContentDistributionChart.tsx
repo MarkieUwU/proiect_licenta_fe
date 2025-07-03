@@ -1,19 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TypedPieChart, TypedPie, TypedCell, TypedResponsiveContainer, TypedTooltip, PieLabelRenderProps } from "@/components/recharts/recharts"
 import { DistributionChartData, PieChartDataItem } from "../../models/dashboard.models"
+import { useTranslation } from "react-i18next"
 
 interface ContentDistributionChartProps {
   chartData: DistributionChartData
+  title: string
 }
 
 export const ContentDistributionChart = ({
   chartData,
+  title
 }: ContentDistributionChartProps) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'Pages.Admin.AdminDashboard.ContentDistribution',
+  });
   const data: PieChartDataItem[] = [
-    { name: 'Posts', value: chartData.posts },
-    { name: 'Comments', value: chartData.comments },
-    { name: 'Likes', value: chartData.likes },
-    { name: 'Reports', value: chartData.reports },
+    { name: t('Posts'), value: chartData.posts },
+    { name: t('Comments'), value: chartData.comments },
+    { name: t('Likes'), value: chartData.likes },
+    { name: t('Reports'), value: chartData.reports },
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -24,7 +30,7 @@ export const ContentDistributionChart = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Content Distribution</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className='h-[300px]'>
@@ -54,4 +60,4 @@ export const ContentDistributionChart = ({
       </CardContent>
     </Card>
   );
-}; 
+};

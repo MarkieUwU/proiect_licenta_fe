@@ -7,8 +7,10 @@ import { ContentDistributionChart } from "@/core/admin/components/dashboard/Cont
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DashboardStatsData, DistributionChartData } from "../models/dashboard.models"
+import { useTranslation } from "react-i18next"
 
 export const AdminDashboard = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Pages.Admin.AdminDashboard' });
   const { data: stats, isLoading } = useQuery<DashboardStatsData>({
     queryKey: ['admin-stats'],
     queryFn: getDashboardStats
@@ -31,19 +33,19 @@ export const AdminDashboard = () => {
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-3xl font-bold'>Dashboard</h1>
+        <h1 className='text-3xl font-bold'>{t('Title')}</h1>
       </div>
 
       <DashboardStats stats={stats} />
 
       <div className='grid gap-4 md:grid-cols-2'>
-        <UserGrowthChart userGrowth={stats.userGrowth} />
-        <ContentDistributionChart chartData={getChartData()} />
+        <UserGrowthChart userGrowth={stats.userGrowth} title={t('UserGrowth')} />
+        <ContentDistributionChart chartData={getChartData()} title={t('ContentDistribution.Title')} />
       </div>
 
       <div className='grid gap-4 lg:grid-cols-2'>
-        <RecentActivity recentUsers={stats.recentUsers} title='Recent Users' />
-        <RecentActivity recentPosts={stats.recentPosts} title='Recent Posts' />
+        <RecentActivity recentUsers={stats.recentUsers} title={t('RecentUsers')} />
+        <RecentActivity recentPosts={stats.recentPosts} title={t('RecentPosts')} />
       </div>
     </div>
   );
@@ -77,4 +79,4 @@ const DashboardSkeleton = () => (
       ))}
     </div>
   </div>
-) 
+)

@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '@/modules/Profile/apis/user.api';
 import { useAuth } from '@/core/auth/AuthContext';
 import { Role } from '@/modules/Profile/models/role.enum';
+import { getNotificationsCount } from '@/core/apis/notification.api';
 
 const Header: React.FC = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -27,12 +28,17 @@ const Header: React.FC = () => {
     queryFn: () => getUserDetails(user!.username)
   });
 
+  const { data } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => getNotificationsCount()
+  });
+
   const handleMenuOpen = (value: boolean) => {
     setOpenMenu(value);
   }
 
   return (
-    <NavigationMenu className='max-w-full justify-end p-3'>
+    <NavigationMenu className='max-w-full justify-end border-b shadow p-3'>
       <NavigationMenuList className='flex flex-end gap-4 me-3'>
         <NavigationMenuItem>
           <Link to='/' className='[&.active]:font-bold'>
@@ -45,7 +51,7 @@ const Header: React.FC = () => {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NotificationBell />
+          <NotificationBell count={data?.count ?? 0} />
         </NavigationMenuItem>
         <NavigationMenuItem className='pe-4'>
           <MyAccountMenu

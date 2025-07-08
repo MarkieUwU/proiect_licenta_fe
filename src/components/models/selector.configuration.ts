@@ -1,4 +1,4 @@
 export type SelectorConfiguration = {
-  placeholder: string;
+  placeholder?: string;
   items: { value: string; label: string }[];
 };

@@ -59,6 +59,7 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
             key={connection.userId}
             user={connection.user}
             type={UserCardType.connection}
+            queryKey="connections"
           />
         ))}
       </div>
@@ -66,7 +67,7 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
   }
 
   return (
-    <div className='w-screen flex flex-col items-center py-2 px-4 md:px-2 lg:max-w-[1270px]'>
+    <div className='w-screen flex flex-col items-center py-2 px-4 md:px-2 lg:max-w-[1320px]'>
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}

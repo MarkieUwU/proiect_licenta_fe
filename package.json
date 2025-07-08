@@ -38,6 +38,7 @@
     "caniuse-lite": "^1.0.30001721",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "i18next": "^24.2.1",
     "jwt-decode": "^4.0.0",
     "lucide": "^0.456.0",
@@ -94,5 +95,8 @@
       "prettier --write"
     ]
   },
-  "module": "index.ts"
+  "module": "index.ts",
+  "trustedDependencies": [
+    "@parcel/watcher"
+  ]
 }

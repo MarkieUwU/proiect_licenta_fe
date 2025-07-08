@@ -1,28 +1,54 @@
 import { Link } from '@tanstack/react-router';
-import { LayoutDashboard, Users, FileText, BarChart2, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from '@/components/ui/sidebar';
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Users', href: '/admin/users', icon: Users },
-  { name: 'Content', href: '/admin/content', icon: FileText },
+// Menu items
+const menuItems = [
+  { key: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { key: 'Users', href: '/admin/users', icon: Users },
+  { key: 'Content', href: '/admin/content', icon: FileText },
 ];
 
 export function AdminSidebar() {
+  const { t } = useTranslation();
+
   return (
-    <div className="w-64 bg-card border-r h-[calc(100vh-4rem)]">
-      <nav className="p-4 space-y-1">
-        {navigation.map((item) => (
-          <Link
-            key={item.name}
-            to={item.href}
-            className="flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground"
-            activeProps={{ className: 'bg-accent text-accent-foreground' }}
-          >
-            <item.icon className="w-5 h-5 mr-3" />
-            {item.name}
-          </Link>
-        ))}
-      </nav>
-    </div>
+    <Sidebar collapsible="icon" className="bg-white border-r">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.key}>
+                  <Link
+                    to={item.href}
+                    className="block w-full"
+                    activeProps={{
+                      className: 'block w-full [&>button]:bg-sidebar-accent [&>button]:text-sidebar-accent-foreground',
+                    }}
+                  >
+                    <SidebarMenuButton className="w-full justify-start flex items-center gap-4 px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                      <item.icon className="w-[18px] h-[18px] shrink-0" />
+                      <span className="truncate">{t(`Components.AdminSidebar.${item.key}`)}</span>
+                    </SidebarMenuButton>
+                  </Link>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarRail />
+    </Sidebar>
   );
-} 
+}

@@ -3,8 +3,10 @@ import { getInitials } from '@/core/utils/utils';
 import { AvatarComponent } from '@/layout/components/Avatar';
 import MyAccountMenu from '@/layout/components/MyAccountMenu';
 import { getUserDetails } from '@/modules/Profile/apis/user.api';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from '@radix-ui/react-navigation-menu';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export function AdminHeader() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -20,10 +22,12 @@ export function AdminHeader() {
   }
 
   return (
-    <header className='h-16 border-b bg-card'>
-      <div className='flex items-center justify-between h-full px-6'>
-        <h1 className='text-xl font-semibold'>Admin Panel</h1>
-        <div className='me-4'>
+    <NavigationMenu className='max-w-full border-b py-2 px-5'>
+      <NavigationMenuList className='flex justify-between w-full gap-4 pe-4'>
+        <NavigationMenuItem className='flex items-center'>
+          <SidebarTrigger />
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <MyAccountMenu
             username={user!.username}
             containsHome={true}
@@ -37,8 +41,8 @@ export function AdminHeader() {
               ></AvatarComponent>
             </div>
           </MyAccountMenu>
-        </div>
-      </div>
-    </header>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 } 

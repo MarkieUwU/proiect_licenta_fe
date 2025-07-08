@@ -2,7 +2,6 @@ import { SelectorConfiguration } from "@/components/models/selector.configuratio
 import { Theme } from "../models/theme.enum";
 import { LanguageCodes } from "../models/language-codes.enum";
 import Selector from "@/components/ui/Selector";
-import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
 import { Settings, SettingsRequest } from "@/modules/Profile/models/user.models";
 
@@ -11,33 +10,28 @@ interface PreferenceSettingsProps {
   onSettingsChange: (settings: SettingsRequest) => void;
 }
 
-const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSettingsChange }) => {
-  const { setTheme } = useTheme();
+export const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSettingsChange }) => {
   const { t, i18n } = useTranslation();
 
   const themeSelectorConfig: SelectorConfiguration = {
-    placeholder: t('Pages.Settings.PreferenceSettings.Theme'),
     items: [
       { label: t('Enums.Theme.Light'), value: Theme.light },
       { label: t('Enums.Theme.Dark'), value: Theme.dark },
     ]
-  }
+  };
 
   const languageSelectorConfig: SelectorConfiguration = {
-    placeholder: t('Pages.Settings.PreferenceSettings.Language'),
     items: [
       { label: t('Enums.Language.English'), value: LanguageCodes.en },
       { label: t('Enums.Language.Romanian'), value: LanguageCodes.ro },
-    ],
+    ]
   };
 
   const handleThemeChange = (value: Theme) => {
-    setTheme(value);
     onSettingsChange({ theme: value } as SettingsRequest);
   }
 
   const handleLanguageChange = (value: LanguageCodes) => {
-    i18n.changeLanguage(value);
     onSettingsChange({ language: value } as SettingsRequest);
   }
 
@@ -61,7 +55,8 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
             </td>
             <td className='flex justify-end pt-3'>
               <Selector
-                defaultValue={settings.theme}
+                key={`theme-${i18n.language}`}
+                value={settings.theme}
                 onValueChange={handleThemeChange}
                 {...themeSelectorConfig}
               />
@@ -73,7 +68,8 @@ const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSet
             </td>
             <td className='flex justify-end pt-3'>
               <Selector
-                defaultValue={settings.language}
+                key={`language-${i18n.language}`}
+                value={settings.language}
                 onValueChange={handleLanguageChange}
                 {...languageSelectorConfig}
               />

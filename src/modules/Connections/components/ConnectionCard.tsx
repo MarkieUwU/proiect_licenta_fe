@@ -6,7 +6,11 @@ import { useNavigate } from '@tanstack/react-router';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { acceptConnection, removeConnection, requestConnection } from '@/modules/Profile/apis/user.api';
+import {
+  acceptConnection,
+  removeConnection,
+  requestConnection,
+} from '@/modules/Profile/apis/user.api';
 import { ConnectionStateEnum } from '@/modules/Profile/models/connection-state.enum';
 import { Button } from '@/components/ui/button';
 import { UserCardType } from '../models/enums/user-card-type.enum';
@@ -16,10 +20,17 @@ interface ConnectionCardProps {
   user: User;
   connection?: Connection;
   connectionState?: ConnectionStateEnum;
-  type: UserCardType
+  type: UserCardType;
+  queryKey: string;
 }
 
-const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, connectionState, type }) => {
+const ConnectionCard = ({
+  user,
+  connection,
+  connectionState,
+  type,
+  queryKey
+}: ConnectionCardProps) => {
   const { user: loggedUser } = useAuth();
   const initials = getInitials(user.username);
   const navigate = useNavigate();
@@ -29,14 +40,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   const requestConnectionMutation = useMutation({
     mutationFn: requestConnection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['suggestions'] });
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
   const removeConnectionMutation = useMutation({
     mutationFn: removeConnection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connection'] });
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
       queryClient.invalidateQueries({ queryKey: ['userDetails'] });
     },
   });
@@ -44,7 +55,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   const acceptConnectionMutation = useMutation({
     mutationFn: acceptConnection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['suggestions'] });
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
@@ -53,7 +64,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
   };
 
   const handleRequestConnection = (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
     requestConnectionMutation.mutate({
@@ -70,7 +81,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
       id: connection?.followerId,
       connectionId: connection?.followingId,
     });
-  }
+  };
 
   const handleAcceptConnection = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -92,61 +103,61 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
     });
   };
 
-    let connectionButton;
+  let connectionButton;
 
-    switch (connectionState) {
-      case ConnectionStateEnum.ADD:
-        connectionButton = (
+  switch (connectionState) {
+    case ConnectionStateEnum.ADD:
+      connectionButton = (
+        <Button
+          loading={requestConnectionMutation.isPending}
+          onClick={handleRequestConnection}
+        >
+          <i className='ri-user-add-line' />
+          {t('Pages.ProfilePage.AddConnection')}
+        </Button>
+      );
+      break;
+    case ConnectionStateEnum.REQUEST:
+      connectionButton = (
+        <Button
+          variant='outline'
+          className='border-2 border-black shadow'
+          loading={removeConnectionMutation.isPending}
+          onClick={handleRemoveConnection}
+        >
+          <i className='ri-user-unfollow-fill' />
+          {t('Pages.ProfilePage.CancelConnection')}
+        </Button>
+      );
+      break;
+    case ConnectionStateEnum.ACCEPT:
+      connectionButton = (
+        <div className='flex gap-3 flex-wrap'>
           <Button
-            loading={requestConnectionMutation.isPending}
-            onClick={handleRequestConnection}
+            loading={acceptConnectionMutation.isPending}
+            onClick={handleAcceptConnection}
           >
-            <i className='ri-user-add-line' />
-            {t('Pages.ProfilePage.AddConnection')}
+            {t('Actions.Accept')}
           </Button>
-        );
-        break;
-      case ConnectionStateEnum.REQUEST:
-        connectionButton = (
           <Button
-            variant='outline'
-            className='border-2 border-black shadow'
+            variant='destructive'
             loading={removeConnectionMutation.isPending}
-            onClick={handleRemoveConnection}
+            onClick={handleRejectConnection}
           >
-            <i className='ri-user-unfollow-fill' />
-            {t('Pages.ProfilePage.CancelConnection')}
+            {t('Actions.Decline')}
           </Button>
-        );
-        break;
-      case ConnectionStateEnum.ACCEPT:
-        connectionButton = (
-          <div className='flex gap-3 flex-wrap'>
-            <Button
-              loading={acceptConnectionMutation.isPending}
-              onClick={handleAcceptConnection}
-            >
-              {t('Actions.Accept')}
-            </Button>
-            <Button
-              variant='destructive'
-              loading={removeConnectionMutation.isPending}
-              onClick={handleRejectConnection}
-            >
-              {t('Actions.Decline')}
-            </Button>
-          </div>
-        );
-    }
+        </div>
+      );
+  }
 
   return (
     <Card
-      className='p-3 md:px-5 w-[200px] md:w-[400px]'
+      className='flex items-center p-3 md:px-5 w-[200px] md:w-[420px]'
       hover={true}
       onClick={navigateToProfile}
     >
       <CardContent className='p-0'>
-        <div className='flex flex-col justify-center md:justify-start md:flex-row gap-3 md:gap-5'>
+        <div className='flex flex-col items-center md:justify-start md:flex-row gap-3 md:gap-5'>
           <div className='flex justify-center text-2xl md:text-3xl'>
             <AvatarComponent
               initials={initials}
@@ -154,8 +165,8 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({ user, connection, conne
               className='w-[110px] h-[110px]'
             ></AvatarComponent>
           </div>
-          <div className='flex flex-col gap-4 justify-center'>
-            <span className='font-bold text-2xl text-center md:text-3xl'>
+          <div className='flex flex-col w-full gap-4 justify-center'>
+            <span className='font-bold text-2xl text-center line-clamp-3 md:text-3xl'>
               {user.fullName}
             </span>
             {type === UserCardType.suggestion && (

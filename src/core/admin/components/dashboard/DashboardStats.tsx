@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, FileText, Link2, TrendingUp } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface DashboardStatsProps {
   stats: {
@@ -11,6 +12,8 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats = ({ stats }: DashboardStatsProps) => {
+  const { t } = useTranslation();
+
   const getGrowthRate = () => {
     const rate = stats.avgPopularityGrowthRate;
     const growthRate = rate > 0 ? '+' + rate.toFixed() : rate.toFixed();
@@ -19,28 +22,28 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
 
   const statCards = [
     {
-      title: "Total Users",
+      title: "TotalUsers",
       value: stats.totalUsers,
       icon: Users,
-      description: "Active accounts"
+      description: "TotalUsersDescription"
     },
     {
-      title: "Total Posts",
+      title: "TotalPosts",
       value: stats.totalPosts,
       icon: FileText,
-      description: "Published content"
+      description: "TotalPostsDescription"
     },
     {
-      title: "Total Connections",
+      title: "TotalConnections",
       value: stats.totalConnections,
       icon: Link2,
-      description: "User relationships"
+      description: "TotalConnectionsDescription"
     },
     {
-      title: "Growth Rate",
+      title: "GrowthRate",
       value: getGrowthRate(),
       icon: TrendingUp,
-      description: "For last 3 months"
+      description: "GrowthRateDescription"
     }
   ]
 
@@ -50,18 +53,18 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
         <Card key={stat.title}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {stat.title}
+              {t(`Pages.Admin.AdminDashboard.Stats.${stat.title}`)}
             </CardTitle>
             <stat.icon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
             <p className="text-xs text-muted-foreground">
-              {stat.description}
+              {t(`Pages.Admin.AdminDashboard.Stats.${stat.description}`)}
             </p>
           </CardContent>
         </Card>
       ))}
     </div>
   )
-} 
+}

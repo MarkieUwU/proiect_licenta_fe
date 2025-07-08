@@ -1,5 +1,6 @@
 import { getToken } from '@/core/hooks/useToken';
 import { BASE_URL } from '@/environments/env';
+import i18n from '@/i18n/i18n';
 import axios from 'axios';
 
 const apiClient = axios.create({
@@ -15,6 +16,10 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Add current language to request headers
+    config.headers['Accept-Language-Preference'] = i18n.language;
+    
     return config;
   },
   (error) => {

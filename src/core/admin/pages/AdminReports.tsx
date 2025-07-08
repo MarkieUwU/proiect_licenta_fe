@@ -1,7 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllPostReports, getAllCommentReports } from '../apis/admin.api';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from '@/components/ui/table';
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
@@ -9,30 +16,49 @@ import { Label } from '@/components/ui/label';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { TablePagination } from '@/components/ui/table-pagination';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
+import { formatLocalizedDateTime } from '@/core/utils/date.utils';
 
-type PostReportSortField = 'id' | 'postTitle' | 'postAuthor' | 'reporter' | 'reason' | 'createdAt';
-type CommentReportSortField = 'id' | 'commentText' | 'commentAuthor' | 'reporter' | 'reason' | 'createdAt';
+type PostReportSortField =
+  | 'id'
+  | 'postTitle'
+  | 'authorUsername'
+  | 'reporter'
+  | 'reason'
+  | 'createdAt';
+type CommentReportSortField =
+  | 'id'
+  | 'commentContent'
+  | 'authorUsername'
+  | 'reporter'
+  | 'reason'
+  | 'createdAt';
 
 export default function AdminReports() {
+  const { t } = useTranslation();
   const [postFilters, setPostFilters] = useState({
     postId: '',
     postTitle: '',
     authorId: '',
-    authorUsername: ''
+    authorUsername: '',
   });
 
   const [commentFilters, setCommentFilters] = useState({
     commentId: '',
     commentContent: '',
-    authorId: '',
-    authorUsername: ''
+    postId: '',
+    authorUsername: '',
   });
 
-  const [postSortField, setPostSortField] = useState<PostReportSortField>('createdAt');
+  const [postSortField, setPostSortField] =
+    useState<PostReportSortField>('createdAt');
   const [postSortOrder, setPostSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  const [commentSortField, setCommentSortField] = useState<CommentReportSortField>('createdAt');
-  const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [commentSortField, setCommentSortField] =
+    useState<CommentReportSortField>('createdAt');
+  const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>(
+    'desc'
+  );
 
   // Pagination state for post reports
   const [postPage, setPostPage] = useState(1);
@@ -43,44 +69,63 @@ export default function AdminReports() {
   const [commentPageSize, setCommentPageSize] = useState(20);
 
   const postReportsQuery = useQuery({
-    queryKey: ['postReports', postFilters, postSortField, postSortOrder, postPage, postPageSize],
-    queryFn: () => getAllPostReports({
-      ...(postFilters.postId && { postId: Number(postFilters.postId) }),
-      ...(postFilters.postTitle && { postTitle: postFilters.postTitle }),
-      ...(postFilters.authorId && { authorId: Number(postFilters.authorId) }),
-      ...(postFilters.authorUsername && { authorUsername: postFilters.authorUsername }),
-      sort: postSortField,
-      order: postSortOrder,
-      page: postPage,
-      limit: postPageSize
-    }),
+    queryKey: [
+      'postReports',
+      postFilters,
+      postSortField,
+      postSortOrder,
+      postPage,
+      postPageSize,
+    ],
+    queryFn: () =>
+      getAllPostReports({
+        ...(postFilters.postId && { postId: Number(postFilters.postId) }),
+        ...(postFilters.postTitle && { postTitle: postFilters.postTitle }),
+        ...(postFilters.authorId && { authorId: Number(postFilters.authorId) }),
+        ...(postFilters.authorUsername && {
+          authorUsername: postFilters.authorUsername,
+        }),
+        sort: postSortField,
+        order: postSortOrder,
+        page: postPage,
+        limit: postPageSize,
+      }),
   });
 
   const commentReportsQuery = useQuery({
-    queryKey: ['commentReports', commentFilters, commentSortField, commentSortOrder, commentPage, commentPageSize],
-    queryFn: () => getAllCommentReports({
-      ...(commentFilters.commentId && { commentId: Number(commentFilters.commentId) }),
-      ...(commentFilters.commentContent && { commentContent: commentFilters.commentContent }),
-      ...(commentFilters.authorId && { authorId: Number(commentFilters.authorId) }),
-      ...(commentFilters.authorUsername && { authorUsername: commentFilters.authorUsername }),
-      sort: commentSortField,
-      order: commentSortOrder,
-      page: commentPage,
-      limit: commentPageSize
-    }),
+    queryKey: [
+      'commentReports',
+      commentFilters,
+      commentSortField,
+      commentSortOrder,
+      commentPage,
+      commentPageSize,
+    ],
+    queryFn: () =>
+      getAllCommentReports({
+        ...(commentFilters.commentId && {
+          commentId: Number(commentFilters.commentId),
+        }),
+        ...(commentFilters.commentContent && {
+          commentContent: commentFilters.commentContent,
+        }),
+        ...(commentFilters.postId && { postId: Number(commentFilters.postId) }),
+        ...(commentFilters.authorUsername && {
+          authorUsername: commentFilters.authorUsername,
+        }),
+        sort: commentSortField,
+        order: commentSortOrder,
+        page: commentPage,
+        limit: commentPageSize,
+      }),
   });
 
   const handlePostSort = (field: PostReportSortField) => {
     if (postSortField === field) {
-      if (postSortOrder === 'asc') {
-        setPostSortOrder('desc');
-      } else if (postSortField === 'createdAt') {
-        setPostSortOrder('asc');
-      } else if (postSortOrder === 'desc') {
-        setPostSortField('createdAt');
-        setPostSortOrder('desc');
-      }
+      // Toggle between asc and desc for the same field
+      setPostSortOrder(postSortOrder === 'asc' ? 'desc' : 'asc');
     } else {
+      // New field selected, start with asc
       setPostSortField(field);
       setPostSortOrder('asc');
     }
@@ -88,15 +133,10 @@ export default function AdminReports() {
 
   const handleCommentSort = (field: CommentReportSortField) => {
     if (commentSortField === field) {
-      if (commentSortOrder === 'asc') {
-        setCommentSortOrder('desc');
-      } else if (commentSortField === 'createdAt') {
-        setCommentSortOrder('asc');
-      } else if (commentSortOrder === 'desc') {
-        setCommentSortField('createdAt');
-        setCommentSortOrder('desc');
-      }
+      // Toggle between asc and desc for the same field
+      setCommentSortOrder(commentSortOrder === 'asc' ? 'desc' : 'asc');
     } else {
+      // New field selected, start with asc
       setCommentSortField(field);
       setCommentSortOrder('asc');
     }
@@ -106,58 +146,78 @@ export default function AdminReports() {
     if (postSortField !== field) {
       return null;
     }
-    return postSortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+    return postSortOrder === 'asc' ? (
+      <ArrowUp className='h-4 w-4' />
+    ) : (
+      <ArrowDown className='h-4 w-4' />
+    );
   };
 
   const getCommentSortIcon = (field: CommentReportSortField) => {
     if (commentSortField !== field) {
       return null;
     }
-    return commentSortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
-  };
-
-  // Reset pagination when filters change
-  const handlePostFilterChange = (updates: Partial<typeof postFilters>) => {
-    setPostFilters(prev => ({ ...prev, ...updates }));
-    setPostPage(1);
-  };
-
-  const handleCommentFilterChange = (updates: Partial<typeof commentFilters>) => {
-    setCommentFilters(prev => ({ ...prev, ...updates }));
-    setCommentPage(1);
+    return commentSortOrder === 'asc' ? (
+      <ArrowUp className='h-4 w-4' />
+    ) : (
+      <ArrowDown className='h-4 w-4' />
+    );
   };
 
   // Add local state for filter inputs
   const [postFilterInputs, setPostFilterInputs] = useState(postFilters);
-  const [commentFilterInputs, setCommentFilterInputs] = useState(commentFilters);
+  const [commentFilterInputs, setCommentFilterInputs] =
+    useState(commentFilters);
 
   // Search/Reset handlers for post reports
   const handlePostInputChange = (updates: Partial<typeof postFilters>) => {
-    setPostFilterInputs(prev => ({ ...prev, ...updates }));
+    setPostFilterInputs((prev) => ({ ...prev, ...updates }));
   };
   const handlePostSearch = () => {
     setPostFilters(postFilterInputs);
     setPostPage(1);
   };
   const handlePostReset = () => {
-    setPostFilterInputs({ postId: '', postTitle: '', authorId: '', authorUsername: '' });
-    setPostFilters({ postId: '', postTitle: '', authorId: '', authorUsername: '' });
+    setPostFilterInputs({
+      postId: '',
+      postTitle: '',
+      authorId: '',
+      authorUsername: '',
+    });
+    setPostFilters({
+      postId: '',
+      postTitle: '',
+      authorId: '',
+      authorUsername: '',
+    });
     setPostSortField('createdAt');
     setPostSortOrder('desc');
     setPostPage(1);
   };
 
   // Search/Reset handlers for comment reports
-  const handleCommentInputChange = (updates: Partial<typeof commentFilters>) => {
-    setCommentFilterInputs(prev => ({ ...prev, ...updates }));
+  const handleCommentInputChange = (
+    updates: Partial<typeof commentFilters>
+  ) => {
+    setCommentFilterInputs((prev) => ({ ...prev, ...updates }));
   };
   const handleCommentSearch = () => {
     setCommentFilters(commentFilterInputs);
     setCommentPage(1);
   };
   const handleCommentReset = () => {
-    setCommentFilterInputs({ commentId: '', commentContent: '', authorId: '', authorUsername: '' });
-    setCommentFilters({ commentId: '', commentContent: '', authorId: '', authorUsername: '' });
+    setCommentFilterInputs({
+      commentId: '',
+      commentContent: '',
+      postId: '',
+      authorUsername: '',
+    });
+    setCommentFilters({
+      commentId: '',
+      commentContent: '',
+      postId: '',
+      authorUsername: '',
+    });
     setCommentSortField('createdAt');
     setCommentSortOrder('desc');
     setCommentPage(1);
@@ -166,15 +226,21 @@ export default function AdminReports() {
   return (
     <div className='flex flex-col gap-8'>
       <div className='flex flex-col gap-4'>
-        <h1 className='text-xl font-bold ms-2'>Post Reports</h1>
+        <h1 className='text-xl font-bold ms-2'>
+          {t('Pages.Admin.AdminReports.Posts.Title')}
+        </h1>
         <Card>
           <CardHeader>
             <div className='flex gap-4'>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='postId'>Post ID</Label>
+                <Label htmlFor='postId'>
+                  {t('Pages.Admin.AdminReports.Filters.PostID')}
+                </Label>
                 <Input
                   id='postId'
-                  placeholder='Enter post ID'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.PostIDPlaceholder'
+                  )}
                   value={postFilterInputs.postId}
                   onChange={(e) =>
                     handlePostInputChange({ postId: e.target.value })
@@ -185,10 +251,14 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='postTitle'>Post Title</Label>
+                <Label htmlFor='postTitle'>
+                  {t('Pages.Admin.AdminReports.Filters.PostTitle')}
+                </Label>
                 <Input
                   id='postTitle'
-                  placeholder='Enter post title'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.PostTitlePlaceholder'
+                  )}
                   value={postFilterInputs.postTitle}
                   onChange={(e) =>
                     handlePostInputChange({ postTitle: e.target.value })
@@ -199,10 +269,14 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='authorId'>Author ID</Label>
+                <Label htmlFor='authorId'>
+                  {t('Pages.Admin.AdminReports.Filters.AuthorID')}
+                </Label>
                 <Input
                   id='authorId'
-                  placeholder='Enter author ID'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.AuthorIDPlaceholder'
+                  )}
                   value={postFilterInputs.authorId}
                   onChange={(e) =>
                     handlePostInputChange({ authorId: e.target.value })
@@ -213,10 +287,14 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='authorUsername'>Author Username</Label>
+                <Label htmlFor='authorUsername'>
+                  {t('Pages.Admin.AdminReports.Filters.AuthorUsername')}
+                </Label>
                 <Input
                   id='authorUsername'
-                  placeholder='Enter author username'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.AuthorUsernamePlaceholder'
+                  )}
                   value={postFilterInputs.authorUsername}
                   onChange={(e) =>
                     handlePostInputChange({ authorUsername: e.target.value })
@@ -228,9 +306,11 @@ export default function AdminReports() {
               </div>
               <div className='flex flex-col justify-end gap-2'>
                 <div className='flex gap-2'>
-                  <Button onClick={handlePostSearch}>Search</Button>
+                  <Button onClick={handlePostSearch}>
+                    {t('Pages.Admin.AdminReports.Filters.Search')}
+                  </Button>
                   <Button variant='outline' onClick={handlePostReset}>
-                    Reset
+                    {t('Pages.Admin.AdminReports.Filters.Reset')}
                   </Button>
                 </div>
               </div>
@@ -240,61 +320,55 @@ export default function AdminReports() {
             {postReportsQuery.isLoading ? (
               <Skeleton className='h-32 w-full' />
             ) : (
-              <>
+              <div className='overflow-x-auto'>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[60px]'
                         onClick={() => handlePostSort('id')}
                       >
                         <div className='flex items-center gap-1'>
-                          ID
+                          {t('Pages.Admin.AdminReports.Posts.Table.ID')}
                           {getPostSortIcon('id')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[200px]'
                         onClick={() => handlePostSort('postTitle')}
                       >
                         <div className='flex items-center gap-1'>
-                          Post
+                          {t('Pages.Admin.AdminReports.Posts.Table.PostTitle')}
                           {getPostSortIcon('postTitle')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={() => handlePostSort('postAuthor')}
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[120px]'
+                        onClick={() => handlePostSort('authorUsername')}
                       >
                         <div className='flex items-center gap-1'>
-                          Post Author
-                          {getPostSortIcon('postAuthor')}
+                          {t('Pages.Admin.AdminReports.Posts.Table.PostAuthor')}
+                          {getPostSortIcon('authorUsername')}
                         </div>
                       </TableHead>
-                      <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={() => handlePostSort('reporter')}
-                      >
-                        <div className='flex items-center gap-1'>
-                          Reporter
-                          {getPostSortIcon('reporter')}
-                        </div>
+                      <TableHead>
+                        {t('Pages.Admin.AdminReports.Posts.Table.Reporter')}
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[150px]'
                         onClick={() => handlePostSort('reason')}
                       >
                         <div className='flex items-center gap-1'>
-                          Reason
+                          {t('Pages.Admin.AdminReports.Posts.Table.Reason')}
                           {getPostSortIcon('reason')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[140px]'
                         onClick={() => handlePostSort('createdAt')}
                       >
                         <div className='flex items-center gap-1'>
-                          Date
+                          {t('Pages.Admin.AdminReports.Posts.Table.CreatedAt')}
                           {getPostSortIcon('createdAt')}
                         </div>
                       </TableHead>
@@ -303,7 +377,9 @@ export default function AdminReports() {
                   <TableBody>
                     {postReportsQuery.data?.reports.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6}>No reports found.</TableCell>
+                        <TableCell colSpan={6}>
+                          {t('Pages.Admin.AdminReports.NoRecords')}
+                        </TableCell>
                       </TableRow>
                     ) : (
                       postReportsQuery.data?.reports.map((report) => (
@@ -318,7 +394,9 @@ export default function AdminReports() {
                           <TableCell>{report.user.username}</TableCell>
                           <TableCell>{report.reason}</TableCell>
                           <TableCell>
-                            {new Date(report.createdAt).toLocaleString()}
+                            {formatLocalizedDateTime(
+                              new Date(report.createdAt)
+                            )}
                           </TableCell>
                         </TableRow>
                       ))
@@ -338,22 +416,28 @@ export default function AdminReports() {
                     }}
                   />
                 )}
-              </>
+              </div>
             )}
           </CardContent>
         </Card>
       </div>
 
       <div className='flex flex-col gap-4'>
-        <h1 className='text-xl font-bold ms-2'>Comment Reports</h1>
+        <h1 className='text-xl font-bold ms-2'>
+          {t('Pages.Admin.AdminReports.Comments.Title')}
+        </h1>
         <Card>
           <CardHeader>
             <div className='flex gap-4'>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='commentId'>Comment ID</Label>
+                <Label htmlFor='commentId'>
+                  {t('Pages.Admin.AdminReports.Filters.CommentID')}
+                </Label>
                 <Input
                   id='commentId'
-                  placeholder='Enter comment ID'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.CommentIDPlaceholder'
+                  )}
                   value={commentFilterInputs.commentId}
                   onChange={(e) =>
                     handleCommentInputChange({ commentId: e.target.value })
@@ -364,10 +448,14 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='commentContent'>Comment Content</Label>
+                <Label htmlFor='commentContent'>
+                  {t('Pages.Admin.AdminReports.Filters.CommentContent')}
+                </Label>
                 <Input
                   id='commentContent'
-                  placeholder='Enter comment content'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.CommentContentPlaceholder'
+                  )}
                   value={commentFilterInputs.commentContent}
                   onChange={(e) =>
                     handleCommentInputChange({ commentContent: e.target.value })
@@ -378,13 +466,17 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='authorId'>Author ID</Label>
+                <Label htmlFor='postId'>
+                  {t('Pages.Admin.AdminReports.Filters.PostID')}
+                </Label>
                 <Input
-                  id='authorId'
-                  placeholder='Enter author ID'
-                  value={commentFilterInputs.authorId}
+                  id='postId'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.PostIDPlaceholder'
+                  )}
+                  value={commentFilterInputs.postId}
                   onChange={(e) =>
-                    handleCommentInputChange({ authorId: e.target.value })
+                    handleCommentInputChange({ postId: e.target.value })
                   }
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleCommentSearch();
@@ -392,10 +484,14 @@ export default function AdminReports() {
                 />
               </div>
               <div className='flex flex-col gap-2'>
-                <Label htmlFor='authorUsername'>Author Username</Label>
+                <Label htmlFor='authorUsername'>
+                  {t('Pages.Admin.AdminReports.Filters.AuthorUsername')}
+                </Label>
                 <Input
                   id='authorUsername'
-                  placeholder='Enter author username'
+                  placeholder={t(
+                    'Pages.Admin.AdminReports.Filters.AuthorUsernamePlaceholder'
+                  )}
                   value={commentFilterInputs.authorUsername}
                   onChange={(e) =>
                     handleCommentInputChange({ authorUsername: e.target.value })
@@ -407,9 +503,11 @@ export default function AdminReports() {
               </div>
               <div className='flex flex-col justify-end gap-2'>
                 <div className='flex gap-2'>
-                  <Button onClick={handleCommentSearch}>Search</Button>
+                  <Button onClick={handleCommentSearch}>
+                    {t('Pages.Admin.AdminReports.Filters.Search')}
+                  </Button>
                   <Button variant='outline' onClick={handleCommentReset}>
-                    Reset
+                    {t('Pages.Admin.AdminReports.Filters.Reset')}
                   </Button>
                 </div>
               </div>
@@ -419,61 +517,59 @@ export default function AdminReports() {
             {commentReportsQuery.isLoading ? (
               <Skeleton className='h-32 w-full' />
             ) : (
-              <>
+              <div className='overflow-x-auto'>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[60px]'
                         onClick={() => handleCommentSort('id')}
                       >
                         <div className='flex items-center gap-1'>
-                          ID
+                          {t('Pages.Admin.AdminReports.Comments.Table.ID')}
                           {getCommentSortIcon('id')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={() => handleCommentSort('commentText')}
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[250px]'
+                        onClick={() => handleCommentSort('commentContent')}
                       >
                         <div className='flex items-center gap-1'>
-                          Comment
-                          {getCommentSortIcon('commentText')}
+                          {t(
+                            'Pages.Admin.AdminReports.Comments.Table.CommentText'
+                          )}
+                          {getCommentSortIcon('commentContent')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={() => handleCommentSort('commentAuthor')}
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[120px]'
+                        onClick={() => handleCommentSort('authorUsername')}
                       >
                         <div className='flex items-center gap-1'>
-                          Comment Author
-                          {getCommentSortIcon('commentAuthor')}
+                          {t(
+                            'Pages.Admin.AdminReports.Comments.Table.CommentAuthor'
+                          )}
+                          {getCommentSortIcon('authorUsername')}
                         </div>
                       </TableHead>
-                      <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={() => handleCommentSort('reporter')}
-                      >
-                        <div className='flex items-center gap-1'>
-                          Reporter
-                          {getCommentSortIcon('reporter')}
-                        </div>
+                      <TableHead>
+                        {t('Pages.Admin.AdminReports.Comments.Table.Reporter')}
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[150px]'
                         onClick={() => handleCommentSort('reason')}
                       >
                         <div className='flex items-center gap-1'>
-                          Reason
+                          {t('Pages.Admin.AdminReports.Comments.Table.Reason')}
                           {getCommentSortIcon('reason')}
                         </div>
                       </TableHead>
                       <TableHead
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[140px]'
                         onClick={() => handleCommentSort('createdAt')}
                       >
                         <div className='flex items-center gap-1'>
-                          Date
+                          {t('Pages.Admin.AdminReports.Comments.Table.Date')}
                           {getCommentSortIcon('createdAt')}
                         </div>
                       </TableHead>
@@ -482,7 +578,9 @@ export default function AdminReports() {
                   <TableBody>
                     {commentReportsQuery.data?.reports.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6}>No reports found.</TableCell>
+                        <TableCell colSpan={6}>
+                          {t('Pages.Admin.AdminReports.NoRecords')}
+                        </TableCell>
                       </TableRow>
                     ) : (
                       commentReportsQuery.data?.reports.map((report) => (
@@ -497,7 +595,9 @@ export default function AdminReports() {
                           <TableCell>{report.user.username}</TableCell>
                           <TableCell>{report.reason}</TableCell>
                           <TableCell>
-                            {new Date(report.createdAt).toLocaleString()}
+                            {formatLocalizedDateTime(
+                              new Date(report.createdAt)
+                            )}
                           </TableCell>
                         </TableRow>
                       ))
@@ -517,7 +617,7 @@ export default function AdminReports() {
                     }}
                   />
                 )}
-              </>
+              </div>
             )}
           </CardContent>
         </Card>

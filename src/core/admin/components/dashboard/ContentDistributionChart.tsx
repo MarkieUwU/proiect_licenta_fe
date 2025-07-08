@@ -12,14 +12,12 @@ export const ContentDistributionChart = ({
   chartData,
   title
 }: ContentDistributionChartProps) => {
-  const { t } = useTranslation('translation', {
-    keyPrefix: 'Pages.Admin.AdminDashboard.ContentDistribution',
-  });
+  const { t } = useTranslation();
   const data: PieChartDataItem[] = [
-    { name: t('Posts'), value: chartData.posts },
-    { name: t('Comments'), value: chartData.comments },
-    { name: t('Likes'), value: chartData.likes },
-    { name: t('Reports'), value: chartData.reports },
+    { name: t('Pages.Admin.AdminDashboard.ContentDistribution.Posts'), value: chartData.posts },
+    { name: t('Pages.Admin.AdminDashboard.ContentDistribution.Comments'), value: chartData.comments },
+    { name: t('Pages.Admin.AdminDashboard.ContentDistribution.Likes'), value: chartData.likes },
+    { name: t('Pages.Admin.AdminDashboard.ContentDistribution.Reports'), value: chartData.reports },
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatDistanceToNow } from 'date-fns'
 import { AvatarComponent } from "@/layout/components/Avatar"
 import { getInitials } from "@/core/utils/utils"
+import { formatLocalizedDistanceToNow } from "@/core/utils/date.utils"
 import { UserStats, PostStats } from "@/core/admin/models/dashboard.models"
 
 interface RecentActivityProps {
@@ -44,10 +44,8 @@ export const RecentActivity = ({
                     {content}
                   </p>
                 </div>
-                <div className='ml-auto font-medium text-center'>
-                  {formatDistanceToNow(new Date(item.createdAt), {
-                    addSuffix: true,
-                  })}
+                <div className='ml-auto font-medium text-center text-nowrap'>
+                  {formatLocalizedDistanceToNow(new Date(item.createdAt))}
                 </div>
               </div>
             );

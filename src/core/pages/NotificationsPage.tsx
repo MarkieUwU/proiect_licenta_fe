@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '@/core/apis/notification.api';
+import { getAllNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '@/core/apis/notification.api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,34 +18,34 @@ export default function NotificationsPage() {
 
   const { data: notificationsData, isLoading } = useQuery({
     queryKey: ['notifications', { page, limit: PAGE_SIZE }],
-    queryFn: () => getNotifications({ page, limit: PAGE_SIZE }),
+  queryFn: () => getAllNotifications({ page, limit: PAGE_SIZE }),
   });
 
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: number) => markNotificationAsRead(notificationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('Notification marked as read');
+      toast.success(t('Toast.MarkAsReadSuccess'));
     },
-    onError: () => toast.error('Failed to mark notification as read'),
+    onError: () => toast.error(t('Toast.MarkAsReadError')),
   });
 
   const markAllAsReadMutation = useMutation({
     mutationFn: () => markAllNotificationsAsRead(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('All notifications marked as read');
+      toast.success(t('Toast.MarkAllAsReadSuccess'));
     },
-    onError: () => toast.error('Failed to mark notifications as read'),
+    onError: () => toast.error(t('Toast.MarkAllAsReadError')),
   });
 
   const deleteNotificationMutation = useMutation({
     mutationFn: (notificationId: number) => deleteNotification(notificationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('Notification deleted successfully');
+      toast.success(t('Toast.DeleteSuccess'));
     },
-    onError: () => toast.error('Failed to delete notification'),
+    onError: () => toast.error(t('Toast.DeleteError')),
   });
 
   const handleMarkAsRead = (notificationId: number) => {

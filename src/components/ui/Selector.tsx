@@ -7,19 +7,21 @@ import {
 } from '@/components/ui/select';
 
 interface SelectorProps {
-  placeholder: string;
+  placeholder?: string;
   items: { value: any; label: string }[];
+  value?: any;
   defaultValue?: any;
-  onValueChange?: (value: any) => void
+  onValueChange?: (value: any) => void;
+  key?: string | number;
 }
 
-const Selector: React.FC<SelectorProps> = ({ placeholder, items, defaultValue, onValueChange }) => {
+const Selector: React.FC<SelectorProps> = ({ placeholder, items, value, defaultValue, onValueChange, key }) => {
   const selectItems = items.map((item, index) => (
     <SelectItem key={index} value={item.value}>{item.label}</SelectItem>
   ))
 
   return (
-    <Select defaultValue={defaultValue} onValueChange={onValueChange}>
+    <Select key={key} value={value} defaultValue={defaultValue} onValueChange={onValueChange}>
       <SelectTrigger className='w-fit gap-2'>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

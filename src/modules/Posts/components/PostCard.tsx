@@ -106,17 +106,17 @@ const PostCard: React.FC<PostProps> = ({ post, requestRefetch }: PostProps) => {
   };
 
   const navigateToProfile = () => {
-    navigate({ to: `/${post.user.username}/profile` });
+    navigate({ to: `/profile/${post.user.username}` });
   };
 
   const handleReport = async (reason: string) => {
     setLoading(true);
     try {
       await reportPost(post.id, reason);
-      toast.success('Report submitted');
+      toast.success(t('ReportDialog.SuccessMessage'));
       setReportOpen(false);
     } catch {
-      toast.error('Failed to submit report');
+      toast.error(t('ReportDialog.ErrorMessage'));
     } finally {
       setLoading(false);
     }

@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { TablePagination } from '@/components/ui/table-pagination';
+import { formatLocalizedDateTime } from '@/core/utils/date.utils';
 
 type SortField = 'id' | 'title' | 'status' | 'createdAt' | 'updatedAt';
 
@@ -69,19 +70,19 @@ export default function AdminPosts() {
     mutationFn: ({ id, status }: { id: number; status: string }) =>
       updatePostStatus(id, status),
     onSuccess: () => {
-      toast.success('Status updated');
+      toast.success(t('Pages.Admin.ContentManagement.Posts.Toast.StatusUpdated'));
       queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
     },
-    onError: () => toast.error('Failed to update status'),
+    onError: () => toast.error(t('Pages.Admin.ContentManagement.Posts.Toast.StatusUpdateError')),
   });
 
   const removePost = useMutation({
     mutationFn: (id: number) => deletePost(id),
     onSuccess: () => {
-      toast.success('Post deleted');
+      toast.success(t('Pages.Admin.ContentManagement.Posts.Toast.Deleted'));
       queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
     },
-    onError: () => toast.error('Failed to delete post'),
+    onError: () => toast.error(t('Pages.Admin.ContentManagement.Posts.Toast.DeleteError')),
   });
 
   const handleSort = (field: SortField) => {
@@ -132,21 +133,18 @@ export default function AdminPosts() {
     setSortOrder('desc');
   };
 
-  const handleStatusChange = (value: ContentStatus) => {
-    setStatus(value);
-    setPage(1);
-  };
-
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setPage(1);
   };
 
   return (
-    <div className='space-y-4'>
-      <div className='flex items-center gap-2'>
+    <>
+      <div className='flex flex-wrap items-center gap-2 mb-4'>
         <Input
-          placeholder='Search posts...'
+          placeholder={t(
+            'Pages.Admin.ContentManagement.Posts.SearchPlaceholder'
+          )}
           value={searchInput}
           onChange={(e) => handleSearchInputChange(e.target.value)}
           onKeyDown={(e) => {
@@ -156,7 +154,11 @@ export default function AdminPosts() {
         />
         <Select value={statusInput} onValueChange={handleStatusInputChange}>
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Status' />
+            <SelectValue
+              placeholder={t(
+                'Pages.Admin.ContentManagement.Posts.StatusPlaceholder'
+              )}
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ContentStatus.ALL}>
@@ -174,71 +176,81 @@ export default function AdminPosts() {
           </SelectContent>
         </Select>
         <Button onClick={handleSearch} variant='default'>
-          Search
+          {t('Pages.Admin.ContentManagement.Posts.Search')}
         </Button>
         <Button onClick={handleReset} variant='outline'>
-          Reset
+          {t('Pages.Admin.ContentManagement.Posts.Reset')}
         </Button>
       </div>
-      <div className='rounded-md border'>
+      <div className='rounded-md border w-full overflow-x-auto'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[60px]'
                 onClick={() => handleSort('id')}
               >
                 <div className='flex items-center gap-1'>
-                  ID
+                  {t('Pages.Admin.ContentManagement.Posts.Table.ID')}
                   {getSortIcon('id')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[200px]'
                 onClick={() => handleSort('title')}
               >
                 <div className='flex items-center gap-1'>
-                  Title
+                  {t('Pages.Admin.ContentManagement.Posts.Table.Title')}
                   {getSortIcon('title')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[100px]'
                 onClick={() => handleSort('status')}
               >
                 <div className='flex items-center gap-1'>
-                  Status
+                  {t('Pages.Admin.ContentManagement.Posts.Table.Status')}
                   {getSortIcon('status')}
                 </div>
               </TableHead>
-              <TableHead>Author</TableHead>
+              <TableHead className='min-w-[150px]'>
+                {t('Pages.Admin.ContentManagement.Posts.Table.Author')}
+              </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[120px]'
                 onClick={() => handleSort('createdAt')}
               >
                 <div className='flex items-center gap-1'>
-                  Created
+                  {t('Pages.Admin.ContentManagement.Posts.Table.Created')}
                   {getSortIcon('createdAt')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[120px]'
                 onClick={() => handleSort('updatedAt')}
               >
                 <div className='flex items-center gap-1'>
-                  Updated
+                  {t('Pages.Admin.ContentManagement.Posts.Table.Updated')}
                   {getSortIcon('updatedAt')}
                 </div>
               </TableHead>
-              <TableHead>Comments</TableHead>
-              <TableHead>Likes</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className='min-w-[100px]'>
+                {t('Pages.Admin.ContentManagement.Posts.Table.Comments')}
+              </TableHead>
+              <TableHead className='min-w-[80px]'>
+                {t('Pages.Admin.ContentManagement.Posts.Table.Likes')}
+              </TableHead>
+              <TableHead className='min-w-[120px]'>
+                {t('Pages.Admin.ContentManagement.Posts.Table.Actions')}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={10}>Loading...</TableCell>
+                <TableCell colSpan={10}>
+                  {t('Pages.Admin.ContentManagement.Posts.Loading')}
+                </TableCell>
               </TableRow>
             ) : total > 0 ? (
               (posts as AdminPost[]).map((post) => (
@@ -276,10 +288,10 @@ export default function AdminPosts() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {new Date(post.createdAt).toLocaleString()}
+                    {formatLocalizedDateTime(new Date(post.createdAt))}
                   </TableCell>
                   <TableCell>
-                    {new Date(post.updatedAt).toLocaleString()}
+                    {formatLocalizedDateTime(new Date(post.updatedAt))}
                   </TableCell>
                   <TableCell>{post.comments}</TableCell>
                   <TableCell>{post.likes}</TableCell>
@@ -300,7 +312,9 @@ export default function AdminPosts() {
                               })
                             }
                           >
-                            Approve
+                            {t(
+                              'Pages.Admin.ContentManagement.Posts.Actions.Approve'
+                            )}
                           </DropdownMenuItem>
                         )}
                         {post.status !== ContentStatus.ARCHIVED && (
@@ -312,14 +326,18 @@ export default function AdminPosts() {
                               })
                             }
                           >
-                            Archive
+                            {t(
+                              'Pages.Admin.ContentManagement.Posts.Actions.Archive'
+                            )}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
                           onClick={() => removePost.mutate(post.id)}
                           className='text-red-600'
                         >
-                          {t('Actions.Delete')}
+                          {t(
+                            'Pages.Admin.ContentManagement.Posts.Actions.Delete'
+                          )}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -328,22 +346,24 @@ export default function AdminPosts() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={10}>No posts found.</TableCell>
+                <TableCell colSpan={10}>
+                  {t('Pages.Admin.ContentManagement.Posts.NoRecords')}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+        {data && (
+          <TablePagination
+            currentPage={page}
+            totalPages={data.pages}
+            pageSize={pageSize}
+            totalItems={total}
+            onPageChange={setPage}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
-      {data && (
-        <TablePagination
-          currentPage={page}
-          totalPages={data.pages}
-          pageSize={pageSize}
-          totalItems={total}
-          onPageChange={setPage}
-          onPageSizeChange={handlePageSizeChange}
-        />
-      )}
-    </div>
+    </>
   );
 }

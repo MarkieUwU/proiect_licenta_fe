@@ -43,11 +43,9 @@ const SuggestionsSidebar: React.FC = () => {
         {suggestionsList}
         {suggestions.length > 6 && (
           <Button
-            variant='ghost'
-            className='mx-auto'
-            onClick={() =>
-              navigate({ to: '/friends', hash: 'suggestions' })
-            }
+            variant='outline'
+            className='w-full'
+            onClick={() => navigate({ to: '/friends', hash: 'suggestions' })}
           >
             {t('ViewMore')}
           </Button>

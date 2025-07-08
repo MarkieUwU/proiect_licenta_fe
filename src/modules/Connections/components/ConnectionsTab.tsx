@@ -6,7 +6,7 @@ const ConnectionsTab: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='flex flex-col items-center gap-3'>
       <ConnectionRequestsList userId={user!.id} />
       <ConnectionsList userId={user!.id} />
     </div>

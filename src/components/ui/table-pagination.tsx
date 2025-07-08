@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 interface TablePaginationProps {
   currentPage: number;
@@ -35,6 +36,7 @@ export function TablePagination({
   onPageSizeChange,
   pageSizeOptions = [10, 20, 30, 40, 50],
 }: TablePaginationProps) {
+  const { t } = useTranslation();
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
@@ -73,11 +75,11 @@ export function TablePagination({
       <div className="flex items-center justify-between px-2 py-4">
         <div className="flex items-center space-x-2">
           <p className="text-sm text-muted-foreground">
-            Showing {totalItems} of {totalItems} results
+            {t('Components.TablePagination.Showing')} {totalItems} {t('Components.TablePagination.Of')} {totalItems} {t('Components.TablePagination.Results')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <p className="text-sm text-muted-foreground">Show</p>
+          <p className="text-sm text-muted-foreground">{t('Components.TablePagination.Show')}</p>
           <Select
             value={pageSize.toString()}
             onValueChange={(value) => onPageSizeChange(Number(value))}
@@ -93,22 +95,22 @@ export function TablePagination({
               ))}
             </SelectContent>
           </Select>
-          <p className="text-sm text-muted-foreground">per page</p>
+          <p className="text-sm text-muted-foreground">{t('Components.TablePagination.PerPage')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-between px-2 py-4">
-      <div className="flex items-center space-x-2">
-        <p className="text-sm text-muted-foreground">
-          {endItem} of {totalItems} results
+    <div className="flex items-center justify-between gap-4 px-2 py-4">
+      <div className="flex items-center px-2">
+        <p className="text-sm text-muted-foreground text-nowrap">
+          {endItem} {t('Components.TablePagination.Of')} {totalItems} {t('Components.TablePagination.Results')}
         </p>
       </div>
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
-          <p className="text-sm text-muted-foreground">Show</p>
+          <p className="text-sm text-muted-foreground">{t('Components.TablePagination.Show')}</p>
           <Select
             value={pageSize.toString()}
             onValueChange={(value) => onPageSizeChange(Number(value))}
@@ -124,7 +126,7 @@ export function TablePagination({
               ))}
             </SelectContent>
           </Select>
-          <p className="text-sm text-muted-foreground whitespace-nowrap">per page</p>
+          <p className="text-sm text-muted-foreground whitespace-nowrap">{t('Components.TablePagination.PerPage')}</p>
         </div>
         <Pagination>
           <PaginationContent>

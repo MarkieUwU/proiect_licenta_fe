@@ -29,7 +29,7 @@
       "Private": "Private"
     },
     "ContentStatus": {
-      "ALL": "All Statuses",
+      "ALL": "All",
       "ACTIVE": "Active",
       "ARCHIVED": "Archived",
       "REPORTED": "Reported"
@@ -48,6 +48,10 @@
       "MENTIONED_IN_POST": "Mentioned in Post",
       "SYSTEM_ANNOUNCEMENT": "System Announcement",
       "ACCOUNT_WARNING": "Account Warning"
+    },
+    "Role": {
+      "USER": "User",
+      "ADMIN": "Admin"
     }
   },
   "ValidationErrors": {
@@ -127,6 +131,10 @@
         "DeleteDialog": {
           "Title": "Are you sure?",
           "Description": "This action cannot be undone. This will permanently delete this post and you won't be able to recover the data."
+        },
+        "ReportDialog": {
+          "SuccessMessage": "Report submitted successfully",
+          "ErrorMessage": "Failed to submit report"
         },
         "CommentCard": {
           "TextareaPlaceholder": "Add a comment...",
@@ -208,6 +216,12 @@
     "Settings": {
       "Title": "Settings",
       "Statistics": "Statistics page",
+      "Success": {
+        "Updated": "Settings updated successfully"
+      },
+      "Error": {
+        "UpdateFailed": "Failed to update settings"
+      },
       "PreferenceSettings": {
         "Title": "Preferences",
         "Theme": "Theme",
@@ -230,21 +244,39 @@
       "NoNotificationsDescription": "You're all caught up! Check back later for new updates.",
       "Previous": "Previous",
       "Next": "Next",
-      "Page": "Page {{current}} of {{total}}"
+      "Page": "Page {{current}} of {{total}}",
+      "Toast": {
+        "MarkAsReadSuccess": "Notification marked as read",
+        "MarkAsReadError": "Failed to mark notification as read",
+        "MarkAllAsReadSuccess": "All notifications marked as read",
+        "MarkAllAsReadError": "Failed to mark notifications as read",
+        "DeleteSuccess": "Notification deleted successfully",
+        "DeleteError": "Failed to delete notification"
+      }
     },
     "Admin": {
       "AdminDashboard": {
         "Title": "Dashboard",
         "UserGrowth": "User Growth",
+        "RecentUsers": "Recent Users",
+        "RecentPosts": "Recent Posts",
+        "Stats": {
+          "TotalUsers": "Total Users",
+          "TotalUsersDescription": "Active accounts",
+          "TotalPosts": "Total Posts",
+          "TotalPostsDescription": "Published content",
+          "TotalConnections": "Total Connections",
+          "TotalConnectionsDescription": "User relationships",
+          "GrowthRate": "Growth Rate",
+          "GrowthRateDescription": "For the last 3 months"
+        },
         "ContentDistribution": {
           "Title": "Content Distribution",
           "Posts": "Posts",
-          "Comments": "Comments",
+          "Comments": "Comments", 
           "Likes": "Likes",
           "Reports": "Reports"
-        },
-        "RecentUsers": "Recent Users",
-        "RecentPosts": "Recent Posts"
+        }
       },
       "UsersManagement": {
         "Title": "Users Management",
@@ -255,12 +287,15 @@
           "ID": "ID",
           "Username": "Username",
           "FullName": "Full Name",
-          "Email": "Email",
+          "Email": "Email", 
           "Role": "Role",
           "Posts": "Posts",
           "Connections": "Connections",
           "Joined": "Joined",
           "Actions": "Actions"
+        },
+        "Dialog": {
+          "EditUser": "Edit User"
         },
         "EditUserDialog": {
           "Title": "Edit User",
@@ -271,81 +306,121 @@
         },
         "Success": {
           "RoleUpdated": "User role updated successfully"
+        },
+        "Actions": {
+          "Edit": "Edit"
+        },
+        "Toast": {
+          "StatusUpdated": "Status updated",
+          "StatusUpdateError": "Error updating status"
         }
       },
       "ContentManagement": {
+        "Title": "Content Management",
+        "Tabs": {
+          "Posts": "Posts",
+          "Comments": "Comments", 
+          "Reports": "Reports"
+        },
         "Posts": {
-          "Title": "Posts Management",
           "SearchPlaceholder": "Search posts...",
-          "Status": "Status",
-          "SortBy": "Sort by",
+          "StatusPlaceholder": "All statuses",
+          "Search": "Search",
+          "Reset": "Reset",
+          "Loading": "Loading...",
+          "NoRecords": "No posts found",
           "Table": {
             "ID": "ID",
             "Title": "Title",
             "Status": "Status",
-            "CreatedAt": "Created At",
-            "UpdatedAt": "Updated At",
             "Author": "Author",
+            "Created": "Created",
+            "Updated": "Updated",
+            "Comments": "Comments",
+            "Likes": "Likes",
             "Actions": "Actions"
           },
-          "NoRecords": "No posts to display",
-          "DeleteConfirm": {
-            "Title": "Are you sure?",
-            "Description": "This action cannot be undone. The post will be permanently deleted."
+          "Actions": {
+            "Approve": "Approve",
+            "Archive": "Archive",
+            "Delete": "Delete"
           },
-          "Success": {
-            "Deleted": "Post deleted successfully"
+          "Toast": {
+            "StatusUpdated": "Status updated successfully",
+            "StatusUpdateError": "Error updating status",
+            "Deleted": "Post deleted successfully",
+            "DeleteError": "Error deleting post"
           }
         },
         "Comments": {
-          "Title": "Comments Management",
           "SearchPlaceholder": "Search comments...",
-          "Status": "Status",
-          "SortBy": "Sort by",
+          "StatusPlaceholder": "All statuses",
+          "Search": "Search",
+          "Reset": "Reset",
+          "Loading": "Loading...",
+          "NoRecords": "No comments found",
           "Table": {
             "ID": "ID",
-            "Text": "Text",
+            "Text": "Comment",
             "Status": "Status",
-            "CreatedAt": "Created At",
-            "PostID": "Post ID",
             "Author": "Author",
+            "PostID": "Post ID",
+            "Created": "Created",
             "Actions": "Actions"
           },
-          "NoRecords": "No comments to display",
-          "DeleteConfirm": {
-            "Title": "Are you sure?",
-            "Description": "This action cannot be undone. The comment will be permanently deleted."
+          "Actions": {
+            "Approve": "Approve",
+            "Archive": "Archive",
+            "Delete": "Delete"
           },
-          "Success": {
-            "Deleted": "Comment deleted successfully"
+          "Toast": {
+            "StatusUpdated": "Status updated successfully",
+            "StatusUpdateError": "Error updating status",
+            "Deleted": "Comment deleted successfully",
+            "DeleteError": "Error deleting comment"
           }
         }
       },
       "AdminReports": {
-        "Title": "Content Reports",
+        "NoRecords": "No reports found.",
         "Posts": {
           "Title": "Post Reports",
           "Table": {
             "ID": "ID",
             "PostTitle": "Post Title",
             "PostAuthor": "Post Author",
-            "Reporter": "Reported By",
+            "Reporter": "Reporter",
             "Reason": "Reason",
-            "CreatedAt": "Reported At"
+            "CreatedAt": "Created At"
           }
         },
         "Comments": {
           "Title": "Comment Reports",
           "Table": {
             "ID": "ID",
-            "CommentText": "Comment Text",
+            "CommentText": "Comment",
             "CommentAuthor": "Comment Author",
-            "Reporter": "Reported By",
+            "Reporter": "Reporter",
             "Reason": "Reason",
-            "CreatedAt": "Reported At"
+            "Date": "Date"
           }
         },
-        "NoRecords": "No reports to display"
+        "Filters": {
+          "PostID": "Post ID",
+          "PostIDPlaceholder": "Post ID",
+          "PostTitle": "Post Title", 
+          "PostTitlePlaceholder": "Post title",
+          "AuthorID": "Author ID",
+          "AuthorIDPlaceholder": "Author ID",
+          "AuthorUsername": "Author Username",
+          "AuthorUsernamePlaceholder": "Author username",
+          "CommentID": "Comment ID",
+          "CommentIDPlaceholder": "Comment ID",
+          "CommentContent": "Comment Content",
+          "CommentContentPlaceholder": "Comment content",
+          "Search": "Search",
+          "Reset": "Reset"
+        }
       }
     }
   },
@@ -399,6 +474,22 @@
       "Notifications": "Notifications",
       "NoNotifications": "No notifications",
       "MarkAllRead": "Mark all read"
+    },
+    "AdminSidebar": {
+      "Title": "Admin Panel",
+      "Dashboard": "Dashboard",
+      "Users": "Users",
+      "Content": "Content"
+    },
+    "AdminHeader": {
+      "Title": "Admin Panel"
+    },
+    "TablePagination": {
+      "Showing": "Showing",
+      "Of": "of",
+      "Results": "results",
+      "Show": "Show",
+      "PerPage": "per page"
     }
   },
   "Common": {

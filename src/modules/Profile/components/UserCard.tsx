@@ -19,13 +19,13 @@ export const UserCard: React.FC<UserProps> = ({ user }) => {
 
   return (
     <Card
-      className="p-3 ps-4 w-full max-w-[400px] sm:w-[300px] lg:w-full"
+      className='p-3 ps-4 w-full max-w-[400px] sm:w-[300px] lg:w-full'
       hover={true}
       onClick={navigateToProfile}
     >
       <CardContent className='flex items-center p-0'>
         <AvatarComponent initials={initials} image={user.profileImage} />
-        <div className='ml-3'>
+        <div className='min-w-0 grow ml-3'>
           <div className='font-bold text-lg truncate'>{user.fullName}</div>
         </div>
       </CardContent>

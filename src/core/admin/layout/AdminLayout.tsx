@@ -1,17 +1,18 @@
 import { Outlet } from '@tanstack/react-router';
 import { AdminSidebar } from '@/core/admin/components/layout/AdminSidebar';
 import { AdminHeader } from '@/core/admin/components/layout/AdminHeader';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 
 export const AdminLayout = () => {
   return (
-    <div className="flex h-screen">
+    <SidebarProvider defaultOpen={true}>
       <AdminSidebar />
-      <div className="flex-1 flex flex-col">
+      <SidebarInset className="flex flex-col h-screen min-w-[200px]">
         <AdminHeader />
-        <main className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
           <Outlet />
-        </main>
-      </div>
-    </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };

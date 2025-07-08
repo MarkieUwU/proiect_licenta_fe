@@ -10,7 +10,7 @@ interface PrivacySettingsProps {
 }
 
 export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSettingsChange }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const items = [
     { label: t('Enums.PrivacyOptions.Public'), value: PrivacyOptions.public },
@@ -19,17 +19,14 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
   ];
 
   const detailsPrivacySelectorConfig: SelectorConfiguration = {
-    placeholder: t('Pages.Settings.ProfileDetails'),
     items
   };
 
   const connectionsPrivacySelectorConfig: SelectorConfiguration = {
-    placeholder: t('Pages.Settings.Connections'),
     items
   };
 
   const postsPrivacySelectorConfig: SelectorConfiguration = {
-    placeholder: t('Pages.Settings.Posts'),
     items
   };
 
@@ -53,7 +50,8 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             </td>
             <td className='flex justify-end pt-3'>
               <Selector
-                defaultValue={settings.detailsPrivacy}
+                key={`details-${i18n.language}`}
+                value={settings.detailsPrivacy}
                 onValueChange={(value) =>
                   onSettingsChange({
                     detailsPrivacy: value,
@@ -69,7 +67,8 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             </td>
             <td className='flex justify-end pt-3'>
               <Selector
-                defaultValue={settings.connectionsPrivacy}
+                key={`connections-${i18n.language}`}
+                value={settings.connectionsPrivacy}
                 onValueChange={(value) =>
                   onSettingsChange({
                     connectionsPrivacy: value,
@@ -85,7 +84,8 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
             </td>
             <td className='flex justify-end pt-3'>
               <Selector
-                defaultValue={settings.postsPrivacy}
+                key={`posts-${i18n.language}`}
+                value={settings.postsPrivacy}
                 onValueChange={(value) =>
                   onSettingsChange({ postsPrivacy: value } as SettingsRequest)
                 }

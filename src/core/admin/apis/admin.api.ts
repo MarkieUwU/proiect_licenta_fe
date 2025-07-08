@@ -16,7 +16,9 @@ export const getDashboardStats = apiErrorHandler<DashboardStatsData>(async () =>
 export const getUsers = apiErrorHandler<UsersResponse>(async (params: { 
   page?: number; 
   limit?: number; 
-  search?: string 
+  search?: string;
+  sort?: string;
+  order?: string;
 }) => {
   const { data } = await apiClient.get('/admin/users', { params });
   return data;
@@ -78,6 +80,7 @@ export const getAllCommentReports = apiErrorHandler<CommentReportsResponse>(asyn
   commentContent?: string;
   authorId?: number;
   authorUsername?: string;
+  postId?: number;
   page?: number;
   limit?: number;
   sort?: string;

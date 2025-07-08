@@ -29,7 +29,7 @@
       "Private": "Privat"
     },
     "ContentStatus": {
-      "ALL": "Toate statusurile",
+      "ALL": "Toate",
       "ACTIVE": "Activ",
       "ARCHIVED": "Arhivat",
       "REPORTED": "Raportat"
@@ -48,6 +48,10 @@
       "MENTIONED_IN_POST": "Menționat în postare",
       "SYSTEM_ANNOUNCEMENT": "Anunț sistem",
       "ACCOUNT_WARNING": "Avertisment cont"
+    },
+    "Role": {
+      "USER": "Utilizator",
+      "ADMIN": "Administrator"
     }
   },
   "ValidationErrors": {
@@ -92,7 +96,8 @@
     "LogOutPage": {
       "Title": "Deconectare",
       "Description": "Prin această acțiune vei fi deconectat din aplicație",
-      "LogOut": "Deconectare"
+      "LogOut": "Deconectare",
+      "Cancel": "Anulează"
     },
     "ForgotPasswordPage": {
       "Title": "Parolă uitată",
@@ -106,10 +111,10 @@
       "Paragraph2": "Linkul este disponibil timp de o oră."
     },
     "ResetPasswordPage": {
-      "Title": "Reset password",
-      "Description": "Add your new password below",
-      "Password": "Password",
-      "ConfirmPassword": "Confirm Password"
+      "Title": "Resetare parolă",
+      "Description": "Adaugă parola nouă mai jos",
+      "Password": "Parolă",
+      "ConfirmPassword": "Confirmă parola"
     },
     "PostsFeed": {
       "InputPlaceholder": "La ce te gândești?",
@@ -126,6 +131,10 @@
         "DeleteDialog": {
           "Title": "Ești sigur?",
           "Description": "Această acțiune nu poate fi anulată. Continuând vei șterge permanent această postare, iar datele nu vor mai putea fi recuperate."
+        },
+        "ReportDialog": {
+          "SuccessMessage": "Raport trimis cu succes",
+          "ErrorMessage": "Eroare la trimiterea raportului"
         },
         "CommentCard": {
           "TextareaPlaceholder": "Adaugă un comentariu...",
@@ -207,6 +216,12 @@
     "Settings": {
       "Title": "Setări",
       "Statistics": "Pagină statistici",
+      "Success": {
+        "Updated": "Setările au fost actualizate cu succes"
+      },
+      "Error": {
+        "UpdateFailed": "Actualizarea setărilor a eșuat"
+      },
       "PreferenceSettings": {
         "Title": "Preferințe",
         "Theme": "Temă",
@@ -229,7 +244,15 @@
       "NoNotificationsDescription": "Ești la zi! Revino mai târziu pentru actualizări noi.",
       "Previous": "Anterior",
       "Next": "Următor",
-      "Page": "Pagina {{current}} din {{total}}"
+      "Page": "Pagina {{current}} din {{total}}",
+      "Toast": {
+        "MarkAsReadSuccess": "Notificare marcată ca citită",
+        "MarkAsReadError": "Eroare la marcarea notificării ca citită",
+        "MarkAllAsReadSuccess": "Toate notificările marcate ca citite",
+        "MarkAllAsReadError": "Eroare la marcarea notificărilor ca citite",
+        "DeleteSuccess": "Notificare ștersă cu succes",
+        "DeleteError": "Eroare la ștergerea notificării"
+      }
     },
     "Admin": {
       "AdminDashboard": {
@@ -237,6 +260,16 @@
         "UserGrowth": "Evoluție utilizatori",
         "RecentUsers": "Utilizatori recenți",
         "RecentPosts": "Postări recente",
+        "Stats": {
+          "TotalUsers": "Total utilizatori",
+          "TotalUsersDescription": "Conturi active",
+          "TotalPosts": "Total postări",
+          "TotalPostsDescription": "Conținut publicat",
+          "TotalConnections": "Total conexiuni",
+          "TotalConnectionsDescription": "Relații între utilizatori",
+          "GrowthRate": "Rată de creștere",
+          "GrowthRateDescription": "Pentru ultimele 3 luni"
+        },
         "ContentDistribution": {
           "Title": "Distribuție conținut",
           "Posts": "Postări",
@@ -261,6 +294,9 @@
           "Joined": "S-a alăturat",
           "Actions": "Acțiuni"
         },
+        "Dialog": {
+          "EditUser": "Editează utilizator"
+        },
         "EditUserDialog": {
           "Title": "Editează utilizator",
           "Role": "Rol",
@@ -270,58 +306,83 @@
         },
         "Success": {
           "RoleUpdated": "Rolul utilizatorului a fost actualizat cu succes"
+        },
+        "Actions": {
+          "Edit": "Editează"
+        },
+        "Toast": {
+          "StatusUpdated": "Status actualizat",
+          "StatusUpdateError": "Eroare la actualizarea statusului"
         }
       },
       "ContentManagement": {
+        "Title": "Administrare conținut",
+        "Tabs": {
+          "Posts": "Postări",
+          "Comments": "Comentarii",
+          "Reports": "Rapoarte"
+        },
         "Posts": {
-          "Title": "Administrare postări",
           "SearchPlaceholder": "Caută postări...",
-          "Status": "Status",
-          "SortBy": "Sortează după",
+          "StatusPlaceholder": "Toate statusurile",
+          "Search": "Caută",
+          "Reset": "Resetează",
+          "Loading": "Se încarcă...",
+          "NoRecords": "Nu s-au găsit postări",
           "Table": {
             "ID": "ID",
             "Title": "Titlu",
             "Status": "Status",
-            "CreatedAt": "Creat la",
-            "UpdatedAt": "Actualizat la",
             "Author": "Autor",
+            "Created": "Creat",
+            "Updated": "Actualizat",
+            "Comments": "Comentarii",
+            "Likes": "Aprecieri",
             "Actions": "Acțiuni"
           },
-          "NoRecords": "Nu există postări de afișat",
-          "DeleteConfirm": {
-            "Title": "Ești sigur?",
-            "Description": "Această acțiune nu poate fi anulată. Postarea va fi ștearsă permanent."
+          "Actions": {
+            "Approve": "Aprobă",
+            "Archive": "Arhivează",
+            "Delete": "Șterge"
           },
-          "Success": {
-            "Deleted": "Postare ștearsă cu succes"
+          "Toast": {
+            "StatusUpdated": "Status actualizat cu succes",
+            "StatusUpdateError": "Eroare la actualizarea statusului",
+            "Deleted": "Postare ștearsă cu succes",
+            "DeleteError": "Eroare la ștergerea postării"
           }
         },
         "Comments": {
-          "Title": "Administrare comentarii",
           "SearchPlaceholder": "Caută comentarii...",
-          "Status": "Status",
-          "SortBy": "Sortează după",
+          "StatusPlaceholder": "Toate statusurile",
+          "Search": "Caută",
+          "Reset": "Resetează",
+          "Loading": "Se încarcă...",
+          "NoRecords": "Nu s-au găsit comentarii",
           "Table": {
             "ID": "ID",
-            "Text": "Text",
+            "Text": "Comentariu",
             "Status": "Status",
-            "CreatedAt": "Creat la",
-            "PostID": "ID postare",
             "Author": "Autor",
+            "PostID": "ID postare",
+            "Created": "Creat",
             "Actions": "Acțiuni"
           },
-          "NoRecords": "Nu există comentarii de afișat",
-          "DeleteConfirm": {
-            "Title": "Ești sigur?",
-            "Description": "Această acțiune nu poate fi anulată. Comentariul va fi șters permanent."
+          "Actions": {
+            "Approve": "Aprobă",
+            "Archive": "Arhivează",
+            "Delete": "Șterge"
           },
-          "Success": {
-            "Deleted": "Comentariu șters cu succes"
+          "Toast": {
+            "StatusUpdated": "Status actualizat cu succes",
+            "StatusUpdateError": "Eroare la actualizarea statusului",
+            "Deleted": "Comentariu șters cu succes",
+            "DeleteError": "Eroare la ștergerea comentariului"
           }
         }
       },
       "AdminReports": {
-        "Title": "Rapoarte conținut",
+        "NoRecords": "Nu există rapoarte de afișat",
         "Posts": {
           "Title": "Rapoarte postări",
           "Table": {
@@ -341,10 +402,25 @@
             "CommentAuthor": "Autor comentariu",
             "Reporter": "Raportat de",
             "Reason": "Motiv",
-            "CreatedAt": "Raportat la"
+            "Date": "Data"
           }
         },
-        "NoRecords": "Nu există rapoarte de afișat"
+        "Filters": {
+          "PostID": "ID postare",
+          "PostIDPlaceholder": "ID postare",
+          "PostTitle": "Titlu postare",
+          "PostTitlePlaceholder": "Titlu postare",
+          "AuthorID": "ID autor",
+          "AuthorIDPlaceholder": "ID autor",
+          "AuthorUsername": "Nume utilizator autor",
+          "AuthorUsernamePlaceholder": "Nume utilizator",
+          "CommentID": "ID comentariu",
+          "CommentIDPlaceholder": "ID comentariu",
+          "CommentContent": "Conținut comentariu",
+          "CommentContentPlaceholder": "Conținut comentariu",
+          "Search": "Caută",
+          "Reset": "Resetează"
+        }
       }
     }
   },
@@ -354,6 +430,7 @@
       "Friends": "Prieteni",
       "MyAccountMenu": {
         "MyAccount": "Contul meu",
+        "Home": "Acasă",
         "Profile": "Profil",
         "Settings": "Setări",
         "Admin": "Admin",
@@ -397,6 +474,22 @@
       "Notifications": "Notificări",
       "NoNotifications": "Nici-o notificare",
       "MarkAllRead": "Marchează toate ca citite"
+    },
+    "AdminSidebar": {
+      "Title": "Panou Admin",
+      "Dashboard": "Tablou de bord",
+      "Users": "Utilizatori",
+      "Content": "Conținut"
+    },
+    "AdminHeader": {
+      "Title": "Panou Admin"
+    },
+    "TablePagination": {
+      "Showing": "Se afișează",
+      "Of": "din",
+      "Results": "rezultate",
+      "Show": "Afișează",
+      "PerPage": "pe pagină"
     }
   },
   "Common": {

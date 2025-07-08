@@ -33,6 +33,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { deleteComment } from '@/modules/Posts/apis/comment.api';
 import { useTranslation } from 'react-i18next';
 import { TablePagination } from '@/components/ui/table-pagination';
+import { formatLocalizedDateTime } from '@/core/utils/date.utils';
 
 type CommentSortField = 'id' | 'text' | 'status' | 'createdAt' | 'postId';
 
@@ -69,20 +70,20 @@ export default function AdminComments() {
     mutationFn: ({ id, status }: { id: string; status: ContentStatus }) =>
       updateCommentStatus(id, status),
     onSuccess: () => {
-      toast.success('Status updated');
+      toast.success(t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdated'));
       queryClient.invalidateQueries({ queryKey: ['adminComments'] });
     },
-    onError: () => toast.error('Failed to update status'),
+    onError: () => toast.error(t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdateError')),
   });
 
   const removeComment = useMutation({
     mutationFn: (id: number) => deleteComment(id),
     onSuccess: () => {
-      toast.success(t('PostsFeed.PostCard.CommentCard.DeleteSuccessMessage'));
+      toast.success(t('Pages.Admin.ContentManagement.Comments.Toast.Deleted'));
       queryClient.invalidateQueries({ queryKey: ['adminComments'] });
     },
     onError: () =>
-      toast.error(t('PostsFeed.PostCard.CommentCard.DeleteErrorMessage')),
+      toast.error(t('Pages.Admin.ContentManagement.Comments.Toast.DeleteError')),
   });
 
   const handleSort = (field: CommentSortField) => {
@@ -137,10 +138,12 @@ export default function AdminComments() {
   };
 
   return (
-    <div className='space-y-4'>
-      <div className='flex items-center gap-2'>
+    <div>
+      <div className='flex flex-wrap items-center gap-2 mb-4'>
         <Input
-          placeholder='Search comments...'
+          placeholder={t(
+            'Pages.Admin.ContentManagement.Comments.SearchPlaceholder'
+          )}
           value={searchInput}
           onChange={(e) => handleSearchInputChange(e.target.value)}
           onKeyDown={(e) => {
@@ -155,7 +158,11 @@ export default function AdminComments() {
           }
         >
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Status' />
+            <SelectValue
+              placeholder={t(
+                'Pages.Admin.ContentManagement.Comments.StatusPlaceholder'
+              )}
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ContentStatus.ALL}>
@@ -173,69 +180,75 @@ export default function AdminComments() {
           </SelectContent>
         </Select>
         <Button onClick={handleSearch} variant='default'>
-          Search
+          {t('Pages.Admin.ContentManagement.Comments.Search')}
         </Button>
         <Button onClick={handleReset} variant='outline'>
-          Reset
+          {t('Pages.Admin.ContentManagement.Comments.Reset')}
         </Button>
       </div>
-      <div className='rounded-md border'>
+      <div className='rounded-md border overflow-x-auto'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[60px]'
                 onClick={() => handleSort('id')}
               >
                 <div className='flex items-center gap-1'>
-                  ID
+                  {t('Pages.Admin.ContentManagement.Comments.Table.ID')}
                   {getSortIcon('id')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[250px]'
                 onClick={() => handleSort('text')}
               >
                 <div className='flex items-center gap-1'>
-                  Text
+                  {t('Pages.Admin.ContentManagement.Comments.Table.Text')}
                   {getSortIcon('text')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[100px]'
                 onClick={() => handleSort('status')}
               >
                 <div className='flex items-center gap-1'>
-                  Status
+                  {t('Pages.Admin.ContentManagement.Comments.Table.Status')}
                   {getSortIcon('status')}
                 </div>
               </TableHead>
-              <TableHead>Author</TableHead>
+              <TableHead className='min-w-[120px]'>
+                {t('Pages.Admin.ContentManagement.Comments.Table.Author')}
+              </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[80px]'
                 onClick={() => handleSort('postId')}
               >
                 <div className='flex items-center gap-1'>
-                  Post ID
+                  {t('Pages.Admin.ContentManagement.Comments.Table.PostID')}
                   {getSortIcon('postId')}
                 </div>
               </TableHead>
               <TableHead
-                className='cursor-pointer hover:bg-muted/50 transition-colors'
+                className='cursor-pointer hover:bg-muted/50 transition-colors min-w-[140px]'
                 onClick={() => handleSort('createdAt')}
               >
                 <div className='flex items-center gap-1'>
-                  Created
+                  {t('Pages.Admin.ContentManagement.Comments.Table.Created')}
                   {getSortIcon('createdAt')}
                 </div>
               </TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className='min-w-[100px]'>
+                {t('Pages.Admin.ContentManagement.Comments.Table.Actions')}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7}>Loading...</TableCell>
+                <TableCell colSpan={7}>
+                  {t('Pages.Admin.ContentManagement.Comments.Loading')}
+                </TableCell>
               </TableRow>
             ) : total > 0 ? (
               comments.map((comment: AdminComment) => (
@@ -278,7 +291,7 @@ export default function AdminComments() {
                   </TableCell>
                   <TableCell>{comment.post.id}</TableCell>
                   <TableCell>
-                    {new Date(comment.createdAt).toLocaleString()}
+                    {formatLocalizedDateTime(new Date(comment.createdAt))}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -301,7 +314,9 @@ export default function AdminComments() {
                               })
                             }
                           >
-                            Approve
+                            {t(
+                              'Pages.Admin.ContentManagement.Comments.Actions.Approve'
+                            )}
                           </DropdownMenuItem>
                         )}
                         {comment.status !== ContentStatus.ARCHIVED && (
@@ -313,7 +328,9 @@ export default function AdminComments() {
                               })
                             }
                           >
-                            Archive
+                            {t(
+                              'Pages.Admin.ContentManagement.Comments.Actions.Archive'
+                            )}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
@@ -322,7 +339,9 @@ export default function AdminComments() {
                           }
                           className='text-red-600'
                         >
-                          {t('Actions.Delete')}
+                          {t(
+                            'Pages.Admin.ContentManagement.Comments.Actions.Delete'
+                          )}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -331,22 +350,24 @@ export default function AdminComments() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7}>No comments found.</TableCell>
+                <TableCell colSpan={7}>
+                  {t('Pages.Admin.ContentManagement.Comments.NoRecords')}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+        {data && (
+          <TablePagination
+            currentPage={page}
+            totalPages={Math.ceil(total / pageSize)}
+            pageSize={pageSize}
+            totalItems={total}
+            onPageChange={setPage}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
-      {data && (
-        <TablePagination
-          currentPage={page}
-          totalPages={Math.ceil(total / pageSize)}
-          pageSize={pageSize}
-          totalItems={total}
-          onPageChange={setPage}
-          onPageSizeChange={handlePageSizeChange}
-        />
-      )}
     </div>
   );
 }

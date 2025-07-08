@@ -63,6 +63,7 @@ const SuggestionsTab: React.FC = () => {
               connection={suggestion.connection}
               connectionState={suggestion.connectionState}
               type={UserCardType.suggestion}
+              queryKey="suggestions"
             ></ConnectionCard>
           );
         })}

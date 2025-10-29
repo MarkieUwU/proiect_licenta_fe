@@ -1,7 +1,7 @@
 import { Role } from "@/modules/Profile/models/role.enum";
 
 export interface AdminUser {
-  id: number;
+  id: string;
   username: string;
   fullName: string;
   email: string;

@@ -18,7 +18,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: number) => markNotificationAsRead(notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotifications'] });
       toast.success('Notification marked as read');
     },
     onError: () => toast.error('Failed to mark notification as read'),
@@ -27,7 +27,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
   const markAllAsReadMutation = useMutation({
     mutationFn: () => markAllNotificationsAsRead(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotifications'] });
       toast.success('All notifications marked as read');
     },
     onError: () => toast.error('Failed to mark notifications as read'),

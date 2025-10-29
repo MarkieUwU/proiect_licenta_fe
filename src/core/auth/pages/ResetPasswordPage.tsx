@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 
 interface ResetPasswordPageProps {
-  userId: number;
+  userId: string;
 }
 
 export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({

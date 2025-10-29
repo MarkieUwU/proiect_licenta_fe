@@ -77,7 +77,7 @@ export default function AdminComments() {
   });
 
   const removeComment = useMutation({
-    mutationFn: (id: number) => deleteComment(id),
+    mutationFn: (id: string) => deleteComment(id),
     onSuccess: () => {
       toast.success(t('Pages.Admin.ContentManagement.Comments.Toast.Deleted'));
       queryClient.invalidateQueries({ queryKey: ['adminComments'] });
@@ -335,7 +335,7 @@ export default function AdminComments() {
                         )}
                         <DropdownMenuItem
                           onClick={() =>
-                            removeComment.mutate(Number(comment.id))
+                            removeComment.mutate(comment.id)
                           }
                           className='text-red-600'
                         >

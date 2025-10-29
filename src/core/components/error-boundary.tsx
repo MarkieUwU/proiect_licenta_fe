@@ -14,12 +14,17 @@ class ErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
+  resetErrorBoundary = () => {
+    this.setState({ hasError: false, error: null });
+  } 
+
   render() {
     if (this.state.hasError) {
       return (
         <ErrorPage
           title='Error'
           text={this.state.error?.message || 'Something went wrong'}
+          onReset={this.resetErrorBoundary}
         />
       );
     }

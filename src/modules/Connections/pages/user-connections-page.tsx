@@ -4,7 +4,7 @@ import ConnectionsList from "../components/ConnectionsList";
 import BackButton from "@/components/ui/BackButton";
 
 interface UserFriendsPageProps {
-  userId: number;
+  userId: string;
 }
 
 export const UserFriendsPage: React.FC<UserFriendsPageProps> = ({ userId }) => {

@@ -1,22 +1,14 @@
-import { ContentStatus } from '@/core/models/content-status.enum';
-import { User } from '../../Profile/models/user.models';
-import { Post } from './post.models';
-
 export type UserComment = {
-  id: number;
+  id: string;
   text: string;
-  createdAt: string;
   updatedAt: string;
   author: string;
   isEdited?: boolean;
-  postId: number;
-  userId: number;
-  post: Post;
-  user: User;
-  status: ContentStatus;
+  postId: string;
+  userId: string;
 };
 
 export type CommentRequest = {
   text: string;
-  userId: number;
+  userId: string;
 };

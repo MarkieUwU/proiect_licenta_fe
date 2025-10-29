@@ -1,20 +1,18 @@
 import { UserComment } from './comment.models';
 import { Like } from './like.models';
-import { User } from '../../Profile/models/user.models';
+import { UserDetails } from '../../Profile/models/user.models';
 import { ContentStatus } from '@/core/models/content-status.enum';
 
 export type Post = {
-  id: number;
+  id: string;
   title: string;
   image: string;
   content: string;
   createdAt: string;
-  updatedAt: string;
-  userId: number;
+  userId: string;
   comments: UserComment[];
   likes: Like[];
-  user: User;
-  status: ContentStatus;
+  user: UserDetails;
 };
 
 export type PostRequest = {
@@ -31,7 +29,7 @@ export type PostSortCriteria = {
 };
 
 export interface AdminPost {
-  id: number;
+  id: string;
   title: string;
   content: string;
   status: ContentStatus;

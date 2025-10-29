@@ -18,9 +18,10 @@ export function NotificationBell({ count }: { count: number }) {
   const { t } = useTranslation('translation', { keyPrefix: 'Components.NotificationBell' });
 
   const { data: notifications } = useQuery({
-    queryKey: ['notifications'],
+    queryKey: ['unreadNotifications'],
     queryFn: () => getUnreadNotifications(),
-    enabled: isOpen,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false
   });
 
   return (

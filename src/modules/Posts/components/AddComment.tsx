@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/core/auth/AuthContext';
 interface AddCommentProps {
-  postId: number;
+  postId: string;
   onCreateComment: () => void;
 }
 

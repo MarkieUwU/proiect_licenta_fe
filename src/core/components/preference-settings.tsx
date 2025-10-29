@@ -3,11 +3,11 @@ import { Theme } from "../models/theme.enum";
 import { LanguageCodes } from "../models/language-codes.enum";
 import Selector from "@/components/ui/Selector";
 import { useTranslation } from "react-i18next";
-import { Settings, SettingsRequest } from "@/modules/Profile/models/user.models";
+import { UserSettings } from "@/modules/Profile/models/user.models";
 
 interface PreferenceSettingsProps {
-  settings: Settings;
-  onSettingsChange: (settings: SettingsRequest) => void;
+  settings: UserSettings;
+  onSettingsChange: (settings: UserSettings) => void;
 }
 
 export const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings, onSettingsChange }) => {
@@ -28,11 +28,11 @@ export const PreferenceSettings: React.FC<PreferenceSettingsProps> = ({ settings
   };
 
   const handleThemeChange = (value: Theme) => {
-    onSettingsChange({ theme: value } as SettingsRequest);
+    onSettingsChange({ theme: value } as UserSettings);
   }
 
   const handleLanguageChange = (value: LanguageCodes) => {
-    onSettingsChange({ language: value } as SettingsRequest);
+    onSettingsChange({ language: value } as UserSettings);
   }
 
   return (

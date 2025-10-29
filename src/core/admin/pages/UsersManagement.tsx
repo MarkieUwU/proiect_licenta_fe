@@ -91,7 +91,7 @@ export const UsersManagement = () => {
     return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
   };
 
-  const handleRoleUpdate = async (userId: number, role: Role) => {
+  const handleRoleUpdate = async (userId: string, role: Role) => {
     roleUpdateMutation.mutate({ userId, role });
   }
 

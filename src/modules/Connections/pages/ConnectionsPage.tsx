@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from 'react-i18next';
 import SuggestionsTab from '../components/SuggestionsTab';
 import BackButton from '@/components/ui/BackButton';
+import { useNavigate } from '@tanstack/react-router';
 
 interface FriendsPageProps {
   showSuggestions?: boolean;
@@ -10,6 +11,14 @@ interface FriendsPageProps {
 
 const FriendsPage: React.FC<FriendsPageProps> = ({ showSuggestions }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.ConnectionsPage' });
+  const navigate = useNavigate();
+
+  const removeSuggestionsFragment = () => {
+    navigate({
+      to: '/friends',
+      replace: true
+    })
+  }
 
   return (
     <div className='overflow-y-auto pt-6 pb-3' style={{ maxHeight: 'var(--app-height)' }}>
@@ -26,7 +35,7 @@ const FriendsPage: React.FC<FriendsPageProps> = ({ showSuggestions }) => {
           className='w-fit mx-auto flex flex-col items-center h-full'
         >
           <TabsList>
-            <TabsTrigger value='friends'>{t('Connections')}</TabsTrigger>
+            <TabsTrigger value='friends' onClick={removeSuggestionsFragment}>{t('Connections')}</TabsTrigger>
             <TabsTrigger value='suggestions'>{t('Suggestions')}</TabsTrigger>
           </TabsList>
           <TabsContent value='friends'>

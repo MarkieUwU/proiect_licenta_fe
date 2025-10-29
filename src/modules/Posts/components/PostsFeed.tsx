@@ -14,15 +14,11 @@ export const PostsFeed: React.FC = () => {
   const [postModalOpened, setPostModalOpened] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'Pages.PostsFeed' });
   const { user } = useAuth();
+
   const postResponse = useQuery({
     queryKey: ['posts'],
     queryFn: () => getFilteredPosts({ sortCriteria: { createdAt: 'desc' }, userId: user!.id}),
-    enabled: false
   });
-
-  useEffect(() => {
-    postResponse.refetch();
-  }, [user!.id])
 
   const renderPostCards = () => {
     if (postResponse.isPending) {

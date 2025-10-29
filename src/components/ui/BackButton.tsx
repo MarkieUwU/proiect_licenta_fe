@@ -32,7 +32,6 @@ export const BackButton: React.FC<BackButtonProps> = ({
     if (customAction) {
       customAction();
     } else {
-      // Try to go back, but if it fails (e.g., no history), navigate to fallback
       try {
         if (window.history.length > 1) {
           router.history.back();
@@ -40,7 +39,6 @@ export const BackButton: React.FC<BackButtonProps> = ({
           router.navigate({ to: fallbackRoute });
         }
       } catch (error) {
-        // If router.history.back() fails, navigate to fallback
         router.navigate({ to: fallbackRoute });
       }
     }

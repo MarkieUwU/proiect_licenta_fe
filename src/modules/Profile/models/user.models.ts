@@ -6,7 +6,7 @@ import { PrivacyOptions } from '@/core/models/privacy-options.enum';
 import { Role } from './role.enum';
 
 export type LoggedUser = {
-  id: number;
+  id: string;
   fullName: string;
   username: string;
   email: string;
@@ -16,14 +16,14 @@ export type LoggedUser = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   profileImage: string;
   fullName: string;
   username: string;
   email: string;
   bio: string;
-  createdAt: string; // ISO 8601 date string
-  settings: Settings;
+  createdAt: string;
+  settings: UserSettings;
   posts: Post[];
   following: Connection[];
   follower: Connection[];
@@ -33,7 +33,7 @@ export type User = {
 };
 
 export type UserProfile = {
-  id: number;
+  id: string;
   profileImage: string;
   username: string;
   fullName: string;
@@ -41,15 +41,22 @@ export type UserProfile = {
   gender: string;
   bio: string;
   posts: Post[];
+  postsCount: number;
   connections: ConnectionUser[];
-  settings: Settings;
+  connectionsCount: number;
+  settings: UserSettings;
 };
 
-export type ConnectionUser = {
-  id: number;
+export type UserDetails = {
+  id: string;
   profileImage: string;
   username: string;
   fullName: string;
+};
+
+export type ConnectionUser = UserDetails & {
+  connectionCount: number;
+  postsCount: number;
 };
 
 export type UserRegisterRequest = {
@@ -79,49 +86,38 @@ export type UserLoginRequest = {
 };
 
 export type ResetPasswordRequest = {
-  userId: number;
+  userId: string;
   password: string;
   confirmPassword: string;
 };
 
 export type Connection = {
   following: User;
-  followingId: number;
+  followingId: string;
   follower: User;
-  followerId: number;
+  followerId: string;
   pending: boolean;
 };
 
 export type UserConnection = {
-  user: User; 
-  userId: number;
+  user: ConnectionUser;
+  userId: string;
   pending: boolean;
-  connection: Connection;
 };
 
 export type ConnectionRequest = {
-  user: User,
-  userId: number;
-  connectionId: number;
-}
+  user: UserDetails;
+  userId: string;
+  connectionId: string;
+};
 
 export type ConnectionStateResponse = {
-  connection: Connection;
-  connectionState: ConnectionStateEnum;
+  state: ConnectionStateEnum;
+  userId: string;
+  connectionId: string;
 };
 
-export type Settings = {
-  id: number;
-  theme: Theme;
-  language: LanguageCodes;
-  detailsPrivacy: PrivacyOptions;
-  connectionsPrivacy: PrivacyOptions;
-  postsPrivacy: PrivacyOptions;
-  userId: number;
-  user?: User;
-};
-
-export type SettingsRequest = {
+export type UserSettings = {
   theme: Theme;
   language: LanguageCodes;
   detailsPrivacy: PrivacyOptions;
@@ -130,7 +126,8 @@ export type SettingsRequest = {
 };
 
 export type Suggestion = {
-  user: User;
-  connection?: Connection;
-  connectionState: ConnectionStateEnum;
+  user: ConnectionUser;
+  followerId: string;
+  followingId: string;
+  state: ConnectionStateEnum;
 };

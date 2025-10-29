@@ -47,6 +47,7 @@ export default function AdminReports() {
     commentId: '',
     commentContent: '',
     postId: '',
+    authorId: '',
     authorUsername: '',
   });
 
@@ -60,11 +61,9 @@ export default function AdminReports() {
     'desc'
   );
 
-  // Pagination state for post reports
   const [postPage, setPostPage] = useState(1);
   const [postPageSize, setPostPageSize] = useState(20);
 
-  // Pagination state for comment reports
   const [commentPage, setCommentPage] = useState(1);
   const [commentPageSize, setCommentPageSize] = useState(20);
 
@@ -79,9 +78,9 @@ export default function AdminReports() {
     ],
     queryFn: () =>
       getAllPostReports({
-        ...(postFilters.postId && { postId: Number(postFilters.postId) }),
+        ...(postFilters.postId && { postId: postFilters.postId }),
         ...(postFilters.postTitle && { postTitle: postFilters.postTitle }),
-        ...(postFilters.authorId && { authorId: Number(postFilters.authorId) }),
+        ...(postFilters.authorId && { authorId: postFilters.authorId }),
         ...(postFilters.authorUsername && {
           authorUsername: postFilters.authorUsername,
         }),
@@ -104,12 +103,12 @@ export default function AdminReports() {
     queryFn: () =>
       getAllCommentReports({
         ...(commentFilters.commentId && {
-          commentId: Number(commentFilters.commentId),
+          commentId: commentFilters.commentId,
         }),
         ...(commentFilters.commentContent && {
           commentContent: commentFilters.commentContent,
         }),
-        ...(commentFilters.postId && { postId: Number(commentFilters.postId) }),
+        ...(commentFilters.authorId && { authorId: commentFilters.authorId }),
         ...(commentFilters.authorUsername && {
           authorUsername: commentFilters.authorUsername,
         }),
@@ -122,10 +121,8 @@ export default function AdminReports() {
 
   const handlePostSort = (field: PostReportSortField) => {
     if (postSortField === field) {
-      // Toggle between asc and desc for the same field
       setPostSortOrder(postSortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // New field selected, start with asc
       setPostSortField(field);
       setPostSortOrder('asc');
     }
@@ -133,10 +130,8 @@ export default function AdminReports() {
 
   const handleCommentSort = (field: CommentReportSortField) => {
     if (commentSortField === field) {
-      // Toggle between asc and desc for the same field
       setCommentSortOrder(commentSortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // New field selected, start with asc
       setCommentSortField(field);
       setCommentSortOrder('asc');
     }
@@ -164,12 +159,10 @@ export default function AdminReports() {
     );
   };
 
-  // Add local state for filter inputs
   const [postFilterInputs, setPostFilterInputs] = useState(postFilters);
   const [commentFilterInputs, setCommentFilterInputs] =
     useState(commentFilters);
 
-  // Search/Reset handlers for post reports
   const handlePostInputChange = (updates: Partial<typeof postFilters>) => {
     setPostFilterInputs((prev) => ({ ...prev, ...updates }));
   };
@@ -195,7 +188,6 @@ export default function AdminReports() {
     setPostPage(1);
   };
 
-  // Search/Reset handlers for comment reports
   const handleCommentInputChange = (
     updates: Partial<typeof commentFilters>
   ) => {
@@ -210,12 +202,14 @@ export default function AdminReports() {
       commentId: '',
       commentContent: '',
       postId: '',
+      authorId: '',
       authorUsername: '',
     });
     setCommentFilters({
       commentId: '',
       commentContent: '',
       postId: '',
+      authorId: '',
       authorUsername: '',
     });
     setCommentSortField('createdAt');

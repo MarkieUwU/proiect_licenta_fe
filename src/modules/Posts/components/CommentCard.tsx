@@ -114,7 +114,7 @@ export const CommentCard: React.FC<CommentProps> = ({
           <CardTitle className='flex gap-2 items-center'>
             {comment.author}
             <span className='text-xs font-normal'>
-              {new Date(comment.createdAt).toLocaleDateString()}
+              {new Date(comment.updatedAt).toLocaleDateString()}
             </span>
           </CardTitle>
         </CardHeader>

@@ -3,7 +3,7 @@ import PreferenceSettings from '../components/preference-settings';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSettings, updateSettings } from '@/modules/Profile/apis/user.api';
-import { SettingsRequest } from '@/modules/Profile/models/user.models';
+import { UserSettings } from '@/modules/Profile/models/user.models';
 import PrivacySettings from '../components/privacy-settings';
 import { LoaderCircle } from 'lucide-react';
 import { ErrorPage } from './ErrorPage';
@@ -27,13 +27,9 @@ export const Settings = () => {
   const updateSettingsMutator = useMutation({
     mutationFn: updateSettings,
     onMutate: async (variables) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ['settings', user?.id] });
 
-      // Snapshot the previous value
       const previousSettings = queryClient.getQueryData(['settings', user?.id]);
-
-      // Optimistically update to the new value
       const currentSettings = settingsResponse.data;
       if (currentSettings) {
         const mergedSettings = {
@@ -43,26 +39,23 @@ export const Settings = () => {
         queryClient.setQueryData(['settings', user?.id], mergedSettings);
       }
 
-      // Return a context object with the snapshotted value
       return { previousSettings };
     },
     onSuccess: () => {
       toast.success(t('Pages.Settings.Success.Updated'));
     },
     onError: (_error, _variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousSettings) {
         queryClient.setQueryData(['settings', user?.id], context.previousSettings);
       }
       toast.error(t('Pages.Settings.Error.UpdateFailed'));
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure we have the correct server state
       queryClient.invalidateQueries({ queryKey: ['settings', user?.id] });
     },
   });
 
-  const handleUpdateSettings = (settingsRequest: SettingsRequest) => {
+  const handleUpdateSettings = (settingsRequest: UserSettings) => {
     const currentSettings = settingsResponse.data;
     if (!currentSettings) return;
 
@@ -71,7 +64,6 @@ export const Settings = () => {
       ...settingsRequest
     };
 
-    // Apply theme and language changes immediately for better UX
     if (settingsRequest.theme && settingsRequest.theme !== currentSettings.theme) {
       setTheme(settingsRequest.theme);
     }
@@ -79,7 +71,6 @@ export const Settings = () => {
       i18n.changeLanguage(settingsRequest.language);
     }
 
-    // The optimistic update is handled in the mutation's onMutate
     updateSettingsMutator.mutate({ 
       userId: user!.id, 
       settingsRequest: mergedSettings 

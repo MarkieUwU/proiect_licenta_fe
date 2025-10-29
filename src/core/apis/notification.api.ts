@@ -15,10 +15,10 @@ export const getUnreadNotifications = apiErrorHandler<Notification[]>(async () =
   return data;
 });
 
-export const getNotificationsCount = apiErrorHandler<{ count: number }>(async () => {
+export const getNotificationsCount = apiErrorHandler<number>(async () => {
   const { data } = await apiClient.get('/notifications/count');
   return data;
-})
+});
 
 export const markNotificationAsRead = apiErrorHandler<Notification>(async (notificationId: number) => {
   const { data } = await apiClient.patch(`/notifications/${notificationId}/read`);

@@ -1,6 +1,6 @@
 export interface Notification {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   type: string;
   message: string;
   data?: string;

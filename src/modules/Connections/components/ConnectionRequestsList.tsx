@@ -7,7 +7,7 @@ import ConnectionRequestCard from "./ConnectionRequestCard";
 import { useTranslation } from "react-i18next";
 
 interface ConnectionRequestsListProps {
-  userId: number;
+  userId: string;
 }
 
 const ConnectionRequestsList: React.FC<ConnectionRequestsListProps> = ({ userId }) => {
@@ -25,7 +25,7 @@ const ConnectionRequestsList: React.FC<ConnectionRequestsListProps> = ({ userId 
     return <LoaderCircle className='animate-spin' />;
   }
 
-  const connectionRequests = connectionRequestsResponse.data
+  const connectionRequestsContent = () => connectionRequestsResponse.data
     .map((connection: ConnectionRequest) => (
       <ConnectionRequestCard
         key={connection.userId}
@@ -37,7 +37,7 @@ const ConnectionRequestsList: React.FC<ConnectionRequestsListProps> = ({ userId 
     <div className="flex flex-col">
       <span className='font-bold text-xl p-4'>{t('Pages.ConnectionsPage.ConnectionsTab.ConnectionRequestList.Title')}</span>
       <div className='flex flex-wrap gap-5 mb-5'>
-        {connectionRequests}
+        {connectionRequestsContent()}
       </div>
       <Separator />
     </div>

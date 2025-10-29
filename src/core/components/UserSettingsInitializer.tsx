@@ -14,7 +14,6 @@ export const UserSettingsInitializer = () => {
     queryKey: ['settings', user?.id],
     queryFn: () => getSettings(user!.id),
     enabled: isAuthenticated && !!user?.id,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   useEffect(() => {
@@ -27,6 +26,5 @@ export const UserSettingsInitializer = () => {
     }
   }, [settings, setTheme, i18n]);
 
-  // This component doesn't render anything
   return null;
 };

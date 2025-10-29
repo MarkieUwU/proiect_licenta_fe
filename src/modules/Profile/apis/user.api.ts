@@ -5,8 +5,7 @@ import {
   ConnectionStateResponse,
   LoggedUser,
   ResetPasswordRequest,
-  Settings,
-  SettingsRequest,
+  UserSettings,
   Suggestion,
   UpdateUserRequest,
   User,
@@ -25,6 +24,13 @@ export const getUserDetails = apiErrorHandler<UserProfile>(
     return data;
   }
 );
+
+export const getUserProfileImage = apiErrorHandler<string>(
+  async (id: string) => {
+    const { data } = await apiClient.get<string>(`/user/profileImage/${id}`);
+    return data;
+  }
+)
 
 export const registerUser = apiErrorHandler<{ token: string; userProfile: LoggedUser }>(
   async (registerRequest: UserRegisterRequest) => {
@@ -59,7 +65,7 @@ export const resetPassword = apiErrorHandler(
   }
 );
 
-export const resetTokenVerify = apiErrorHandler<{ userId: number }>(
+export const resetTokenVerify = apiErrorHandler<{ userId: string }>(
   async ({ token }: { token: string }) => {
     const { data } = await apiClient.get(
       `/user/password/reset/token/verify/${token}`
@@ -70,21 +76,21 @@ export const resetTokenVerify = apiErrorHandler<{ userId: number }>(
 );
 
 export const updateUser = apiErrorHandler<User>(
-  async ({ id, request }: { id: number; request: UpdateUserRequest }) => {
+  async ({ id, request }: { id: string; request: UpdateUserRequest }) => {
     const { data } = await apiClient.put(`/user/${id}`, request);
     return data;
   }
 );
 
 export const deleteUser = apiErrorHandler<{ success: boolean }>(
-  async (id: number) => {
+  async (id: string) => {
     const { data } = await apiClient.delete(`/user/${id}`);
     return data;
   }
 );
 
 export const getConnections = apiErrorHandler<UserConnection[]>(
-  async ({ id, searchString }: { id: number; searchString: string }) => {
+  async ({ id, searchString }: { id: string; searchString: string }) => {
     const { data } = await apiClient.post(`/user/connections/${id}`, {
       searchString,
     });
@@ -93,14 +99,14 @@ export const getConnections = apiErrorHandler<UserConnection[]>(
 );
 
 export const getConnectionRequests = apiErrorHandler<ConnectionRequest[]>(
-  async (id: number) => {
+  async (id: string) => {
     const { data } = await apiClient.get(`/user/connections/requests/${id}`);
     return data;
   }
 );
 
 export const getSuggestions = apiErrorHandler<Suggestion[]>(
-  async ({ id, searchString }: { id: number; searchString?: string }) => {
+  async ({ id, searchString }: { id: string; searchString?: string }) => {
     const { data } = await apiClient.post(`/user/suggestions/${id}`, {
       searchString,
     });
@@ -111,10 +117,7 @@ export const getSuggestions = apiErrorHandler<Suggestion[]>(
 
 export const requestConnection = apiErrorHandler<void>(
   async ({ id, connectionId }: { id: string; connectionId: string }) => {
-    const { data } = await apiClient.post(
-      `/user/connection/${id}/request/${connectionId}`
-    );
-    return data;
+    await apiClient.post(`/user/connection/${id}/request/${connectionId}`);
   }
 );
 
@@ -141,8 +144,8 @@ export const getConnectionState = apiErrorHandler<ConnectionStateResponse>(
     userId,
     connectionId,
   }: {
-    userId: number;
-    connectionId: number;
+    userId: string;
+    connectionId: string;
   }) => {
     const { data } = await apiClient.get(
       `/user/connection/${userId}/with/${connectionId}`
@@ -156,20 +159,20 @@ export const getAllConnections = apiErrorHandler<Connection[]>(async () => {
   return data;
 });
 
-export const getSettings = apiErrorHandler<Settings>(
-  async (userId: number) => {
+export const getSettings = apiErrorHandler<UserSettings>(
+  async (userId: string) => {
     const { data } = await apiClient.get(`/user/settings/${userId}`);
     return data;
   }
 );
 
-export const updateSettings = apiErrorHandler<Settings>(
+export const updateSettings = apiErrorHandler<UserSettings>(
   async ({
     userId,
     settingsRequest,
   }: {
-    userId: number;
-    settingsRequest: SettingsRequest;
+    userId: string;
+    settingsRequest: UserSettings;
   }) => {
     const { data } = await apiClient.put(
       `/user/settings/${userId}`,

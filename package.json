@@ -5,7 +5,7 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -44,8 +44,8 @@
     "lucide": "^0.456.0",
     "lucide-react": "^0.455.0",
     "postcss": "^8.4.38",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-dropzone": "^14.3.5",
     "react-hook-form": "^7.53.2",
     "react-i18next": "^15.4.0",
@@ -65,11 +65,11 @@
     "@tanstack/router-plugin": "^1.39.13",
     "@types/bun": "latest",
     "@types/node": "^22.9.0",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^5.0.3",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.1.0",
@@ -85,7 +85,10 @@
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.19.1",
     "undefined": "^0.1.0",
-    "vite": "^5.2.0"
+    "vite": "npm:rolldown-vite@latest"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@latest"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,html}": [

@@ -1,6 +1,6 @@
 import { getInitials } from '@/core/utils/utils';
 import { AvatarComponent } from '@/layout/components/Avatar';
-import { Connection, User } from '@/modules/Profile/models/user.models';
+import { ConnectionUser, Suggestion } from '@/modules/Profile/models/user.models';
 import { Card, CardContent } from '@/components/ui/card';
 import { useNavigate } from '@tanstack/react-router';
 import { Badge } from '@/components/ui/badge';
@@ -17,8 +17,8 @@ import { UserCardType } from '../models/enums/user-card-type.enum';
 import { useAuth } from '@/core/auth/AuthContext';
 
 interface ConnectionCardProps {
-  user: User;
-  connection?: Connection;
+  user: ConnectionUser;
+  suggestion?: Suggestion;
   connectionState?: ConnectionStateEnum;
   type: UserCardType;
   queryKey: string;
@@ -26,7 +26,7 @@ interface ConnectionCardProps {
 
 const ConnectionCard = ({
   user,
-  connection,
+  suggestion,
   connectionState,
   type,
   queryKey
@@ -78,8 +78,8 @@ const ConnectionCard = ({
   ) => {
     e.stopPropagation();
     removeConnectionMutation.mutate({
-      id: connection?.followerId,
-      connectionId: connection?.followingId,
+      id: suggestion?.followerId,
+      connectionId: suggestion?.followingId,
     });
   };
 
@@ -88,8 +88,8 @@ const ConnectionCard = ({
   ) => {
     e.stopPropagation();
     acceptConnectionMutation.mutate({
-      id: connection?.followerId,
-      connectionId: connection?.followingId,
+      id: suggestion?.followerId,
+      connectionId: suggestion?.followingId,
     });
   };
 
@@ -98,8 +98,8 @@ const ConnectionCard = ({
   ) => {
     e.stopPropagation();
     removeConnectionMutation.mutate({
-      id: connection?.followerId,
-      connectionId: connection?.followingId,
+      id: suggestion?.followerId,
+      connectionId: suggestion?.followingId,
     });
   };
 

@@ -9,9 +9,10 @@ interface ErrorPageProps {
   title?: string;
   text?: string;
   fallbackRoute?: string;
+  onReset?: () => void;
 }
 
-export const ErrorPage: React.FC<ErrorPageProps> = ({ title, text, fallbackRoute }) => {
+export const ErrorPage: React.FC<ErrorPageProps> = ({ title, text, fallbackRoute, onReset }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'Components.ErrorPage' });
   const router = useRouter();
   
@@ -26,6 +27,12 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ title, text, fallbackRoute
     return '/';
   };
 
+  const handleBack = () => {
+    if (onReset) {
+      onReset();
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-[500px]">
@@ -35,6 +42,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ title, text, fallbackRoute
             size='sm'
             className='text-muted-foreground hover:text-foreground'
             fallbackRoute={getFallbackRoute()}
+            customAction={handleBack}
           />
         </div>
         <Card>

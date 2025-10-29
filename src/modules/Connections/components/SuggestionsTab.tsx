@@ -60,8 +60,8 @@ const SuggestionsTab: React.FC = () => {
             <ConnectionCard
               key={suggestion.user.id}
               user={suggestion.user}
-              connection={suggestion.connection}
-              connectionState={suggestion.connectionState}
+              suggestion={suggestion}
+              connectionState={suggestion.state}
               type={UserCardType.suggestion}
               queryKey="suggestions"
             ></ConnectionCard>
@@ -72,7 +72,7 @@ const SuggestionsTab: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col items-center py-2 px-4 md:px-2 w-full lg:max-w-[1270px] h-full'>
+    <div className='flex flex-col items-center py-2 px-4 md:px-2 w-full lg:max-w-[1320px] h-full'>
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}

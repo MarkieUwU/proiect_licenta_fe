@@ -12,7 +12,7 @@ import NoRecordsFound from '@/components/ui/NoRecordsFound';
 import { UserCardType } from '../models/enums/user-card-type.enum';
 
 interface ConnectionsListProps {
-  userId: number;
+  userId: string;
 }
 
 const schema = yup.object({
@@ -67,7 +67,7 @@ const ConnectionsList: React.FC<ConnectionsListProps> = ({ userId }) => {
   }
 
   return (
-    <div className='w-screen flex flex-col items-center py-2 px-4 md:px-2 lg:max-w-[1320px]'>
+    <div className='flex flex-col items-center py-2 px-4 md:px-2 w-full lg:max-w-[1320px] h-full'>
       <Input
         {...register('search')}
         placeholder={t('SearchPlaceholder')}

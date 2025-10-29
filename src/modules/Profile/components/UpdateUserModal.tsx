@@ -112,6 +112,9 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['userDetails', { username: user.username }],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['profileImage', { id: user?.id }]
+      });
       setLoading(false);
       updateAuthUser();
       reset();

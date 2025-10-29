@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { getUserDetails } from '@/modules/Profile/apis/user.api';
+import { getUserProfileImage } from '@/modules/Profile/apis/user.api';
 import { useAuth } from '@/core/auth/AuthContext';
 import { Role } from '@/modules/Profile/models/role.enum';
 import { getNotificationsCount } from '@/core/apis/notification.api';
@@ -23,14 +23,16 @@ const Header: React.FC = () => {
   const { user } = useAuth();
   const { t } = useTranslation('translation', { keyPrefix: 'Components.Header' });
 
-  const userResponse = useQuery({
-    queryKey: ['userDetails', { username: user!.username }],
-    queryFn: () => getUserDetails(user!.username)
+  const profileImageResponse = useQuery({
+    queryKey: ['profileImage', { id: user!.id }],
+    queryFn: () => getUserProfileImage(user!.id)
   });
 
-  const { data } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: () => getNotificationsCount()
+  const { data: count } = useQuery({
+    queryKey: ['notificationsCount'],
+    queryFn: () => getNotificationsCount(),
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 
   const handleMenuOpen = (value: boolean) => {
@@ -51,7 +53,7 @@ const Header: React.FC = () => {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NotificationBell count={data?.count ?? 0} />
+          <NotificationBell count={count ?? 0} />
         </NavigationMenuItem>
         <NavigationMenuItem className='pe-4'>
           <MyAccountMenu
@@ -63,7 +65,7 @@ const Header: React.FC = () => {
             <div className='cursor-pointer' onClick={() => setOpenMenu(true)}>
               <AvatarComponent
                 initials={getInitials(user!.username)}
-                image={userResponse.data?.profileImage}
+                image={profileImageResponse.data}
               ></AvatarComponent>
             </div>
           </MyAccountMenu>

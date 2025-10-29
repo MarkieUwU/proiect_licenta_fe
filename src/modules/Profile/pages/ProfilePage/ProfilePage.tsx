@@ -1,9 +1,14 @@
 import { AvatarComponent } from '@/layout/components/Avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import React, { useState } from 'react';
+import React, { Activity, useState } from 'react';
 import UserDetails from '../../components/UserDetails';
 import { Separator } from '@/components/ui/separator';
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   acceptConnection,
   getConnectionState,
@@ -34,7 +39,7 @@ const ProfilePage: React.FC = () => {
   });
   const [editModalOpened, setEditModalOpened] = useState(false);
   const queryClient = useQueryClient();
-  
+
   const { username } = Route.useParams();
   const { data: user } = useSuspenseQuery({
     queryKey: ['userDetails', { username }],
@@ -95,9 +100,10 @@ const ProfilePage: React.FC = () => {
     if (showInformation(user.settings.connectionsPrivacy)) {
       return (
         <UserConnections
-          userId={user.id.toString()}
+          userId={user.id}
           ownConnections={ownProfile}
           userConnections={user.connections}
+          connectionsCount={user.connectionsCount}
         />
       );
     }
@@ -130,8 +136,8 @@ const ProfilePage: React.FC = () => {
 
   const handleRemoveConnection = () => {
     removeConnectionMutation.mutate({
-      id: connectionStateResponse.data?.connection.followerId,
-      connectionId: connectionStateResponse.data?.connection.followingId,
+      id: connectionStateResponse.data?.userId,
+      connectionId: connectionStateResponse.data?.connectionId,
     });
   };
 
@@ -144,14 +150,14 @@ const ProfilePage: React.FC = () => {
 
   const handleAcceptConnection = () => {
     acceptConnectionMutation.mutate({
-      id: connectionStateResponse.data?.connection.followerId,
-      connectionId: connectionStateResponse.data?.connection.followingId,
+      id: connectionStateResponse.data?.userId,
+      connectionId: connectionStateResponse.data?.connectionId,
     });
   };
 
   let connectionButton;
 
-  switch (connectionStateResponse.data?.connectionState) {
+  switch (connectionStateResponse.data?.state) {
     case ConnectionStateEnum.REQUEST:
       connectionButton = (
         <Button
@@ -237,28 +243,41 @@ const ProfilePage: React.FC = () => {
             <Separator />
             <div className='flex flex-wrap justify-between w-full gap-4 pt-3 ps-4 mb-6'>
               <div className='flex gap-6 font-bold text-lg text-nowrap'>
-                {showInformation(user.settings.connectionsPrivacy) && (
+                <Activity
+                  mode={
+                    showInformation(user.settings.connectionsPrivacy)
+                      ? 'visible'
+                      : 'hidden'
+                  }
+                >
                   <Badge>
                     {user.connections.length === 1
-                      ? t('Connection', { count: user.connections.length })
-                      : t('Connections', { count: user.connections.length })}
+                      ? t('Connection', { count: user.connectionsCount })
+                      : t('Connections', { count: user.connectionsCount })}
                   </Badge>
-                )}
-                {showInformation(user.settings.postsPrivacy) && (
+                </Activity>
+                <Activity
+                  mode={
+                    showInformation(user.settings.postsPrivacy)
+                      ? 'visible'
+                      : 'hidden'
+                  }
+                >
                   <Badge>
                     {user.posts.length === 1
-                      ? t('Post', { count: user.posts.length })
-                      : t('Posts', { count: user.posts.length })}
+                      ? t('Post', { count: user.postsCount })
+                      : t('Posts', { count: user.postsCount })}
                   </Badge>
-                )}
+                </Activity>
               </div>
-              {!ownProfile &&
-                (connectionStateResponse.isPending ? (
+              <Activity mode={ownProfile ? 'hidden' : 'visible'}>
+                {connectionStateResponse.isPending ? (
                   <Skeleton className='h-[36px] w-[155px]' />
                 ) : (
                   connectionButton
-                ))}
-              {ownProfile && (
+                )}
+              </Activity>
+              <Activity mode={ownProfile ? 'visible' : 'hidden'}>
                 <Button
                   variant='outline'
                   className='border-2 border-black shadow'
@@ -267,13 +286,15 @@ const ProfilePage: React.FC = () => {
                   <i className='ri-pencil-fill' />
                   {t('EditProfile')}
                 </Button>
-              )}
+              </Activity>
             </div>
-            {showInformation(user.settings.detailsPrivacy) && (
+            <Activity
+              mode={showInformation(user.settings.detailsPrivacy) ? 'visible' : 'hidden'}
+            >
               <div className='m-4'>
                 <UserDetails user={user} />
               </div>
-            )}
+            </Activity>
           </CardContent>
         </Card>
         <div className='flex flex-col lg:flex-row gap-5'>

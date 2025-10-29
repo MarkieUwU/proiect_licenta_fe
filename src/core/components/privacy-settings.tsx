@@ -1,12 +1,12 @@
 import Selector from "@/components/ui/Selector";
-import { Settings, SettingsRequest } from "@/modules/Profile/models/user.models";
+import { UserSettings } from "@/modules/Profile/models/user.models";
 import { useTranslation } from "react-i18next";
 import { PrivacyOptions } from "../models/privacy-options.enum";
 import { SelectorConfiguration } from "@/components/models/selector.configuration";
 
 interface PrivacySettingsProps {
-  settings: Settings;
-  onSettingsChange: (request: SettingsRequest) => void;
+  settings: UserSettings;
+  onSettingsChange: (request: UserSettings) => void;
 }
 
 export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSettingsChange }) => {
@@ -55,7 +55,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
                 onValueChange={(value) =>
                   onSettingsChange({
                     detailsPrivacy: value,
-                  } as SettingsRequest)
+                  } as UserSettings)
                 }
                 {...detailsPrivacySelectorConfig}
               />
@@ -72,7 +72,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
                 onValueChange={(value) =>
                   onSettingsChange({
                     connectionsPrivacy: value,
-                  } as SettingsRequest)
+                  } as UserSettings)
                 }
                 {...connectionsPrivacySelectorConfig}
               />
@@ -87,7 +87,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
                 key={`posts-${i18n.language}`}
                 value={settings.postsPrivacy}
                 onValueChange={(value) =>
-                  onSettingsChange({ postsPrivacy: value } as SettingsRequest)
+                  onSettingsChange({ postsPrivacy: value } as UserSettings)
                 }
                 {...postsPrivacySelectorConfig}
               />

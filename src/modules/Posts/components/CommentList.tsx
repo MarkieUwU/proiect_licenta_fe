@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import NoRecordsFound from '@/components/ui/NoRecordsFound';
 
 interface CommentListProps {
-  postId: number;
+  postId: string;
   onDeletedComment: () => void;
 }
 
@@ -30,7 +30,7 @@ const CommentList: React.FC<CommentListProps> = ({
     );
   }
 
-  if (!comments.length) {
+  if (!comments?.length) {
     return <NoRecordsFound title={t('Pages.PostsFeed.PostCard.NoComments')} />;
   }
 

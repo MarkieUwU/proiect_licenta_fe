@@ -24,7 +24,7 @@ export const getUsers = apiErrorHandler<UsersResponse>(async (params: {
   return data;
 });
 
-export const updateUserRole = apiErrorHandler(async ({userId, role}: {userId: number, role: Role}) => {
+export const updateUserRole = apiErrorHandler(async ({userId, role}: {userId: string, role: Role}) => {
   const { data } = await apiClient.patch(`/admin/users/${userId}/role`, { role });
   return data;
 });
@@ -62,9 +62,9 @@ export const updateCommentStatus = apiErrorHandler<any>(
 );
 
 export const getAllPostReports = apiErrorHandler<PostReportsResponse>(async (params?: {
-  postId?: number;
+  postId?: string;
   postTitle?: string;
-  authorId?: number;
+  authorId?: string;
   authorUsername?: string;
   page?: number;
   limit?: number;
@@ -76,11 +76,11 @@ export const getAllPostReports = apiErrorHandler<PostReportsResponse>(async (par
 });
 
 export const getAllCommentReports = apiErrorHandler<CommentReportsResponse>(async (params?: {
-  commentId?: number;
+  commentId?: string;
   commentContent?: string;
-  authorId?: number;
+  authorId?: string;
   authorUsername?: string;
-  postId?: number;
+  postId?: string;
   page?: number;
   limit?: number;
   sort?: string;

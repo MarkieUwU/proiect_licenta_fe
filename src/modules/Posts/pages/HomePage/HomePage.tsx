@@ -5,8 +5,8 @@ import { PostsFeed } from '../../components/PostsFeed';
 
 const HomePage: React.FC = () => {
   return (
-    <div className='flex h-full pt-6'>
-      <div className="w-0 lg:w-1/3"></div>
+    <div className='flex h-full overflow-y-auto pt-6'>
+      <div className='w-0 lg:w-1/3'></div>
       <PostsFeed />
       <SuggestionsSidebar />
     </div>

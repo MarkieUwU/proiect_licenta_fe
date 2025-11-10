@@ -30,6 +30,7 @@ const FriendsPage: React.FC<FriendsPageProps> = ({ showSuggestions }) => {
             className='text-muted-foreground hover:text-foreground'
           />
         </div>
+        {/* TODO: Change this so it uses <Activity> instead */}
         <Tabs
           defaultValue={showSuggestions ? 'suggestions' : 'friends'}
           className='w-fit mx-auto flex flex-col items-center h-full'

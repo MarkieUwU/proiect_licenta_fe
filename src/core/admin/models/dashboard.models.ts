@@ -18,7 +18,7 @@ export interface PostStats {
   };
 }
 
-export interface DashboardStatsData {
+export type DashboardStatsData = {
   totalUsers: number;
   totalPosts: number;
   totalComments: number;
@@ -27,14 +27,14 @@ export interface DashboardStatsData {
   totalReports: number;
   recentUsers: UserStats[];
   recentPosts: PostStats[];
-  userGrowth: UserGrowth[];
+  userGrowth: GrouthStat[];
   avgPopularityGrowthRate: number;
-}
+};
 
-export interface UserGrowth {
+export type GrouthStat = {
   name: string;
-  users: number;
-}
+  count: number;
+};
 
 export interface PieChartDataItem {
   name: string;

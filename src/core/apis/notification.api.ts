@@ -20,7 +20,7 @@ export const getNotificationsCount = apiErrorHandler<number>(async () => {
   return data;
 });
 
-export const markNotificationAsRead = apiErrorHandler<Notification>(async (notificationId: number) => {
+export const markNotificationAsRead = apiErrorHandler<Notification>(async (notificationId: string) => {
   const { data } = await apiClient.patch(`/notifications/${notificationId}/read`);
   return data;
 });
@@ -30,7 +30,7 @@ export const markAllNotificationsAsRead = apiErrorHandler<{ success: boolean }>(
   return data;
 });
 
-export const deleteNotification = apiErrorHandler<{ success: boolean }>(async (notificationId: number) => {
+export const deleteNotification = apiErrorHandler<{ success: boolean }>(async (notificationId: string) => {
   const { data } = await apiClient.delete(`/notifications/${notificationId}`);
   return data;
 }); 

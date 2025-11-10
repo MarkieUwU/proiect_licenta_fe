@@ -6,13 +6,11 @@ export interface AdminUser {
   fullName: string;
   email: string;
   role: Role;
-  createdAt: string;
-  _count: {
-    posts: number;
-    follower: number;
-    following: number;
-  };
+  createdAt: Date;
+  posts: number;
+  connections: number;
 }
+
 
 export interface UsersResponse {
   users: AdminUser[];

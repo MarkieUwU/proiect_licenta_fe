@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Check, CheckCheck, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { NotificationColors, NotificationIcons } from '../models/notification.models';
 
 const PAGE_SIZE = 20;
 
@@ -73,52 +74,17 @@ export default function NotificationsPage() {
   };
 
   const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'POST_LIKED':
-        return '❤️';
-      case 'POST_COMMENTED':
-        return '💬';
-      case 'POST_REPORTED':
-        return '⚠️';
-      case 'POST_ARCHIVED':
-        return '📁';
-      case 'POST_APPROVED':
-        return '✅';
-      case 'COMMENT_REPORTED':
-        return '⚠️';
-      case 'COMMENT_ARCHIVED':
-        return '📁';
-      case 'COMMENT_APPROVED':
-        return '✅';
-      case 'NEW_FOLLOWER':
-        return '👥';
-      case 'MENTIONED_IN_COMMENT':
-      case 'MENTIONED_IN_POST':
-        return '@';
-      case 'SYSTEM_ANNOUNCEMENT':
-        return '📢';
-      case 'ACCOUNT_WARNING':
-        return '🚨';
-      default:
-        return '📌';
-    }
+    return (
+      NotificationIcons[type as keyof typeof NotificationIcons] ||
+      NotificationIcons.DEFAULT
+    );
   };
 
   const getNotificationColor = (type: string) => {
-    switch (type) {
-      case 'POST_REPORTED':
-      case 'COMMENT_REPORTED':
-      case 'ACCOUNT_WARNING':
-        return 'destructive';
-      case 'POST_APPROVED':
-      case 'COMMENT_APPROVED':
-      case 'NEW_FOLLOWER':
-        return 'default';
-      case 'SYSTEM_ANNOUNCEMENT':
-        return 'secondary';
-      default:
-        return 'outline';
-    }
+    return (
+      NotificationColors[type as keyof typeof NotificationColors] ||
+      NotificationColors.DEFAULT
+    );
   };
 
   const formatTimeAgo = (dateString: string) => {

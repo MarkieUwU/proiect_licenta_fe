@@ -290,7 +290,7 @@
           "Email": "Email",
           "Role": "Rol",
           "Posts": "Postări",
-          "Connections": "Prieteni",
+          "Friends": "Prieteni",
           "Joined": "S-a alăturat",
           "Actions": "Acțiuni"
         },
@@ -407,17 +407,12 @@
         },
         "Filters": {
           "PostID": "ID postare",
-          "PostIDPlaceholder": "ID postare",
           "PostTitle": "Titlu postare",
-          "PostTitlePlaceholder": "Titlu postare",
-          "AuthorID": "ID autor",
-          "AuthorIDPlaceholder": "ID autor",
-          "AuthorUsername": "Nume utilizator autor",
-          "AuthorUsernamePlaceholder": "Nume utilizator",
+          "PostAuthor": "Autor postare",
           "CommentID": "ID comentariu",
-          "CommentIDPlaceholder": "ID comentariu",
-          "CommentContent": "Conținut comentariu",
-          "CommentContentPlaceholder": "Conținut comentariu",
+          "CommentText": "Text comentariu",
+          "CommentAuthor": "Autor comentariu",
+          "Reporter": "Reporter",
           "Search": "Caută",
           "Reset": "Resetează"
         }

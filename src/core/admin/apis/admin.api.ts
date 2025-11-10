@@ -3,36 +3,48 @@ import { apiErrorHandler } from '@/core/utils/utils';
 import { Role } from '@/modules/Profile/models/role.enum';
 import { DashboardStatsData } from '../models/dashboard.models';
 import { UsersResponse } from '../models/user.models';
-import { GetAdminPostsParams, PostReportsResponse } from '../models/posts.models';
+import { PostReportsResponse } from '../models/posts.models';
 import { ContentStatus } from '@/core/models/content-status.enum';
-import { AdminCommentsRequest, AdminCommentsResponse, CommentReportsResponse } from '../models/comments.models';
+import {
+  AdminCommentsResponse,
+  CommentReportsResponse,
+} from '../models/comments.models';
 import { AdminPostsResponse } from '../models/posts.models';
+import {
+  CommentReportsPaginatedRequest,
+  CommentsPaginatedRequest,
+  PostReportsPaginatedRequest,
+  PostsPaginatedRequest,
+  UsersPaginatedRequest,
+} from '../models/paginated-requests.models';
 
-export const getDashboardStats = apiErrorHandler<DashboardStatsData>(async () => {
-  const { data } = await apiClient.get('/admin/dashboard/stats');
-  return data;
-});
+export const getDashboardStats = apiErrorHandler<DashboardStatsData>(
+  async () => {
+    const { data } = await apiClient.get('/admin/dashboard/stats');
+    return data;
+  }
+);
 
-export const getUsers = apiErrorHandler<UsersResponse>(async (params: { 
-  page?: number; 
-  limit?: number; 
-  search?: string;
-  sort?: string;
-  order?: string;
-}) => {
-  const { data } = await apiClient.get('/admin/users', { params });
-  return data;
-});
+export const getUsers = apiErrorHandler<UsersResponse>(
+  async (params: UsersPaginatedRequest) => {
+    const { data } = await apiClient.get('/admin/users', { params });
+    return data;
+  }
+);
 
-export const updateUserRole = apiErrorHandler(async ({userId, role}: {userId: string, role: Role}) => {
-  const { data } = await apiClient.patch(`/admin/users/${userId}/role`, { role });
-  return data;
-});
+export const updateUserRole = apiErrorHandler(
+  async ({ userId, role }: { userId: string; role: Role }) => {
+    const { data } = await apiClient.patch(`/admin/users/${userId}/role`, {
+      role,
+    });
+    return data;
+  }
+);
 
 export const getAdminPosts = apiErrorHandler<AdminPostsResponse>(
-  async ({ search, status, sort, order, page, limit }: GetAdminPostsParams) => {
+  async (params: PostsPaginatedRequest) => {
     const { data } = await apiClient.get('/admin/posts', {
-      params: { search, status, sort, order, page, limit }
+      params,
     });
     return data;
   }
@@ -40,15 +52,17 @@ export const getAdminPosts = apiErrorHandler<AdminPostsResponse>(
 
 export const updatePostStatus = apiErrorHandler<any>(
   async (id: number, status: ContentStatus) => {
-    const { data } = await apiClient.patch(`/admin/posts/${id}/status`, { status });
+    const { data } = await apiClient.patch(`/admin/posts/${id}/status`, {
+      status,
+    });
     return data;
   }
 );
 
 export const getAdminComments = apiErrorHandler<AdminCommentsResponse>(
-  async ({ search, status, sort, order, page, pageSize }: AdminCommentsRequest) => {
+  async (params: CommentsPaginatedRequest) => {
     const { data } = await apiClient.get('/admin/comments', {
-      params: { search, status, sort, order, page, pageSize }
+      params,
     });
     return data;
   }
@@ -56,36 +70,23 @@ export const getAdminComments = apiErrorHandler<AdminCommentsResponse>(
 
 export const updateCommentStatus = apiErrorHandler<any>(
   async (id: number, status: ContentStatus) => {
-    const { data } = await apiClient.patch(`/admin/comments/${id}/status`, { status });
+    const { data } = await apiClient.patch(`/admin/comments/${id}/status`, {
+      status,
+    });
     return data;
   }
 );
 
-export const getAllPostReports = apiErrorHandler<PostReportsResponse>(async (params?: {
-  postId?: string;
-  postTitle?: string;
-  authorId?: string;
-  authorUsername?: string;
-  page?: number;
-  limit?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}) => {
-  const { data } = await apiClient.get('/admin/reports/posts', { params });
-  return data;
-});
+export const getAllPostReports = apiErrorHandler<PostReportsResponse>(
+  async (params: PostReportsPaginatedRequest) => {
+    const { data } = await apiClient.get('/admin/reports/posts', { params });
+    return data;
+  }
+);
 
-export const getAllCommentReports = apiErrorHandler<CommentReportsResponse>(async (params?: {
-  commentId?: string;
-  commentContent?: string;
-  authorId?: string;
-  authorUsername?: string;
-  postId?: string;
-  page?: number;
-  limit?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}) => {
-  const { data } = await apiClient.get('/admin/reports/comments', { params });
-  return data;
-});
+export const getAllCommentReports = apiErrorHandler<CommentReportsResponse>(
+  async (params: CommentReportsPaginatedRequest) => {
+    const { data } = await apiClient.get('/admin/reports/comments', { params });
+    return data;
+  }
+);

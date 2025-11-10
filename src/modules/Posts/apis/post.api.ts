@@ -1,10 +1,10 @@
 import { apiErrorHandler } from '@/core/utils/utils';
 import apiClient from '../../../assets/config';
-import { Post, PostRequest, PostSortCriteria } from '../models/post.models';
+import { Post, PostRequest } from '../models/post.models';
 
 export const getFilteredPosts = apiErrorHandler<Post[]>(
-  async ({sortCriteria, userId}: { sortCriteria: PostSortCriteria | PostSortCriteria[], userId: string}) => {
-    const { data } = await apiClient.post('/post/filter', { sortCriterias: sortCriteria, userId});
+  async ( userId: string ) => {
+    const { data } = await apiClient.post('/post/filter', { userId});
     return data;
   }
 );

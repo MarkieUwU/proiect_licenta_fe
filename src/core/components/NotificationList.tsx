@@ -1,4 +1,4 @@
-import { Notification } from '@/core/models/notification.models';
+import { Notification, NotificationIcons } from '@/core/models/notification.models';
 import { markNotificationAsRead, markAllNotificationsAsRead } from '@/core/apis/notification.api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'Components.NotificationBell' });
 
   const markAsReadMutation = useMutation({
-    mutationFn: (notificationId: number) => markNotificationAsRead(notificationId),
+    mutationFn: (notificationId: string) => markNotificationAsRead(notificationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['unreadNotifications'] });
       toast.success('Notification marked as read');
@@ -33,7 +33,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
     onError: () => toast.error('Failed to mark notifications as read'),
   });
 
-  const handleMarkAsRead = (notificationId: number) => {
+  const handleMarkAsRead = (notificationId: string) => {
     markAsReadMutation.mutate(notificationId);
   };
 
@@ -42,35 +42,10 @@ export function NotificationList({ notifications }: NotificationListProps) {
   };
 
   const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'POST_LIKED':
-        return '❤️';
-      case 'POST_COMMENTED':
-        return '💬';
-      case 'POST_REPORTED':
-        return '⚠️';
-      case 'POST_ARCHIVED':
-        return '📁';
-      case 'POST_APPROVED':
-        return '✅';
-      case 'COMMENT_REPORTED':
-        return '⚠️';
-      case 'COMMENT_ARCHIVED':
-        return '📁';
-      case 'COMMENT_APPROVED':
-        return '✅';
-      case 'NEW_FOLLOWER':
-        return '👥';
-      case 'MENTIONED_IN_COMMENT':
-      case 'MENTIONED_IN_POST':
-        return '@';
-      case 'SYSTEM_ANNOUNCEMENT':
-        return '📢';
-      case 'ACCOUNT_WARNING':
-        return '🚨';
-      default:
-        return '📌';
-    }
+    return (
+      NotificationIcons[type as keyof typeof NotificationIcons] ||
+      NotificationIcons.DEFAULT
+    );
   };
 
   const formatTimeAgo = (dateString: string) => {

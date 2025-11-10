@@ -290,7 +290,7 @@
           "Email": "Email", 
           "Role": "Role",
           "Posts": "Posts",
-          "Connections": "Connections",
+          "Friends": "Friends",
           "Joined": "Joined",
           "Actions": "Actions"
         },
@@ -407,17 +407,12 @@
         },
         "Filters": {
           "PostID": "Post ID",
-          "PostIDPlaceholder": "Post ID",
           "PostTitle": "Post Title", 
-          "PostTitlePlaceholder": "Post title",
-          "AuthorID": "Author ID",
-          "AuthorIDPlaceholder": "Author ID",
-          "AuthorUsername": "Author Username",
-          "AuthorUsernamePlaceholder": "Author username",
+          "PostAuthor": "Post Author",
           "CommentID": "Comment ID",
-          "CommentIDPlaceholder": "Comment ID",
-          "CommentContent": "Comment Content",
-          "CommentContentPlaceholder": "Comment content",
+          "CommentText": "Comment Text",
+          "CommentAuthor": "Comment Author",
+          "Reporter": "Reporter",
           "Search": "Search",
           "Reset": "Reset"
         }

@@ -7,6 +7,7 @@ import {
   TableCell,
   TableBody,
   TableHead,
+  TableLoading,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,14 +27,15 @@ import {
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { getAdminPosts, updatePostStatus } from '../../apis/admin.api';
 import { toast } from 'sonner';
-import { AdminPost } from '@/modules/Posts/models/post.models';
 import { ContentStatus } from '@/core/models/content-status.enum';
 import { deletePost } from '@/modules/Posts/apis/post.api';
 import { useTranslation } from 'react-i18next';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { TablePagination } from '@/components/ui/table-pagination';
 import { formatLocalizedDateTime } from '@/core/utils/date.utils';
+import { AdminPost } from '../../models/posts.models';
+import { AvatarComponent } from '@/layout/components/Avatar';
+import { getInitials } from '@/core/utils/utils';
 
 type SortField = 'id' | 'title' | 'status' | 'createdAt' | 'updatedAt';
 
@@ -45,13 +47,13 @@ export default function AdminPosts() {
   const [sortField, setSortField] = useState<SortField>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [size, setSize] = useState(10);
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['adminPosts', { search, status, sortField, sortOrder, page, pageSize }],
+    queryKey: ['adminPosts', { search, status, sortField, sortOrder, page, size }],
     queryFn: () =>
       getAdminPosts({
         search,
@@ -59,7 +61,7 @@ export default function AdminPosts() {
         sort: sortField,
         order: sortOrder,
         page,
-        limit: pageSize,
+        size,
       }),
   });
 
@@ -67,7 +69,7 @@ export default function AdminPosts() {
   const total = data?.total || 0;
 
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: string }) =>
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
       updatePostStatus(id, status),
     onSuccess: () => {
       toast.success(t('Pages.Admin.ContentManagement.Posts.Toast.StatusUpdated'));
@@ -77,7 +79,7 @@ export default function AdminPosts() {
   });
 
   const removePost = useMutation({
-    mutationFn: (id: number) => deletePost(id),
+    mutationFn: (id: string) => deletePost(id),
     onSuccess: () => {
       toast.success(t('Pages.Admin.ContentManagement.Posts.Toast.Deleted'));
       queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
@@ -134,7 +136,7 @@ export default function AdminPosts() {
   };
 
   const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
+    setSize(size);
     setPage(1);
   };
 
@@ -247,13 +249,9 @@ export default function AdminPosts() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={10}>
-                  {t('Pages.Admin.ContentManagement.Posts.Loading')}
-                </TableCell>
-              </TableRow>
+              <TableLoading colNum={9} />
             ) : total > 0 ? (
-              (posts as AdminPost[]).map((post) => (
+              posts.map((post: AdminPost) => (
                 <TableRow key={post.id}>
                   <TableCell>{post.id}</TableCell>
                   <TableCell>{post.title}</TableCell>
@@ -274,17 +272,12 @@ export default function AdminPosts() {
                   </TableCell>
                   <TableCell>
                     <div className='flex items-center gap-2'>
-                      <Avatar className='w-8 h-8 me-1'>
-                        {post.user.profileImage ? (
-                          <AvatarImage
-                            src={post.user.profileImage}
-                            alt={post.user.username}
-                          />
-                        ) : (
-                          <AvatarFallback>{post.user.username}</AvatarFallback>
-                        )}
-                      </Avatar>
-                      <span>{post.user?.username}</span>
+                      <AvatarComponent
+                        className='w-8 h-8 me-1'
+                        initials={getInitials(post.userUsername)}
+                        image={post.userProfileImage}
+                      ></AvatarComponent>
+                      <span>{post.userUsername}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -357,7 +350,7 @@ export default function AdminPosts() {
           <TablePagination
             currentPage={page}
             totalPages={data.pages}
-            pageSize={pageSize}
+            pageSize={size}
             totalItems={total}
             onPageChange={setPage}
             onPageSizeChange={handlePageSizeChange}

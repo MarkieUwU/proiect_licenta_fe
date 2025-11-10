@@ -1,22 +1,14 @@
 import { ContentStatus } from '@/core/models/content-status.enum';
 
-export interface GetAdminPostsParams {
-  search?: string;
-  status?: ContentStatus;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  page?: number;
-  limit?: number;
-}
-
 export interface AdminPost {
-  id: number;
+  id: string;
   title: string;
   content: string;
   status: ContentStatus;
-  user: { fullName?: string };
   createdAt: string;
   updatedAt: string;
+  userUsername: string;
+  userProfileImage: string;
   comments: number;
   likes: number;
 }
@@ -28,24 +20,12 @@ export interface AdminPostsResponse {
 }
 
 export interface PostReport {
-  id: number;
+  id: string;
   reason: string;
-  createdAt: string;
-  user: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-  post: {
-    id: number;
-    title: string;
-    content: string;
-    user: {
-      id: number;
-      username: string;
-      fullName: string;
-    };
-  };
+  createdAt: Date;
+  postTitle: string;
+  postAuthor: string;
+  reporter: string;
 }
 
 export interface PostReportsResponse {

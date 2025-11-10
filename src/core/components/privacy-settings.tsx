@@ -31,7 +31,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ settings, onSe
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col mt-2'>
       <table className='text-md font-semibold mt-1 w-full'>
         <thead>
           <tr>

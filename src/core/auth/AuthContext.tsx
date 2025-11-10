@@ -3,6 +3,7 @@ import { useToken } from '../hooks/useToken';
 import { LoggedUser } from '@/modules/Profile/models/user.models';
 import { decodeToken } from '../utils/utils';
 import { useNavigate } from '@tanstack/react-router';
+import { getUserProfile } from '@/modules/Profile/apis/user.api';
 
 interface AuthContextType {
   user: LoggedUser | null;
@@ -22,14 +23,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
   const shouldNavigateToLogin = useRef(false);
 
+  const updateUserDetails = async (currentToken: string) => {
+    const decodedUser = decodeToken(currentToken);
+    const userDetails = await getUserProfile(decodedUser.username);
+    const newUserData: LoggedUser = {
+      id: userDetails.id,
+      fullName: userDetails.fullName,
+        username: userDetails.username,
+        email: userDetails.email,
+        theme: userDetails.settings.theme,
+        language: userDetails.settings.language,
+        role: decodedUser.role
+    }
+    setUser(newUserData);
+  }
+
   // Initialize authentication state
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       const currentToken = getToken();
       if (currentToken) {
         try {
-          const decodedUser = decodeToken(currentToken);
-          setUser(decodedUser);
+          updateUserDetails(currentToken);
         } catch {
           removeToken();
           setUser(null);
@@ -51,8 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else if (token && !user) { 
       // Token exists but no user state, try to decode
       try {
-        const decodedUser = decodeToken(token);
-        setUser(decodedUser);
+        updateUserDetails(token);
       } catch {
         removeToken();
         setUser(null);

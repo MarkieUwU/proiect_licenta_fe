@@ -7,6 +7,7 @@ import {
   TableCell,
   TableBody,
   TableHead,
+  TableLoading,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,37 +30,56 @@ import { getAdminComments, updateCommentStatus } from '../../apis/admin.api';
 import { toast } from 'sonner';
 import { AdminComment } from '../../models/comments.models';
 import { ContentStatus } from '@/core/models/content-status.enum';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { deleteComment } from '@/modules/Posts/apis/comment.api';
 import { useTranslation } from 'react-i18next';
 import { TablePagination } from '@/components/ui/table-pagination';
 import { formatLocalizedDateTime } from '@/core/utils/date.utils';
+import { AvatarComponent } from '@/layout/components/Avatar';
+import { getInitials } from '@/core/utils/utils';
 
 type CommentSortField = 'id' | 'text' | 'status' | 'createdAt' | 'postId';
 
 export default function AdminComments() {
-  const [searchInput, setSearchInput] = useState('');
+  const [commentTextInput, setCommentTextInput] = useState('');
+  const [postTitleInput, setPostTitleInput] = useState('');
+  const [authorUsernameInput, setAuthorUsernameInput] = useState('');
   const [statusInput, setStatusInput] = useState(ContentStatus.ALL);
-  const [search, setSearch] = useState('');
+  const [commentText, setCommentText] = useState('');
+  const [postTitle, setPostTitle] = useState('');
+  const [authorUsername, setAuthorUsername] = useState('');
   const [status, setStatus] = useState<ContentStatus>(ContentStatus.ALL);
   const [sortField, setSortField] = useState<CommentSortField>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [size, setSize] = useState(10);
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['adminComments', { search, status, sortField, sortOrder, page, pageSize }],
+    queryKey: [
+      'adminComments',
+      {
+        commentText,
+        postTitle,
+        authorUsername,
+        status,
+        sortField,
+        sortOrder,
+        page,
+        size,
+      },
+    ],
     queryFn: () =>
       getAdminComments({
-        search,
+        commentText,
+        postTitle,
+        authorUsername,
         status,
         sort: sortField,
         order: sortOrder,
         page,
-        pageSize,
+        size,
       }),
   });
 
@@ -70,10 +90,15 @@ export default function AdminComments() {
     mutationFn: ({ id, status }: { id: string; status: ContentStatus }) =>
       updateCommentStatus(id, status),
     onSuccess: () => {
-      toast.success(t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdated'));
+      toast.success(
+        t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdated')
+      );
       queryClient.invalidateQueries({ queryKey: ['adminComments'] });
     },
-    onError: () => toast.error(t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdateError')),
+    onError: () =>
+      toast.error(
+        t('Pages.Admin.ContentManagement.Comments.Toast.StatusUpdateError')
+      ),
   });
 
   const removeComment = useMutation({
@@ -83,7 +108,9 @@ export default function AdminComments() {
       queryClient.invalidateQueries({ queryKey: ['adminComments'] });
     },
     onError: () =>
-      toast.error(t('Pages.Admin.ContentManagement.Comments.Toast.DeleteError')),
+      toast.error(
+        t('Pages.Admin.ContentManagement.Comments.Toast.DeleteError')
+      ),
   });
 
   const handleSort = (field: CommentSortField) => {
@@ -105,26 +132,44 @@ export default function AdminComments() {
     if (sortField !== field) {
       return null;
     }
-    return sortOrder === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+    return sortOrder === 'asc' ? (
+      <ArrowUp className='h-4 w-4' />
+    ) : (
+      <ArrowDown className='h-4 w-4' />
+    );
   };
 
-  const handleSearchInputChange = (value: string) => {
-    setSearchInput(value);
+  const handleCommentTextInputChange = (value: string) => {
+    setCommentTextInput(value);
+  };
+
+  const handlePostTitleInputChange = (value: string) => {
+    setPostTitleInput(value);
+  };
+
+  const handleAuthorUsernameInputChange = (value: string) => {
+    setAuthorUsernameInput(value);
   };
 
   const handleStatusInputChange = (value: ContentStatus) => {
     setStatusInput(value);
-  }
+  };
 
   const handleSearch = () => {
-    setSearch(searchInput);
+    setCommentText(commentTextInput);
+    setPostTitle(postTitleInput);
+    setAuthorUsername(authorUsernameInput);
     setStatus(statusInput);
     setPage(1);
   };
 
   const handleReset = () => {
-    setSearchInput('');
-    setSearch('');
+    setCommentText('');
+    setCommentTextInput('');
+    setPostTitle('');
+    setPostTitleInput('');
+    setAuthorUsername('');
+    setAuthorUsernameInput('');
     setStatus(ContentStatus.ALL);
     setStatusInput(ContentStatus.ALL);
     setSortField('createdAt');
@@ -133,7 +178,7 @@ export default function AdminComments() {
   };
 
   const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
+    setSize(size);
     setPage(1);
   };
 
@@ -144,8 +189,30 @@ export default function AdminComments() {
           placeholder={t(
             'Pages.Admin.ContentManagement.Comments.SearchPlaceholder'
           )}
-          value={searchInput}
-          onChange={(e) => handleSearchInputChange(e.target.value)}
+          value={commentTextInput}
+          onChange={(e) => handleCommentTextInputChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
+          className='w-[250px]'
+        />
+        <Input
+          placeholder={t(
+            'Pages.Admin.ContentManagement.Comments.SearchPlaceholder'
+          )}
+          value={postTitleInput}
+          onChange={(e) => handlePostTitleInputChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
+          className='w-[250px]'
+        />
+        <Input
+          placeholder={t(
+            'Pages.Admin.ContentManagement.Comments.SearchPlaceholder'
+          )}
+          value={authorUsernameInput}
+          onChange={(e) => handleAuthorUsernameInputChange(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
@@ -245,11 +312,7 @@ export default function AdminComments() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7}>
-                  {t('Pages.Admin.ContentManagement.Comments.Loading')}
-                </TableCell>
-              </TableRow>
+              <TableLoading colNum={7} />
             ) : total > 0 ? (
               comments.map((comment: AdminComment) => (
                 <TableRow key={comment.id}>
@@ -274,22 +337,15 @@ export default function AdminComments() {
                   </TableCell>
                   <TableCell>
                     <div className='flex items-center gap-2'>
-                      <Avatar className='w-8 h-8 me-1'>
-                        {comment.user.profileImage ? (
-                          <AvatarImage
-                            src={comment.user.profileImage}
-                            alt={comment.user.username}
-                          />
-                        ) : (
-                          <AvatarFallback>
-                            {comment.user.username[0]}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                      <span>{comment.user.username}</span>
+                      <AvatarComponent
+                        className='w-8 h-8 me-1'
+                        initials={getInitials(comment.userUsername)}
+                        image={comment.userProfileImage}
+                      ></AvatarComponent>
+                      <span>{comment.userUsername}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{comment.post.id}</TableCell>
+                  <TableCell>{comment.postId}</TableCell>
                   <TableCell>
                     {formatLocalizedDateTime(new Date(comment.createdAt))}
                   </TableCell>
@@ -334,9 +390,7 @@ export default function AdminComments() {
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
-                          onClick={() =>
-                            removeComment.mutate(comment.id)
-                          }
+                          onClick={() => removeComment.mutate(comment.id)}
                           className='text-red-600'
                         >
                           {t(
@@ -360,8 +414,8 @@ export default function AdminComments() {
         {data && (
           <TablePagination
             currentPage={page}
-            totalPages={Math.ceil(total / pageSize)}
-            pageSize={pageSize}
+            totalPages={Math.ceil(total / size)}
+            pageSize={size}
             totalItems={total}
             onPageChange={setPage}
             onPageSizeChange={handlePageSizeChange}

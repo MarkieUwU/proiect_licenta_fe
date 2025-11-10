@@ -77,7 +77,7 @@ export const RegistrationPage: React.FC = () => {
   const createMutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      const { token, user } = data;
+      const { token, userProfile: user } = data;
       login(token, user);
       reset();
       setLoading(false);

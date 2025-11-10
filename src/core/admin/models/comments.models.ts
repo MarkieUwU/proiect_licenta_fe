@@ -5,22 +5,9 @@ export interface AdminComment {
   text: string;
   createdAt: string;
   status: ContentStatus;
-  user: { id: string; username: string; profileImage?: string };
-  post: { id: string; title: string };
-  reports: Array<{
-    id: string;
-    user: { username: string };
-    [key: string]: any;
-  }>;
-}
-
-export interface AdminCommentsRequest {
-  search?: string;
-  status?: ContentStatus;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  page?: number;
-  pageSize?: number;
+  userUsername: string;
+  userProfileImage: string;
+  postId: string;
 }
 
 export interface AdminCommentsResponse {
@@ -29,27 +16,12 @@ export interface AdminCommentsResponse {
 }
 
 export interface CommentReport {
-  id: number;
+  id: string;
   reason: string;
   createdAt: string;
-  user: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-  comment: {
-    id: number;
-    text: string;
-    user: {
-      id: number;
-      username: string;
-      fullName: string;
-    };
-    post: {
-      id: number;
-      title: string;
-    };
-  };
+  commentText: string;
+  commentAuthor: string;
+  reporter: string;
 }
 
 export interface CommentReportsResponse {

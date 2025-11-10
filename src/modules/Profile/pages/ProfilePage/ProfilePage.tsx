@@ -12,7 +12,7 @@ import {
 import {
   acceptConnection,
   getConnectionState,
-  getUserDetails,
+  getUserProfile,
   removeConnection,
   requestConnection,
 } from '../../apis/user.api';
@@ -43,7 +43,7 @@ const ProfilePage: React.FC = () => {
   const { username } = Route.useParams();
   const { data: user } = useSuspenseQuery({
     queryKey: ['userDetails', { username }],
-    queryFn: () => getUserDetails(username),
+    queryFn: () => getUserProfile(username),
   });
 
   const ownProfile = loggedUser!.id === user?.id;

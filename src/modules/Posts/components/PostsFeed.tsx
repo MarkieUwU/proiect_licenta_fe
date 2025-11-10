@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { getFilteredPosts } from '../apis/post.api';
@@ -17,7 +17,7 @@ export const PostsFeed: React.FC = () => {
 
   const postResponse = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getFilteredPosts({ sortCriteria: { createdAt: 'desc' }, userId: user!.id}),
+    queryFn: () => getFilteredPosts(user!.id),
   });
 
   const renderPostCards = () => {
@@ -34,7 +34,7 @@ export const PostsFeed: React.FC = () => {
     }
 
     return (
-      <div className='flex flex-col overflow-y-auto h-full gap-2 pb-3'>
+      <div className='flex flex-col gap-2 pb-3'>
         {postResponse.data.map((post: Post) => (
           <PostCard
             key={post.id}

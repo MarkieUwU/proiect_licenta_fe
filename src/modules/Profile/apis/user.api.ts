@@ -16,9 +16,9 @@ import {
 } from '../models/user.models';
 import { apiErrorHandler } from '@/core/utils/utils';
 
-export const getUserDetails = apiErrorHandler<UserProfile>(
+export const getUserProfile = apiErrorHandler<UserProfile>(
   async (username: string) => {
-    const { data } = await apiClient.post<UserProfile>('/user/details', {
+    const { data } = await apiClient.post<UserProfile>('/user/profile', {
       username,
     });
     return data;
